@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.loopers.domain.Member;
 import com.loopers.domain.MemberFixture;
 import com.loopers.domain.MemberRegisterRequest;
 import com.loopers.infrastructure.MemberJpaRepository;
+import com.loopers.utils.DatabaseCleanUp;
 
 import jakarta.transaction.Transactional;
 
@@ -28,8 +30,16 @@ public class MemberRegisterIntegrationTest {
     @Autowired
     MemberRegister memberRegister;
 
+    @Autowired
+    DatabaseCleanUp databaseCleanUp;
+
     @MockitoSpyBean
     MemberJpaRepository memberJpaRepository;
+
+    @AfterEach
+    void tearDown() {
+        databaseCleanUp.truncateAllTables();
+    }
 
     @Test
     void register() {
