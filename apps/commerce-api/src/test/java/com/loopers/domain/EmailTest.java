@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-public class EmailTest {
+class EmailTest {
     @Test
     void equalityTest() {
         var email1 = new Email("pwy@loopers.app");

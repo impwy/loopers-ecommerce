@@ -1,5 +1,7 @@
 package com.loopers.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 
@@ -22,7 +24,7 @@ import lombok.ToString;
 public class Member extends BaseEntity {
     @Embedded
     @NaturalId
-    private MemberId memberid;
+    private MemberId memberId;
 
     private String passwordHash;
 
@@ -35,12 +37,15 @@ public class Member extends BaseEntity {
     @Embedded
     private Birthday birthday;
 
-    public Member(MemberId memberid, String passwordHash, Gender gender, Email email, Birthday birthday) {
-        this.memberid = memberid;
-        this.passwordHash = passwordHash;
-        this.gender = gender;
-        this.email = email;
-        this.birthday = birthday;
+    public static Member register(MemberRegisterRequest registerRequest) {
+        Member member = new Member();
+        member.memberId = new MemberId(registerRequest.memberId());
+        member.passwordHash = requireNonNull(registerRequest.password());
+        member.gender = requireNonNull(registerRequest.gender());
+        member.email = new Email(registerRequest.email());
+        member.birthday = new Birthday(registerRequest.birthDay());
+
+        return member;
     }
 }
 

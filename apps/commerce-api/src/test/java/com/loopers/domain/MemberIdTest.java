@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-public class MemberIdTest {
+class MemberIdTest {
     @Test
     void equalityTest() {
         var memberId1 = new MemberId("pwy6817");

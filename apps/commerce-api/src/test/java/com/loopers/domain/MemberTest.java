@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 class MemberTest {
     @Test
     void createMemberTest() {
-        var member = new Member(new MemberId("pwy6817"), "secret", Gender.MALE, new Email("pwy6817@loopers.app"), new Birthday("2025-07-13"));
+        var member = Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", "2025-07-13"));
 
         assertAll(
                 () -> assertThat(member.getId()).isNotNull(),
-                () -> assertThat(member.getMemberid().memberId()).isEqualTo("pwy6817"),
+                () -> assertThat(member.getMemberId().memberId()).isEqualTo("pwy6817"),
                 () -> assertThat(member.getPasswordHash()).isEqualTo("secret"),
                 () -> assertThat(member.getGender()).isEqualTo(Gender.MALE),
                 () -> assertThat(member.getEmail().email()).isEqualTo("pwy6817@loopers.app"),
@@ -22,20 +22,20 @@ class MemberTest {
     }
 
     @Test
-    void throwIllegalArgumentException_whenMemberId_notMeths() {
-        assertThatThrownBy(() -> new Member(new MemberId("invalid_memberId"), "secret", Gender.MALE, new Email("pwy6817@loopers.app"), new Birthday("2025-07-13")))
+    void throwIllegalArgumentException_whenMemberId_notMatch() {
+        assertThatThrownBy(() -> Member.register(new MemberRegisterRequest("invalid_ID", "secret", Gender.MALE, "pwy6817@loopers.app", "2025-07-13")))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void throwIllegalArgumentException_whenEmail_notMeths() {
-        assertThatThrownBy(() -> new Member(new MemberId("pwy6817"), "secret", Gender.MALE, new Email("invalid_email"), new Birthday("2025-07-13")))
+    void throwIllegalArgumentException_whenEmail_notMatch() {
+        assertThatThrownBy(() -> Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, "invalid_email", "2025-07-13")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void throwIllegalArgumentException_whenBirthday_notMeths() {
-        assertThatThrownBy(() -> new Member(new MemberId("pwy6817"), "secret", Gender.MALE, new Email("pwy6817@loopers.app"), new Birthday("invalid_birthday")))
+    void throwIllegalArgumentException_whenBirthday_notMatch() {
+        assertThatThrownBy(() -> Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", "invalid_birthday")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
