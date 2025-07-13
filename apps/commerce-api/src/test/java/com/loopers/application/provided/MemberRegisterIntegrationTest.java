@@ -63,7 +63,7 @@ public class MemberRegisterIntegrationTest {
     }
 
     @Test
-    void duplicateMemberIdException_whenMemberId_duplicated() {
+    void throwDuplicateMemberIdException_whenMemberId_duplicated() {
         Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
 
         assertThatThrownBy(() -> memberRegister.register(MemberFixture.createMemberRegisterRequest()))

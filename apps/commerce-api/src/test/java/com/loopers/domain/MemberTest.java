@@ -22,19 +22,19 @@ class MemberTest {
     }
 
     @Test
-    void throwIllegalArgumentException_whenMemberId_notMeths() {
+    void throwIllegalArgumentException_whenMemberId_notMatch() {
         assertThatThrownBy(() -> new Member(new MemberId("invalid_memberId"), "secret", Gender.MALE, new Email("pwy6817@loopers.app"), new Birthday("2025-07-13")))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void throwIllegalArgumentException_whenEmail_notMeths() {
+    void throwIllegalArgumentException_whenEmail_notMatch() {
         assertThatThrownBy(() -> new Member(new MemberId("pwy6817"), "secret", Gender.MALE, new Email("invalid_email"), new Birthday("2025-07-13")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void throwIllegalArgumentException_whenBirthday_notMeths() {
+    void throwIllegalArgumentException_whenBirthday_notMatch() {
         assertThatThrownBy(() -> new Member(new MemberId("pwy6817"), "secret", Gender.MALE, new Email("pwy6817@loopers.app"), new Birthday("invalid_birthday")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
