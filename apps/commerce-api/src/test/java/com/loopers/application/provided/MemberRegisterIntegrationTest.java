@@ -18,8 +18,8 @@ import com.loopers.domain.Birthday;
 import com.loopers.domain.DuplicateMemberIdException;
 import com.loopers.domain.Email;
 import com.loopers.domain.Member;
+import com.loopers.domain.MemberFixture;
 import com.loopers.domain.MemberId;
-import com.loopers.domain.MemberRegisterRequest;
 import com.loopers.infrastructure.MemberJpaRepository;
 
 import jakarta.transaction.Transactional;
@@ -35,7 +35,7 @@ public class MemberRegisterIntegrationTest {
 
     @Test
     void register() {
-        Member member = memberRegister.register(new MemberRegisterRequest("pwy6817", "secret", MALE, "pwy6817@loopers.app", "2025-07-13"));
+        Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
 
         assertThat(member.getId()).isNotNull();
         assertThat(member.getMemberId().memberId()).isEqualTo("pwy6817");
@@ -55,7 +55,7 @@ public class MemberRegisterIntegrationTest {
 
         MemberRegister memberRegister = new MemberService(memberRepositoryMock);
 
-        Member member = memberRegister.register(new MemberRegisterRequest("pwy6817", "secret", MALE, "pwy6817@loopers.app", "2025-07-13"));
+        Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
 
         assertThat(member.getId()).isNotNull();
 
@@ -63,10 +63,10 @@ public class MemberRegisterIntegrationTest {
     }
 
     @Test
-    void DuplicateMemberIdException_whenMemberId_duplicated() {
-        Member member = memberRegister.register(new MemberRegisterRequest("pwy6817", "secret", MALE, "pwy6817@loopers.app", "2025-07-13"));
+    void duplicateMemberIdException_whenMemberId_duplicated() {
+        Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
 
-        assertThatThrownBy(() -> memberRegister.register(new MemberRegisterRequest("pwy6817", "secret", MALE, "pwy6817@loopers.app", "2025-07-13")))
+        assertThatThrownBy(() -> memberRegister.register(MemberFixture.createMemberRegisterRequest()))
                 .isInstanceOf(DuplicateMemberIdException.class);
     }
 }
