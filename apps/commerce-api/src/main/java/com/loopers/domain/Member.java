@@ -24,7 +24,7 @@ import lombok.ToString;
 public class Member extends BaseEntity {
     @Embedded
     @NaturalId
-    private MemberId memberid;
+    private MemberId memberId;
 
     private String passwordHash;
 
@@ -37,8 +37,8 @@ public class Member extends BaseEntity {
     @Embedded
     private Birthday birthday;
 
-    public Member(MemberId memberid, String passwordHash, Gender gender, Email email, Birthday birthday) {
-        this.memberid = memberid;
+    public Member(MemberId memberId, String passwordHash, Gender gender, Email email, Birthday birthday) {
+        this.memberId = memberId;
         this.passwordHash = passwordHash;
         this.gender = gender;
         this.email = email;
@@ -47,7 +47,7 @@ public class Member extends BaseEntity {
 
     public static Member register(MemberRegisterRequest registerRequest) {
         Member member = new Member();
-        member.memberid = new MemberId(registerRequest.memberid());
+        member.memberId = new MemberId(registerRequest.memberId());
         member.passwordHash = requireNonNull(registerRequest.password());
         member.gender = requireNonNull(registerRequest.gender());
         member.email = new Email(registerRequest.email());

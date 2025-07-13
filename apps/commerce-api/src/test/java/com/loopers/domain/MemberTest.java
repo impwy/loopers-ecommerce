@@ -13,7 +13,7 @@ class MemberTest {
 
         assertAll(
                 () -> assertThat(member.getId()).isNotNull(),
-                () -> assertThat(member.getMemberid().memberId()).isEqualTo("pwy6817"),
+                () -> assertThat(member.getMemberId().memberId()).isEqualTo("pwy6817"),
                 () -> assertThat(member.getPasswordHash()).isEqualTo("secret"),
                 () -> assertThat(member.getGender()).isEqualTo(Gender.MALE),
                 () -> assertThat(member.getEmail().email()).isEqualTo("pwy6817@loopers.app"),

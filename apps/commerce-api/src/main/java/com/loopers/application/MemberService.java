@@ -28,8 +28,8 @@ public class MemberService implements MemberRegister {
     }
 
     private void checkDuplicateId(MemberRegisterRequest registerRequest) {
-        if (memberRepository.findByMemberid(registerRequest.memberid()).isPresent()) {
-            throw new DuplicateMemberIdException("이미 사용중인 ID 입니다: " + registerRequest.memberid());
+        if (memberRepository.findByMemberId(registerRequest.memberId()).isPresent()) {
+            throw new DuplicateMemberIdException("이미 사용중인 ID 입니다: " + registerRequest.memberId());
         }
     }
 }

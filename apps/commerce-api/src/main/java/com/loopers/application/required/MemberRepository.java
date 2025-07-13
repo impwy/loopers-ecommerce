@@ -7,5 +7,5 @@ import com.loopers.domain.Member;
 public interface MemberRepository {
     Member save(Member member);
 
-    Optional<Member> findByMemberid(String memberId);
+    Optional<Member> findByMemberId(String memberId);
 }

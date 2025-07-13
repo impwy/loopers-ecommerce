@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.Member;
+import com.loopers.domain.MemberId;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,8 +22,8 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findByMemberid(String memberId) {
-        Optional<Member> optionalMember = memberJpaRepository.findByMemberid(memberId);
+    public Optional<Member> findByMemberId(String memberId) {
+        Optional<Member> optionalMember = memberJpaRepository.findByMemberId(new MemberId(memberId));
         return optionalMember;
     }
 }
