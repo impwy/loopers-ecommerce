@@ -7,10 +7,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import com.loopers.application.MemberService;
+import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.Birthday;
 import com.loopers.domain.DuplicateMemberIdException;
 import com.loopers.domain.Email;
@@ -44,6 +47,19 @@ public class MemberRegisterIntegrationTest {
         memberJpaRepository.save(member);
 
         verify(memberJpaRepository, times(1)).save(member);
+    }
+
+    @Test
+    void registerTestWithMockito() {
+        MemberRepository memberRepositoryMock = Mockito.mock(MemberRepository.class);
+
+        MemberRegister memberRegister = new MemberService(memberRepositoryMock);
+
+        Member member = memberRegister.register(new MemberRegisterRequest("pwy6817", "secret", MALE, "pwy6817@loopers.app", "2025-07-13"));
+
+        assertThat(member.getId()).isNotNull();
+
+        verify(memberRepositoryMock, times(1)).save(member);
     }
 
     @Test
