@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-public class BirthdayTest {
+class BirthdayTest {
     @Test
     void equalityTest() {
         var birthday1 = new Birthday("2025-07-13");

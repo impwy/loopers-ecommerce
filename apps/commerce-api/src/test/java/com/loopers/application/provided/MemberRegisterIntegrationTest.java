@@ -26,7 +26,7 @@ import jakarta.transaction.Transactional;
 
 @Transactional
 @SpringBootTest
-public class MemberRegisterIntegrationTest {
+class MemberRegisterIntegrationTest {
     @Autowired
     MemberRegister memberRegister;
 
