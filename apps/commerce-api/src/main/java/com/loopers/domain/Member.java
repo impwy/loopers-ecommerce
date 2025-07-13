@@ -1,5 +1,7 @@
 package com.loopers.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 
@@ -41,6 +43,17 @@ public class Member extends BaseEntity {
         this.gender = gender;
         this.email = email;
         this.birthday = birthday;
+    }
+
+    public static Member register(MemberRegisterRequest registerRequest) {
+        Member member = new Member();
+        member.memberid = new MemberId(registerRequest.memberid());
+        member.passwordHash = requireNonNull(registerRequest.password());
+        member.gender = requireNonNull(registerRequest.gender());
+        member.email = new Email(registerRequest.email());
+        member.birthday = new Birthday(registerRequest.birthDay());
+
+        return member;
     }
 }
 
