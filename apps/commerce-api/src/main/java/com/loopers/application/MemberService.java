@@ -9,10 +9,12 @@ import com.loopers.domain.DuplicateMemberIdException;
 import com.loopers.domain.Member;
 import com.loopers.domain.MemberRegisterRequest;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @Validated
+@Transactional
 @RequiredArgsConstructor
 public class MemberService implements MemberRegister {
     private final MemberRepository memberRepository;
