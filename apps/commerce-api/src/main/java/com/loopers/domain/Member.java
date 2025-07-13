@@ -37,14 +37,6 @@ public class Member extends BaseEntity {
     @Embedded
     private Birthday birthday;
 
-    public Member(MemberId memberId, String passwordHash, Gender gender, Email email, Birthday birthday) {
-        this.memberId = memberId;
-        this.passwordHash = passwordHash;
-        this.gender = gender;
-        this.email = email;
-        this.birthday = birthday;
-    }
-
     public static Member register(MemberRegisterRequest registerRequest) {
         Member member = new Member();
         member.memberId = new MemberId(registerRequest.memberId());
