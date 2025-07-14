@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,7 @@ class MemberV1ApiE2ETest {
     class Post {
         private static final String ENDPOINT_POST = "/api/v1/members";
 
+        @DisplayName("회원 가입이 성공할 경우, 생성된 유저 정보를 응답으로 반환한다.")
         @Test
         void register_member() throws JsonProcessingException {
             MemberRegisterRequest memberRegisterRequest = MemberFixture.createMemberRegisterRequest();
@@ -82,6 +84,7 @@ class MemberV1ApiE2ETest {
             );
         }
 
+        @DisplayName("회원 가입 시에 성별이 없을 경우, 400 Bad Request 응답을 반환한다.")
         @Test
         void throwBadRequest_whenGenderIsNull() throws JsonProcessingException {
             MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest("pwy6817", "secret", null, "pwy6817@loopers.app", "2025-07-13");
@@ -107,6 +110,7 @@ class MemberV1ApiE2ETest {
     class Get {
         private static final Function<Long, String> ENDPOINT_GET = id -> "/api/v1/members/" + id;
 
+        @DisplayName("내 정보 조회에 성공할 경우, 해당하는 유저 정보를 응답으로 반환한다.")
         @Test
         void get_memberInfo() {
             Member member = memberJpaRepository.save(MemberFixture.createMember());
@@ -124,6 +128,7 @@ class MemberV1ApiE2ETest {
             );
         }
 
+        @DisplayName("존재하지 않는 ID 로 조회할 경우, 404 Not Found 응답을 반환한다.")
         @Test
         void throwNotFoundException_whenMemberIdIsNotExist() {
             String endpointGet = ENDPOINT_GET.apply(999L);
