@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Validated
 @Transactional
 @RequiredArgsConstructor
-public class MemberService implements MemberRegister {
+public class MemberModifyService implements MemberRegister {
     private final MemberRepository memberRepository;
 
     @Override
