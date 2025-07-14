@@ -1,14 +1,10 @@
-package com.loopers.domain;
+package com.loopers.domain.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.Test;
-
-import com.loopers.domain.member.Gender;
-import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberRegisterRequest;
 
 class MemberTest {
     @Test

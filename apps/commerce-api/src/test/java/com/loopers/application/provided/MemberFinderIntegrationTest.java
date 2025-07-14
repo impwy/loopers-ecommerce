@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.MemberFixture;
+import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.member.MemberNotFoundException;
 import com.loopers.utils.DatabaseCleanUp;
 

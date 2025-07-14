@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.MemberFixture;
+import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.member.MemberRegisterRequest;
 import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;

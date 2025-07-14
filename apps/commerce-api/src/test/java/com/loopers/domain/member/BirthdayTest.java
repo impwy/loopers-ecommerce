@@ -1,10 +1,8 @@
-package com.loopers.domain;
+package com.loopers.domain.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-
-import com.loopers.domain.member.Birthday;
 
 class BirthdayTest {
     @Test
