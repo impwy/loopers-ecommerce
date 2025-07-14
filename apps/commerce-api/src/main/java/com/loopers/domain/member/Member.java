@@ -3,7 +3,6 @@ package com.loopers.domain.member;
 import static java.util.Objects.requireNonNull;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.Email;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
