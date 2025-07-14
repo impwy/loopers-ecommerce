@@ -10,8 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.loopers.application.required.MemberRepository;
-import com.loopers.domain.Member;
+import com.loopers.domain.member.Member;
 import com.loopers.domain.MemberFixture;
+import com.loopers.domain.member.MemberNotFoundException;
 import com.loopers.utils.DatabaseCleanUp;
 
 import jakarta.transaction.Transactional;
@@ -51,6 +52,6 @@ class MemberFinderIntegrationTest {
     @Test
     void find_member_fail() {
         assertThatThrownBy(() -> memberFinder.find(999L))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(MemberNotFoundException.class);
     }
 }

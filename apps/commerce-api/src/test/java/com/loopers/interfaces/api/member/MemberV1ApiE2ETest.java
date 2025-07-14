@@ -22,13 +22,12 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loopers.domain.Member;
+import com.loopers.domain.member.Member;
 import com.loopers.domain.MemberFixture;
-import com.loopers.domain.MemberRegisterRequest;
+import com.loopers.domain.member.MemberRegisterRequest;
 import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.member.dto.MemberInfoResponse;
-import com.loopers.interfaces.api.member.dto.MemberRegisterResponse;
+import com.loopers.interfaces.api.member.dto.MemberV1Dto;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -58,7 +57,7 @@ class MemberV1ApiE2ETest {
 
     @Nested
     class Post {
-        private static final String ENDPOINT_POST = "/api/members";
+        private static final String ENDPOINT_POST = "/api/v1/members";
 
         @Test
         void register_member() throws JsonProcessingException {
@@ -67,8 +66,8 @@ class MemberV1ApiE2ETest {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ParameterizedTypeReference<ApiResponse<MemberRegisterResponse>> responseType = new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberRegisterResponse>> response =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ResponseEntity<ApiResponse<MemberV1Dto.MemberRegisterResponse>> response =
                     testRestTemplate.exchange(ENDPOINT_POST,
                                               HttpMethod.POST,
                                               new HttpEntity<>(memberRegisterJson, headers),
@@ -90,8 +89,8 @@ class MemberV1ApiE2ETest {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ParameterizedTypeReference<ApiResponse<MemberRegisterResponse>> responseType = new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberRegisterResponse>> response =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ResponseEntity<ApiResponse<MemberV1Dto.MemberRegisterResponse>> response =
                     testRestTemplate.exchange(ENDPOINT_POST,
                                               HttpMethod.POST,
                                               new HttpEntity<>(memberRegisterJson, headers),
@@ -106,7 +105,7 @@ class MemberV1ApiE2ETest {
     
     @Nested
     class Get {
-        private static final Function<Long, String> ENDPOINT_GET = id -> "/api/members/" + id;
+        private static final Function<Long, String> ENDPOINT_GET = id -> "/api/v1/members/" + id;
 
         @Test
         void get_memberInfo() {
@@ -114,8 +113,8 @@ class MemberV1ApiE2ETest {
 
             String endpointGet = ENDPOINT_GET.apply(member.getId());
 
-            ParameterizedTypeReference<ApiResponse<MemberInfoResponse>> responseType = new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberInfoResponse>> response =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ResponseEntity<ApiResponse<MemberV1Dto.MemberInfoResponse>> response =
                     testRestTemplate.exchange(endpointGet, HttpMethod.GET, new HttpEntity<>(null), responseType);
 
             assertAll(

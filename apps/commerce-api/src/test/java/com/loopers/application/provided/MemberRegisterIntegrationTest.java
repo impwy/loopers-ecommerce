@@ -15,10 +15,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import com.loopers.application.MemberModifyService;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.DuplicateMemberIdException;
-import com.loopers.domain.Gender;
-import com.loopers.domain.Member;
+import com.loopers.domain.member.Gender;
+import com.loopers.domain.member.Member;
 import com.loopers.domain.MemberFixture;
-import com.loopers.domain.MemberRegisterRequest;
+import com.loopers.domain.member.MemberRegisterRequest;
 import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.utils.DatabaseCleanUp;
 

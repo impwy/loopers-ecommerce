@@ -6,8 +6,8 @@ import org.springframework.validation.annotation.Validated;
 import com.loopers.application.provided.MemberRegister;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.DuplicateMemberIdException;
-import com.loopers.domain.Member;
-import com.loopers.domain.MemberRegisterRequest;
+import com.loopers.domain.member.Member;
+import com.loopers.domain.member.MemberRegisterRequest;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

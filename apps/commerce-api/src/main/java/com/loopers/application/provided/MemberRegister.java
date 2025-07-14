@@ -1,7 +1,7 @@
 package com.loopers.application.provided;
 
-import com.loopers.domain.Member;
-import com.loopers.domain.MemberRegisterRequest;
+import com.loopers.domain.member.Member;
+import com.loopers.domain.member.MemberRegisterRequest;
 
 import jakarta.validation.Valid;
 
