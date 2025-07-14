@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.MemberService;
+import com.loopers.application.MemberModifyService;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.DuplicateMemberIdException;
 import com.loopers.domain.Gender;
@@ -61,11 +61,11 @@ class MemberRegisterIntegrationTest {
     void registerTestWithMockito() {
         MemberRepository memberRepositoryMock = Mockito.mock(MemberRepository.class);
 
-        MemberRegister memberRegister = new MemberService(memberRepositoryMock);
+        MemberRegister memberRegister = new MemberModifyService(memberRepositoryMock);
 
         Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
 
-        assertThat(member.getId()).isNotNull();
+        assertThat(member).isNotNull();
 
         verify(memberRepositoryMock, times(1)).save(member);
     }

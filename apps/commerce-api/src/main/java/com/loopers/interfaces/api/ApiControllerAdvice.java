@@ -3,6 +3,7 @@ package com.loopers.interfaces.api;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import com.loopers.domain.MemberNotFoundException;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import lombok.extern.slf4j.Slf4j;
@@ -108,6 +109,11 @@ public class ApiControllerAdvice {
     @ExceptionHandler
     public ResponseEntity<ApiResponse<?>> handleNotFound(NoResourceFoundException e) {
         return failureResponse(ErrorType.NOT_FOUND, null);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ApiResponse<?>> handleNotFound(MemberNotFoundException e) {
+        return failureResponse(ErrorType.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler

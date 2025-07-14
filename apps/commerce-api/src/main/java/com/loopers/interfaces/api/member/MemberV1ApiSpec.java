@@ -2,6 +2,7 @@ package com.loopers.interfaces.api.member;
 
 import com.loopers.domain.MemberRegisterRequest;
 import com.loopers.interfaces.api.ApiResponse;
+import com.loopers.interfaces.api.member.dto.MemberInfoResponse;
 import com.loopers.interfaces.api.member.dto.MemberRegisterResponse;
 
 /**
@@ -9,4 +10,5 @@ import com.loopers.interfaces.api.member.dto.MemberRegisterResponse;
  */
 public interface MemberV1ApiSpec {
     ApiResponse<MemberRegisterResponse> register(MemberRegisterRequest registerRequest);
+    ApiResponse<MemberInfoResponse> find(Long memberId);
 }

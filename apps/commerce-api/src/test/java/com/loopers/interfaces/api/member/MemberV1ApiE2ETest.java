@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.function.Function;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,29 +22,33 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.loopers.domain.Member;
 import com.loopers.domain.MemberFixture;
 import com.loopers.domain.MemberRegisterRequest;
+import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
+import com.loopers.interfaces.api.member.dto.MemberInfoResponse;
 import com.loopers.interfaces.api.member.dto.MemberRegisterResponse;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MemberV1ApiE2ETest {
-    private static final String ENDPOINT_POST = "/api/members";
-
     private final TestRestTemplate testRestTemplate;
     private final DatabaseCleanUp databaseCleanUp;
     private final ObjectMapper objectMapper;
+    private final MemberJpaRepository memberJpaRepository;
 
     @Autowired
     MemberV1ApiE2ETest(
             TestRestTemplate testRestTemplate,
             ObjectMapper objectMapper,
-            DatabaseCleanUp databaseCleanUp
+            DatabaseCleanUp databaseCleanUp,
+            MemberJpaRepository memberJpaRepository
     ) {
         this.testRestTemplate = testRestTemplate;
         this.objectMapper = objectMapper;
         this.databaseCleanUp = databaseCleanUp;
+        this.memberJpaRepository = memberJpaRepository;
     }
 
     @AfterEach
@@ -52,6 +58,8 @@ class MemberV1ApiE2ETest {
 
     @Nested
     class Post {
+        private static final String ENDPOINT_POST = "/api/members";
+
         @Test
         void register_member() throws JsonProcessingException {
             MemberRegisterRequest memberRegisterRequest = MemberFixture.createMemberRegisterRequest();
@@ -93,6 +101,41 @@ class MemberV1ApiE2ETest {
                     () -> assertTrue(response.getStatusCode().is4xxClientError()),
                     () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST)
             );
+        }
+    }
+    
+    @Nested
+    class Get {
+        private static final Function<Long, String> ENDPOINT_GET = id -> "/api/members/" + id;
+
+        @Test
+        void get_memberInfo() {
+            Member member = memberJpaRepository.save(MemberFixture.createMember());
+
+            String endpointGet = ENDPOINT_GET.apply(member.getId());
+
+            ParameterizedTypeReference<ApiResponse<MemberInfoResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ResponseEntity<ApiResponse<MemberInfoResponse>> response =
+                    testRestTemplate.exchange(endpointGet, HttpMethod.GET, new HttpEntity<>(null), responseType);
+
+            assertAll(
+                    () -> assertThat(response.getBody().data().id()).isEqualTo(1L),
+                    () -> assertThat(response.getBody().data().memberId()).isEqualTo(member.getMemberId().memberId()),
+                    () -> assertThat(response.getBody().data().email()).isEqualTo(member.getEmail().email())
+            );
+        }
+
+        @Test
+        void throwNotFoundException_whenMemberIdIsNotExist() {
+            String endpointGet = ENDPOINT_GET.apply(999L);
+
+            ParameterizedTypeReference<?> responseType = new ParameterizedTypeReference<>() {};
+
+            ResponseEntity<?> response = testRestTemplate.exchange(endpointGet, HttpMethod.GET, new HttpEntity<>(null),
+                                                                   responseType);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(response.getStatusCode().is4xxClientError()).isTrue();
         }
     }
 }
