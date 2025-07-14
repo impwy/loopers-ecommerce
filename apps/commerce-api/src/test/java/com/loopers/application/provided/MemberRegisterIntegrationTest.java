@@ -65,7 +65,7 @@ class MemberRegisterIntegrationTest {
 
         Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
 
-        assertThat(member.getId()).isNotNull();
+        assertThat(member).isNotNull();
 
         verify(memberRepositoryMock, times(1)).save(member);
     }

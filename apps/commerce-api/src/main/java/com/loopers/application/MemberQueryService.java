@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.Member;
+import com.loopers.domain.MemberNotFoundException;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class MemberQueryService implements MemberFinder {
 
     @Override
     public Member find(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+        return memberRepository.findById(memberId)
+                               .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다: " + memberId));
     }
 }
