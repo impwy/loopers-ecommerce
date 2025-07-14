@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.loopers.domain.Member;
-import com.loopers.domain.MemberId;
+import com.loopers.domain.member.Member;
+import com.loopers.domain.member.MemberId;
 
 public interface MemberJpaRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByMemberId(MemberId memberId);

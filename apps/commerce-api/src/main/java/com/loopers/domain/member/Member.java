@@ -1,9 +1,8 @@
-package com.loopers.domain;
+package com.loopers.domain.member;
 
 import static java.util.Objects.requireNonNull;
 
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.NaturalIdCache;
+import com.loopers.domain.BaseEntity;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -19,11 +18,9 @@ import lombok.ToString;
 @Table(name = "member")
 @Getter
 @ToString
-@NaturalIdCache
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
     @Embedded
-    @NaturalId
     private MemberId memberId;
 
     private String passwordHash;

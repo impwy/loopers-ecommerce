@@ -1,6 +1,6 @@
-package com.loopers.domain;
+package com.loopers.domain.member;
 
-import static com.loopers.domain.Gender.MALE;
+import static com.loopers.domain.member.Gender.MALE;
 
 public class MemberFixture {
     public static Member createMember() {

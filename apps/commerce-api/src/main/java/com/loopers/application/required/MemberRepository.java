@@ -2,7 +2,7 @@ package com.loopers.application.required;
 
 import java.util.Optional;
 
-import com.loopers.domain.Member;
+import com.loopers.domain.member.Member;
 
 public interface MemberRepository {
     Member save(Member member);

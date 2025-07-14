@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,12 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loopers.domain.Member;
-import com.loopers.domain.MemberFixture;
-import com.loopers.domain.MemberRegisterRequest;
+import com.loopers.domain.member.Member;
+import com.loopers.domain.member.MemberFixture;
+import com.loopers.domain.member.MemberRegisterRequest;
 import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.member.dto.MemberInfoResponse;
-import com.loopers.interfaces.api.member.dto.MemberRegisterResponse;
+import com.loopers.interfaces.api.member.dto.MemberV1Dto;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -58,8 +58,9 @@ class MemberV1ApiE2ETest {
 
     @Nested
     class Post {
-        private static final String ENDPOINT_POST = "/api/members";
+        private static final String ENDPOINT_POST = "/api/v1/members";
 
+        @DisplayName("회원 가입이 성공할 경우, 생성된 유저 정보를 응답으로 반환한다.")
         @Test
         void register_member() throws JsonProcessingException {
             MemberRegisterRequest memberRegisterRequest = MemberFixture.createMemberRegisterRequest();
@@ -67,8 +68,8 @@ class MemberV1ApiE2ETest {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ParameterizedTypeReference<ApiResponse<MemberRegisterResponse>> responseType = new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberRegisterResponse>> response =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ResponseEntity<ApiResponse<MemberV1Dto.MemberRegisterResponse>> response =
                     testRestTemplate.exchange(ENDPOINT_POST,
                                               HttpMethod.POST,
                                               new HttpEntity<>(memberRegisterJson, headers),
@@ -83,6 +84,7 @@ class MemberV1ApiE2ETest {
             );
         }
 
+        @DisplayName("회원 가입 시에 성별이 없을 경우, 400 Bad Request 응답을 반환한다.")
         @Test
         void throwBadRequest_whenGenderIsNull() throws JsonProcessingException {
             MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest("pwy6817", "secret", null, "pwy6817@loopers.app", "2025-07-13");
@@ -90,8 +92,8 @@ class MemberV1ApiE2ETest {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ParameterizedTypeReference<ApiResponse<MemberRegisterResponse>> responseType = new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberRegisterResponse>> response =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ResponseEntity<ApiResponse<MemberV1Dto.MemberRegisterResponse>> response =
                     testRestTemplate.exchange(ENDPOINT_POST,
                                               HttpMethod.POST,
                                               new HttpEntity<>(memberRegisterJson, headers),
@@ -106,16 +108,17 @@ class MemberV1ApiE2ETest {
     
     @Nested
     class Get {
-        private static final Function<Long, String> ENDPOINT_GET = id -> "/api/members/" + id;
+        private static final Function<Long, String> ENDPOINT_GET = id -> "/api/v1/members/" + id;
 
+        @DisplayName("내 정보 조회에 성공할 경우, 해당하는 유저 정보를 응답으로 반환한다.")
         @Test
         void get_memberInfo() {
             Member member = memberJpaRepository.save(MemberFixture.createMember());
 
             String endpointGet = ENDPOINT_GET.apply(member.getId());
 
-            ParameterizedTypeReference<ApiResponse<MemberInfoResponse>> responseType = new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberInfoResponse>> response =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ResponseEntity<ApiResponse<MemberV1Dto.MemberInfoResponse>> response =
                     testRestTemplate.exchange(endpointGet, HttpMethod.GET, new HttpEntity<>(null), responseType);
 
             assertAll(
@@ -125,6 +128,7 @@ class MemberV1ApiE2ETest {
             );
         }
 
+        @DisplayName("존재하지 않는 ID 로 조회할 경우, 404 Not Found 응답을 반환한다.")
         @Test
         void throwNotFoundException_whenMemberIdIsNotExist() {
             String endpointGet = ENDPOINT_GET.apply(999L);

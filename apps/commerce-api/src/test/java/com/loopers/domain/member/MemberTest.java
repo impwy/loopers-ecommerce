@@ -1,12 +1,15 @@
-package com.loopers.domain;
+package com.loopers.domain.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class MemberTest {
+
+    @DisplayName("회원을 생성한다.")
     @Test
     void createMemberTest() {
         var member = Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", "2025-07-13"));
@@ -21,18 +24,21 @@ class MemberTest {
         );
     }
 
+    @DisplayName("ID 가 영문 및 숫자 10자 이내 형식에 맞지 않으면, User 객체 생성에 실패한다.")
     @Test
     void throwIllegalArgumentException_whenMemberId_notMatch() {
         assertThatThrownBy(() -> Member.register(new MemberRegisterRequest("invalid_ID", "secret", Gender.MALE, "pwy6817@loopers.app", "2025-07-13")))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("이메일이 xx@yy.zz 형식에 맞지 않으면, User 객체 생성에 실패한다.")
     @Test
     void throwIllegalArgumentException_whenEmail_notMatch() {
         assertThatThrownBy(() -> Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, "invalid_email", "2025-07-13")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("생년월일이 yyyy-MM-dd 형식에 맞지 않으면, User 객체 생성에 실패한다.")
     @Test
     void throwIllegalArgumentException_whenBirthday_notMatch() {
         assertThatThrownBy(() -> Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", "invalid_birthday")))

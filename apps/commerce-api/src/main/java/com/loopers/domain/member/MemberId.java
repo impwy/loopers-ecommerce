@@ -1,4 +1,4 @@
-package com.loopers.domain;
+package com.loopers.domain.member;
 
 import java.util.regex.Pattern;
 

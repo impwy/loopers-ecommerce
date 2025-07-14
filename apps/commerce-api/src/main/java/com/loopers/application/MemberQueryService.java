@@ -5,8 +5,8 @@ import org.springframework.validation.annotation.Validated;
 
 import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.required.MemberRepository;
-import com.loopers.domain.Member;
-import com.loopers.domain.MemberNotFoundException;
+import com.loopers.domain.member.Member;
+import com.loopers.domain.member.MemberNotFoundException;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
