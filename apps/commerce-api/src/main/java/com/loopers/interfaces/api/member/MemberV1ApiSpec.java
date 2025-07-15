@@ -1,5 +1,7 @@
 package com.loopers.interfaces.api.member;
 
+import org.springframework.http.HttpHeaders;
+
 import com.loopers.domain.member.MemberRegisterRequest;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto;
@@ -9,5 +11,5 @@ import com.loopers.interfaces.api.member.dto.MemberV1Dto;
  */
 public interface MemberV1ApiSpec {
     ApiResponse<MemberV1Dto.MemberRegisterResponse> register(MemberRegisterRequest registerRequest);
-    ApiResponse<MemberV1Dto.MemberInfoResponse> find(Long memberId);
+    ApiResponse<MemberV1Dto.MemberInfoResponse> find(Long memberId, HttpHeaders headers);
 }

@@ -4,10 +4,13 @@ import static java.util.Objects.requireNonNull;
 
 import com.loopers.domain.BaseEntity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,7 +20,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "member")
 @Getter
-@ToString
+@ToString(callSuper = true, exclude = "point")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
     @Embedded
@@ -34,6 +37,9 @@ public class Member extends BaseEntity {
     @Embedded
     private Birthday birthday;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Point point;
+
     public static Member register(MemberRegisterRequest registerRequest) {
         Member member = new Member();
         member.memberId = new MemberId(registerRequest.memberId());
@@ -41,6 +47,7 @@ public class Member extends BaseEntity {
         member.gender = requireNonNull(registerRequest.gender());
         member.email = new Email(registerRequest.email());
         member.birthday = new Birthday(registerRequest.birthDay());
+        member.point = Point.create();
 
         return member;
     }
