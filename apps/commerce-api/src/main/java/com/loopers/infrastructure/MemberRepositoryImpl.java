@@ -2,6 +2,8 @@ package com.loopers.infrastructure;
 
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.loopers.application.required.MemberRepository;
@@ -28,7 +30,8 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findById(Long memberId) {
+    @Query("SELECT m FROM Member m LEFT JOIN FETCH m.point WHERE m.id = :memberId")
+    public Optional<Member> findById(@Param("memberId") Long memberId) {
         return memberJpaRepository.findById(memberId);
     }
 }

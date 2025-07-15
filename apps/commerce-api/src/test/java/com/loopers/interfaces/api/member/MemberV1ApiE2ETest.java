@@ -68,7 +68,8 @@ class MemberV1ApiE2ETest {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType =
+                    new ParameterizedTypeReference<>() {};
             ResponseEntity<ApiResponse<MemberV1Dto.MemberRegisterResponse>> response =
                     testRestTemplate.exchange(ENDPOINT_POST,
                                               HttpMethod.POST,
@@ -87,12 +88,14 @@ class MemberV1ApiE2ETest {
         @DisplayName("회원 가입 시에 성별이 없을 경우, 400 Bad Request 응답을 반환한다.")
         @Test
         void throwBadRequest_whenGenderIsNull() throws JsonProcessingException {
-            MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest("pwy6817", "secret", null, "pwy6817@loopers.app", "2025-07-13");
+            MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest("pwy6817", "secret", null,
+                                                                                    "pwy6817@loopers.app", "2025-07-13");
             String memberRegisterJson = objectMapper.writeValueAsString(memberRegisterRequest);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType =
+                    new ParameterizedTypeReference<>() {};
             ResponseEntity<ApiResponse<MemberV1Dto.MemberRegisterResponse>> response =
                     testRestTemplate.exchange(ENDPOINT_POST,
                                               HttpMethod.POST,
@@ -105,7 +108,7 @@ class MemberV1ApiE2ETest {
             );
         }
     }
-    
+
     @Nested
     class Get {
         private static final Function<Long, String> ENDPOINT_GET = id -> "/api/v1/members/" + id;
@@ -113,11 +116,12 @@ class MemberV1ApiE2ETest {
         @DisplayName("내 정보 조회에 성공할 경우, 해당하는 유저 정보를 응답으로 반환한다.")
         @Test
         void get_memberInfo() {
-            Member member = memberJpaRepository.save(MemberFixture.createMember());
+            Member member = memberJpaRepository.saveAndFlush(MemberFixture.createMember());
 
             String endpointGet = ENDPOINT_GET.apply(member.getId());
 
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType =
+                    new ParameterizedTypeReference<>() {};
             ResponseEntity<ApiResponse<MemberV1Dto.MemberInfoResponse>> response =
                     testRestTemplate.exchange(endpointGet, HttpMethod.GET, new HttpEntity<>(null), responseType);
 
@@ -140,6 +144,23 @@ class MemberV1ApiE2ETest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
             assertThat(response.getStatusCode().is4xxClientError()).isTrue();
+        }
+
+        @DisplayName("포인트 조회에 성공할 경우, 보유 포인트를 응답으로 반환한다.")
+        @Test
+        void returnPoint_whenGetPointSuccess() {
+            Member member = memberJpaRepository.saveAndFlush(MemberFixture.createMember());
+            String endpointGet = ENDPOINT_GET.apply(member.getId());
+
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType =
+                    new ParameterizedTypeReference<>() {};
+            ResponseEntity<ApiResponse<MemberV1Dto.MemberInfoResponse>> response =
+                    testRestTemplate.exchange(endpointGet, HttpMethod.GET, new HttpEntity<>(null), responseType);
+
+            assertAll(
+                    () -> assertThat(response.getBody().data().id()).isEqualTo(1L),
+                    () -> assertThat(response.getBody().data().amount()).isEqualTo("0")
+            );
         }
     }
 }
