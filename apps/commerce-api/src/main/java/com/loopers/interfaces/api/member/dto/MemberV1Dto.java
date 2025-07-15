@@ -5,10 +5,10 @@ import com.loopers.domain.member.Member;
 
 public class MemberV1Dto {
     public record MemberInfoResponse(Long id, String memberId, String email, Gender gender, String birthday, String amount) {
-        // TODO : Point 객체 반환을 완료해야 한다.
         public static MemberInfoResponse of(Member member) {
             return new MemberInfoResponse(member.getId(), member.getMemberId().memberId(), member.getEmail().email(),
-                                          member.getGender(), member.getBirthday().birthday(), "0");
+                                          member.getGender(), member.getBirthday().birthday(),
+                                          member.getPoint().getValue().toString());
         }
     }
 
