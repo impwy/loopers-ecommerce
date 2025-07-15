@@ -1,9 +1,11 @@
 package com.loopers.interfaces.api.member;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +16,8 @@ import com.loopers.domain.member.MemberRegisterRequest;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto.MemberInfoResponse;
+import com.loopers.support.error.CoreException;
+import com.loopers.support.error.ErrorType;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +40,10 @@ public class MemberV1ApiController implements MemberV1ApiSpec {
 
     @GetMapping("{memberId}")
     @Override
-    public ApiResponse<MemberV1Dto.MemberInfoResponse> find(@PathVariable Long memberId) {
-
+    public ApiResponse<MemberV1Dto.MemberInfoResponse> find(@PathVariable Long memberId, @RequestHeader HttpHeaders httpHeaders) {
+        if (!httpHeaders.containsKey("X-USER-ID")) {
+            throw new CoreException(ErrorType.BAD_REQUEST);
+        }
         return ApiResponse.success(MemberInfoResponse.of(memberFinder.find(memberId)));
     }
 }

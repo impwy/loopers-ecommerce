@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -123,7 +124,10 @@ class MemberV1ApiE2ETest {
             ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
             ResponseEntity<ApiResponse<MemberV1Dto.MemberInfoResponse>> response =
-                    testRestTemplate.exchange(endpointGet, HttpMethod.GET, new HttpEntity<>(null), responseType);
+                    testRestTemplate.exchange(RequestEntity.get(endpointGet)
+                                                           .header("X-USER-ID", member.getMemberId().toString())
+                                                           .build(),
+                                              responseType);
 
             assertAll(
                     () -> assertThat(response.getBody().data().id()).isEqualTo(1L),
@@ -138,9 +142,11 @@ class MemberV1ApiE2ETest {
             String endpointGet = ENDPOINT_GET.apply(999L);
 
             ParameterizedTypeReference<?> responseType = new ParameterizedTypeReference<>() {};
-
-            ResponseEntity<?> response = testRestTemplate.exchange(endpointGet, HttpMethod.GET, new HttpEntity<>(null),
-                                                                   responseType);
+            ResponseEntity<?> response =
+                    testRestTemplate.exchange(RequestEntity.get(endpointGet)
+                                                           .header("X-USER-ID", "")
+                                                           .build(),
+                                              responseType);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
             assertThat(response.getStatusCode().is4xxClientError()).isTrue();
@@ -155,11 +161,27 @@ class MemberV1ApiE2ETest {
             ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
             ResponseEntity<ApiResponse<MemberV1Dto.MemberInfoResponse>> response =
-                    testRestTemplate.exchange(endpointGet, HttpMethod.GET, new HttpEntity<>(null), responseType);
+                    testRestTemplate.exchange(RequestEntity.get(endpointGet)
+                                                           .header("X-USER-ID", member.getMemberId().toString())
+                                                           .build(),
+                                              responseType);
 
             assertAll(
                     () -> assertThat(response.getBody().data().id()).isEqualTo(1L),
                     () -> assertThat(response.getBody().data().amount()).isEqualTo("0")
+            );
+        }
+
+        @DisplayName("X-USER-ID 헤더가 없을 경우, 400 Bad Request 응답을 반환한다.")
+        @Test
+        void throwBadRequestWhenX_USER_IDHeaderNotExist() {
+            String endPointGet = ENDPOINT_GET.apply(1L);
+            ParameterizedTypeReference<?> responseType = new ParameterizedTypeReference<>() {};
+            ResponseEntity<?> response =
+                    testRestTemplate.exchange(endPointGet, HttpMethod.GET, new HttpEntity<>(null), responseType);
+
+            assertAll(
+                    () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST)
             );
         }
     }
