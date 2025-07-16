@@ -1,8 +1,10 @@
 package com.loopers.domain.member;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 import com.loopers.domain.BaseEntity;
+import com.loopers.support.error.CoreException;
+import com.loopers.support.error.ErrorType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -17,11 +19,18 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Point extends BaseEntity {
-    private BigInteger value;
+    private BigDecimal amount;
 
-    public static Point create() {
+    static Point create() {
         Point point = new Point();
-        point.value = BigInteger.ZERO;
+        point.amount = BigDecimal.ZERO;
         return point;
+    }
+
+    public BigDecimal charge(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new CoreException(ErrorType.BAD_REQUEST, "잘못된 충전 포인트입니다 : " + amount);
+        }
+        return this.amount.add(amount);
     }
 }

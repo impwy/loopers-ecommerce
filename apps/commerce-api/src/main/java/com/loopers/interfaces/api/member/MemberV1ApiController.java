@@ -16,8 +16,6 @@ import com.loopers.domain.member.MemberRegisterRequest;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto.MemberInfoResponse;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,9 +39,6 @@ public class MemberV1ApiController implements MemberV1ApiSpec {
     @GetMapping("{memberId}")
     @Override
     public ApiResponse<MemberV1Dto.MemberInfoResponse> find(@PathVariable Long memberId, @RequestHeader HttpHeaders httpHeaders) {
-        if (!httpHeaders.containsKey("X-USER-ID")) {
-            throw new CoreException(ErrorType.BAD_REQUEST);
-        }
         return ApiResponse.success(MemberInfoResponse.of(memberFinder.find(memberId)));
     }
 }

@@ -43,7 +43,7 @@ public class PointFinderIntegrationTest {
 
         Member result = memberFinder.find(member.getId());
 
-        assertThat(result.getPoint().getValue()).isNotNull();
+        assertThat(result.getPoint().getAmount()).isNotNull();
     }
 
     @Transactional

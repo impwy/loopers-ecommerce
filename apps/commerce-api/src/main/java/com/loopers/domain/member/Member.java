@@ -2,6 +2,8 @@ package com.loopers.domain.member;
 
 import static java.util.Objects.requireNonNull;
 
+import java.math.BigDecimal;
+
 import com.loopers.domain.BaseEntity;
 
 import jakarta.persistence.CascadeType;
@@ -50,6 +52,10 @@ public class Member extends BaseEntity {
         member.point = Point.create();
 
         return member;
+    }
+
+    public BigDecimal charge(BigDecimal amount) {
+        return this.point.charge(amount);
     }
 }
 
