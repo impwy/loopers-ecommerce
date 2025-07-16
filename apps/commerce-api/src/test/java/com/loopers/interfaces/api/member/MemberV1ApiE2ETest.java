@@ -162,13 +162,13 @@ class MemberV1ApiE2ETest {
                     new ParameterizedTypeReference<>() {};
             ResponseEntity<ApiResponse<MemberV1Dto.MemberInfoResponse>> response =
                     testRestTemplate.exchange(RequestEntity.get(endpointGet)
-                                                           .header("X-USER-ID", member.getMemberId().toString())
+                                                           .header("X-USER-ID", String.valueOf(member.getMemberId()))
                                                            .build(),
                                               responseType);
 
             assertAll(
                     () -> assertThat(response.getBody().data().id()).isEqualTo(1L),
-                    () -> assertThat(response.getBody().data().amount()).isEqualTo("0")
+                    () -> assertThat(response.getBody().data().amount()).isEqualTo("0.00")
             );
         }
 

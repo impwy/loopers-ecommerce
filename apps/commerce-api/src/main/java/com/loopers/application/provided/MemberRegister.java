@@ -1,5 +1,7 @@
 package com.loopers.application.provided;
 
+import java.math.BigDecimal;
+
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberRegisterRequest;
 
@@ -10,4 +12,6 @@ import jakarta.validation.Valid;
  */
 public interface MemberRegister {
     Member register(@Valid MemberRegisterRequest registerRequest);
+
+    BigDecimal chargePoint(Long memberId, String amount);
 }

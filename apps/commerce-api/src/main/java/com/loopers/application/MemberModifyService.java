@@ -1,8 +1,11 @@
 package com.loopers.application;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.provided.MemberRegister;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.DuplicateMemberIdException;
@@ -18,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberModifyService implements MemberRegister {
     private final MemberRepository memberRepository;
+    private final MemberFinder memberFinder;
 
     @Override
     public Member register(MemberRegisterRequest registerRequest) {
@@ -27,6 +31,14 @@ public class MemberModifyService implements MemberRegister {
         memberRepository.save(member);
 
         return member;
+    }
+
+    @Override
+    public BigDecimal chargePoint(Long memberId, String amount) {
+        Member member = memberFinder.find(memberId);
+        BigDecimal chargedPoint = member.charge(new BigDecimal(amount));
+        memberRepository.save(member);
+        return chargedPoint;
     }
 
     private void checkDuplicateId(MemberRegisterRequest registerRequest) {

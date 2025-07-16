@@ -1,6 +1,6 @@
 package com.loopers.domain.member;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 import com.loopers.domain.BaseEntity;
 
@@ -17,11 +17,15 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Point extends BaseEntity {
-    private BigInteger value;
+    private BigDecimal amount;
 
-    public static Point create() {
+    static Point create() {
         Point point = new Point();
-        point.value = BigInteger.ZERO;
+        point.amount = BigDecimal.ZERO;
         return point;
+    }
+
+    public BigDecimal charge(BigDecimal amount) {
+        return this.amount.add(amount);
     }
 }

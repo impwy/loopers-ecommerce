@@ -64,8 +64,9 @@ class MemberRegisterIntegrationTest {
     @Test
     void registerTestWithMockito() {
         MemberRepository memberRepositoryMock = Mockito.mock(MemberRepository.class);
+        MemberFinder memberFinderMock = Mockito.mock(MemberFinder.class);
 
-        MemberRegister memberRegister = new MemberModifyService(memberRepositoryMock);
+        MemberRegister memberRegister = new MemberModifyService(memberRepositoryMock, memberFinderMock);
 
         Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
 

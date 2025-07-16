@@ -1,14 +1,15 @@
 package com.loopers.interfaces.api.member.dto;
 
+import java.math.BigDecimal;
+
 import com.loopers.domain.member.Gender;
 import com.loopers.domain.member.Member;
 
 public class MemberV1Dto {
-    public record MemberInfoResponse(Long id, String memberId, String email, Gender gender, String birthday, String amount) {
+    public record MemberInfoResponse(Long id, String memberId, String email, Gender gender, String birthday, BigDecimal amount) {
         public static MemberInfoResponse of(Member member) {
             return new MemberInfoResponse(member.getId(), member.getMemberId().memberId(), member.getEmail().email(),
-                                          member.getGender(), member.getBirthday().birthday(),
-                                          member.getPoint().getValue().toString());
+                                          member.getGender(), member.getBirthday().birthday(), member.getPoint().getAmount());
         }
     }
 

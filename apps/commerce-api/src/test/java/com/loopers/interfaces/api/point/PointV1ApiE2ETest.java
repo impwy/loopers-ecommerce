@@ -3,6 +3,7 @@ package com.loopers.interfaces.api.point;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.math.BigDecimal;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterEach;
@@ -16,17 +17,16 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.member.dto.PointV1Dto;
-import com.loopers.interfaces.api.member.dto.PointV1Dto.Request.PointChargeRequest;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -34,15 +34,12 @@ public class PointV1ApiE2ETest {
     private final TestRestTemplate restTemplate;
     private final DatabaseCleanUp databaseCleanUp;
     private final MemberJpaRepository memberJpaRepository;
-    private final ObjectMapper objectMapper;
 
     @Autowired
-    public PointV1ApiE2ETest(TestRestTemplate restTemplate, DatabaseCleanUp databaseCleanUp, MemberJpaRepository memberJpaRepository,
-                             ObjectMapper objectMapper) {
+    public PointV1ApiE2ETest(TestRestTemplate restTemplate, DatabaseCleanUp databaseCleanUp, MemberJpaRepository memberJpaRepository) {
         this.restTemplate = restTemplate;
         this.databaseCleanUp = databaseCleanUp;
         this.memberJpaRepository = memberJpaRepository;
-        this.objectMapper = objectMapper;
     }
 
     @AfterEach
@@ -59,23 +56,41 @@ public class PointV1ApiE2ETest {
         @Test
         void returnAmountWhenUserChargePoint() throws JsonProcessingException {
             Member member = memberJpaRepository.save(MemberFixture.createMember());
-            String amount = "1000";
+            String amount = "1000.00";
             String endpointPost = ENDPOINT.apply(member.getId());
+            BigDecimal expectedAmount = member.getPoint().getAmount().add(new BigDecimal(amount));
 
-            PointChargeRequest pointChargeRequest = PointChargeRequest.of(member.getId(), amount);
-            String request = objectMapper.writeValueAsString(pointChargeRequest);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("X-USER-ID", member.getMemberId().memberId());
 
             ParameterizedTypeReference<ApiResponse<PointV1Dto.Response.PointAmountResponse>> responseType = new ParameterizedTypeReference<>() {};
 
             ResponseEntity<ApiResponse<PointV1Dto.Response.PointAmountResponse>> response =
-                    restTemplate.exchange(endpointPost, HttpMethod.POST, new HttpEntity<>(request, headers), responseType);
+                    restTemplate.exchange(endpointPost, HttpMethod.POST, new HttpEntity<>(amount, headers), responseType);
 
             assertAll(
-                    () -> assertThat(response.getBody().data().chargedAmount()).isEqualTo(amount)
+                    () -> assertThat(response.getBody().data().chargedAmount()).isEqualTo(expectedAmount)
+            );
+        }
+
+        @DisplayName("존재하지 않는 유저로 요청할 경우, 404 Not Found 응답을 반환한다.")
+        @Test
+        void throwNotFoundExceptionWhenUserNotExist() {
+            ParameterizedTypeReference<?> responseType = new ParameterizedTypeReference<>() {};
+            String endPoint = ENDPOINT.apply(999L);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-USER-ID", "");
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            ResponseEntity<?> response =
+                    restTemplate.exchange(endPoint, HttpMethod.POST, new HttpEntity<>("1000", headers), responseType);
+
+            System.out.println(response);
+
+            assertAll(
+                    () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND)
             );
         }
     }
-
 }

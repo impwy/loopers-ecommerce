@@ -1,5 +1,7 @@
 package com.loopers.interfaces.api.member.dto;
 
+import java.math.BigDecimal;
+
 public class PointV1Dto {
 
     public class Request {
@@ -11,9 +13,9 @@ public class PointV1Dto {
     }
 
     public class Response {
-        public record PointAmountResponse(String chargedAmount) {
-            public static PointAmountResponse of(Long chargedAmount) {
-                return new PointAmountResponse(String.valueOf(chargedAmount));
+        public record PointAmountResponse(BigDecimal chargedAmount) {
+            public static PointAmountResponse of(BigDecimal chargedAmount) {
+                return new PointAmountResponse(chargedAmount);
             }
         }
     }
