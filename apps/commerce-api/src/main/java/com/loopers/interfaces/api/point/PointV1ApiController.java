@@ -23,7 +23,7 @@ public class PointV1ApiController {
 
     @PostMapping("/charge/{memberId}")
     public ApiResponse<PointAmountResponse> charge(@PathVariable("memberId") Long memberId,
-                                                   @RequestBody String amount) {
+                                                   @RequestBody BigDecimal amount) {
         BigDecimal chargedPoint = memberRegister.chargePoint(memberId, amount);
         return ApiResponse.success(PointV1Dto.Response.PointAmountResponse.of(chargedPoint));
     }

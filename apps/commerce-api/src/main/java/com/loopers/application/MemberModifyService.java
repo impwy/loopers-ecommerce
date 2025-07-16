@@ -34,9 +34,9 @@ public class MemberModifyService implements MemberRegister {
     }
 
     @Override
-    public BigDecimal chargePoint(Long memberId, String amount) {
+    public BigDecimal chargePoint(Long memberId, BigDecimal amount) {
         Member member = memberFinder.find(memberId);
-        BigDecimal chargedPoint = member.charge(new BigDecimal(amount));
+        BigDecimal chargedPoint = member.charge(amount);
         memberRepository.save(member);
         return chargedPoint;
     }

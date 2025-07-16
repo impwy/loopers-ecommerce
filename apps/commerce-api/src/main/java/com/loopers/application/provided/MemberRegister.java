@@ -13,5 +13,5 @@ import jakarta.validation.Valid;
 public interface MemberRegister {
     Member register(@Valid MemberRegisterRequest registerRequest);
 
-    BigDecimal chargePoint(Long memberId, String amount);
+    BigDecimal chargePoint(Long memberId, BigDecimal amount);
 }
