@@ -3,11 +3,14 @@ package com.loopers.interfaces.api;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import com.loopers.domain.member.MemberNotFoundException;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,6 +19,7 @@ import org.springframework.web.server.ServerWebInputException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -105,6 +109,28 @@ public class ApiControllerAdvice {
     @ExceptionHandler
     public ResponseEntity<ApiResponse<?>> handleNotFound(NoResourceFoundException e) {
         return failureResponse(ErrorType.NOT_FOUND, null);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ApiResponse<?>> handleNotFound(MemberNotFoundException e) {
+        return failureResponse(ErrorType.NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ApiResponse<?>> handleBadRequest(MethodArgumentNotValidException e) {
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+
+        String details = fieldErrors.stream()
+                                    .map(error -> String.format(
+                                            "필드 '%s'에 잘못된 값 '%s'이(가) 입력되었습니다.",
+                                            error.getField(),
+                                            error.getRejectedValue()
+                                    ))
+                                    .collect(Collectors.joining("; "));
+
+        String message = "요청 값 오류: " + details;
+
+        return failureResponse(ErrorType.BAD_REQUEST, message);
     }
 
     @ExceptionHandler
