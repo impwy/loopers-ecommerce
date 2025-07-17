@@ -10,7 +10,8 @@ import com.loopers.application.provided.MemberRegister;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberInfo;
+import com.loopers.domain.member.MemberCreate;
+import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,10 @@ public class MemberModifyService implements MemberRegister {
     private final MemberFinder memberFinder;
 
     @Override
-    public Member register(MemberInfo registerRequest) {
+    public Member register(MemberRegisterRequest registerRequest) {
         checkDuplicateId(registerRequest);
-        Member member = Member.register(registerRequest);
+        MemberCreate memberCreate = registerRequest.toMemberCreate();
+        Member member = Member.register(memberCreate);
 
         memberRepository.save(member);
 
@@ -41,7 +43,7 @@ public class MemberModifyService implements MemberRegister {
         return chargedPoint;
     }
 
-    private void checkDuplicateId(MemberInfo registerRequest) {
+    private void checkDuplicateId(MemberRegisterRequest registerRequest) {
         if (memberRepository.findByMemberId(registerRequest.memberId()).isPresent()) {
             throw new DuplicateMemberIdException("이미 사용중인 ID 입니다: " + registerRequest.memberId());
         }

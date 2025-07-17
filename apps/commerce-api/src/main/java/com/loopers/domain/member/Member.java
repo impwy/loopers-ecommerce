@@ -42,13 +42,13 @@ public class Member extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Point point;
 
-    public static Member register(MemberInfo registerRequest) {
+    public static Member register(MemberCreate memberCreate) {
         Member member = new Member();
-        member.memberId = new MemberId(registerRequest.memberId());
-        member.passwordHash = requireNonNull(registerRequest.password());
-        member.gender = requireNonNull(registerRequest.gender());
-        member.email = new Email(registerRequest.email());
-        member.birthday = new Birthday(registerRequest.birthDay());
+        member.memberId = new MemberId(memberCreate.memberId());
+        member.passwordHash = requireNonNull(memberCreate.password());
+        member.gender = requireNonNull(memberCreate.gender());
+        member.email = new Email(memberCreate.email());
+        member.birthday = new Birthday(memberCreate.birthDay());
         member.point = Point.create();
 
         return member;
