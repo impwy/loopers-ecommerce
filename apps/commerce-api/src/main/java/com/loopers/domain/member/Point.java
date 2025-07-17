@@ -28,7 +28,7 @@ public class Point extends BaseEntity {
     }
 
     public BigDecimal charge(BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+        if (amount.intValue() <= 0) {
             throw new CoreException(ErrorType.BAD_REQUEST, "잘못된 충전 포인트입니다 : " + amount);
         }
         return this.amount.add(amount);
