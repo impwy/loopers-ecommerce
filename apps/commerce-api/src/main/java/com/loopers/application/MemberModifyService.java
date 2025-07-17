@@ -11,7 +11,7 @@ import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberCreate;
-import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
+import com.loopers.interfaces.api.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

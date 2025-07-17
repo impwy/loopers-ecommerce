@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.loopers.application.MemberFacade;
 import com.loopers.domain.member.Member;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
-import com.loopers.interfaces.api.member.dto.MemberV1Dto;
-import com.loopers.interfaces.api.member.dto.MemberV1Dto.MemberInfoResponse;
+import com.loopers.interfaces.api.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
+import com.loopers.interfaces.api.member.dto.MemberV1Dto.Response;
+import com.loopers.interfaces.api.member.dto.MemberV1Dto.Response.MemberInfoResponse;
+import com.loopers.interfaces.api.member.dto.MemberV1Dto.Response.MemberRegisterResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,16 +28,16 @@ public class MemberV1ApiController implements MemberV1ApiSpec {
 
     @PostMapping
     @Override
-    public ApiResponse<MemberV1Dto.MemberRegisterResponse> register(@RequestBody @Valid MemberRegisterRequest registerRequest) {
+    public ApiResponse<MemberRegisterResponse> register(@RequestBody @Valid MemberRegisterRequest registerRequest) {
         Member member = memberFacade.register(registerRequest);
 
-        MemberV1Dto.MemberRegisterResponse memberRegisterResponse = MemberV1Dto.MemberRegisterResponse.of(member);
+        MemberRegisterResponse memberRegisterResponse = MemberRegisterResponse.of(member);
         return ApiResponse.success(memberRegisterResponse);
     }
 
     @GetMapping("/me/{memberId}")
     @Override
-    public ApiResponse<MemberV1Dto.MemberInfoResponse> find(@PathVariable Long memberId, @RequestHeader HttpHeaders httpHeaders) {
-        return ApiResponse.success(MemberInfoResponse.of(memberFacade.find(memberId)));
+    public ApiResponse<MemberInfoResponse> find(@PathVariable Long memberId, @RequestHeader HttpHeaders httpHeaders) {
+        return ApiResponse.success(Response.MemberInfoResponse.of(memberFacade.find(memberId)));
     }
 }

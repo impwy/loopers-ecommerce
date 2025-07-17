@@ -28,8 +28,8 @@ import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto;
+import com.loopers.interfaces.api.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -70,9 +70,9 @@ class MemberV1ApiE2ETest {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberRegisterResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberV1Dto.MemberRegisterResponse>> response =
+            ResponseEntity<ApiResponse<MemberV1Dto.Response.MemberRegisterResponse>> response =
                     testRestTemplate.exchange(ENDPOINT_POST,
                                               HttpMethod.POST,
                                               new HttpEntity<>(memberRegisterJson, headers),
@@ -97,9 +97,9 @@ class MemberV1ApiE2ETest {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberRegisterResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberV1Dto.MemberRegisterResponse>> response =
+            ResponseEntity<ApiResponse<MemberV1Dto.Response.MemberRegisterResponse>> response =
                     testRestTemplate.exchange(ENDPOINT_POST,
                                               HttpMethod.POST,
                                               new HttpEntity<>(memberRegisterJson, headers),
@@ -123,9 +123,9 @@ class MemberV1ApiE2ETest {
 
             String endpointGet = ENDPOINT_GET.apply(member.getId());
 
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberInfoResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberV1Dto.MemberInfoResponse>> response =
+            ResponseEntity<ApiResponse<MemberV1Dto.Response.MemberInfoResponse>> response =
                     testRestTemplate.exchange(RequestEntity.get(endpointGet)
                                                            .header("X-USER-ID", member.getMemberId().toString())
                                                            .build(),
@@ -160,9 +160,9 @@ class MemberV1ApiE2ETest {
             Member member = memberJpaRepository.saveAndFlush(MemberFixture.createMember());
             String endpointGet = ENDPOINT_GET.apply(member.getId());
 
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberInfoResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberV1Dto.MemberInfoResponse>> response =
+            ResponseEntity<ApiResponse<MemberV1Dto.Response.MemberInfoResponse>> response =
                     testRestTemplate.exchange(RequestEntity.get(endpointGet)
                                                            .header("X-USER-ID", String.valueOf(member.getMemberId()))
                                                            .build(),
