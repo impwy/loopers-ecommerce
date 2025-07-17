@@ -42,7 +42,7 @@ public class Member extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Point point;
 
-    public static Member register(MemberRegisterRequest registerRequest) {
+    public static Member register(MemberInfo registerRequest) {
         Member member = new Member();
         member.memberId = new MemberId(registerRequest.memberId());
         member.passwordHash = requireNonNull(registerRequest.password());

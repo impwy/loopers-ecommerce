@@ -26,7 +26,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.domain.member.MemberRegisterRequest;
+import com.loopers.domain.member.MemberInfo;
 import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto;
@@ -64,8 +64,8 @@ class MemberV1ApiE2ETest {
         @DisplayName("회원 가입이 성공할 경우, 생성된 유저 정보를 응답으로 반환한다.")
         @Test
         void register_member() throws JsonProcessingException {
-            MemberRegisterRequest memberRegisterRequest = MemberFixture.createMemberRegisterRequest();
-            String memberRegisterJson = objectMapper.writeValueAsString(memberRegisterRequest);
+            MemberInfo memberInfo = MemberFixture.createMemberRegisterRequest();
+            String memberRegisterJson = objectMapper.writeValueAsString(memberInfo);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -80,19 +80,19 @@ class MemberV1ApiE2ETest {
 
             assertAll(
                     () -> assertTrue(response.getStatusCode().is2xxSuccessful()),
-                    () -> assertThat(response.getBody().data().memberId()).isEqualTo(memberRegisterRequest.memberId()),
-                    () -> assertThat(response.getBody().data().emailAddress()).isEqualTo(memberRegisterRequest.email()),
-                    () -> assertThat(response.getBody().data().gender()).isEqualTo(memberRegisterRequest.gender().name()),
-                    () -> assertThat(response.getBody().data().birthday()).isEqualTo(memberRegisterRequest.birthDay())
+                    () -> assertThat(response.getBody().data().memberId()).isEqualTo(memberInfo.memberId()),
+                    () -> assertThat(response.getBody().data().emailAddress()).isEqualTo(memberInfo.email()),
+                    () -> assertThat(response.getBody().data().gender()).isEqualTo(memberInfo.gender().name()),
+                    () -> assertThat(response.getBody().data().birthday()).isEqualTo(memberInfo.birthDay())
             );
         }
 
         @DisplayName("회원 가입 시에 성별이 없을 경우, 400 Bad Request 응답을 반환한다.")
         @Test
         void throwBadRequest_whenGenderIsNull() throws JsonProcessingException {
-            MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest("pwy6817", "secret", null,
-                                                                                    "pwy6817@loopers.app", "2025-07-13");
-            String memberRegisterJson = objectMapper.writeValueAsString(memberRegisterRequest);
+            MemberInfo memberInfo = new MemberInfo("pwy6817", "secret", null,
+                                                   "pwy6817@loopers.app", "2025-07-13");
+            String memberRegisterJson = objectMapper.writeValueAsString(memberInfo);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

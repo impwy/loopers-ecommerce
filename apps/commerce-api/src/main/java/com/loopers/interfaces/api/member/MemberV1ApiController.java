@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.provided.MemberRegister;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberRegisterRequest;
+import com.loopers.domain.member.MemberInfo;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto.MemberInfoResponse;
@@ -29,7 +29,7 @@ public class MemberV1ApiController implements MemberV1ApiSpec {
 
     @PostMapping
     @Override
-    public ApiResponse<MemberV1Dto.MemberRegisterResponse> register(@RequestBody @Valid MemberRegisterRequest registerRequest) {
+    public ApiResponse<MemberV1Dto.MemberRegisterResponse> register(@RequestBody @Valid MemberInfo registerRequest) {
         Member member = memberRegister.register(registerRequest);
 
         MemberV1Dto.MemberRegisterResponse memberRegisterResponse = MemberV1Dto.MemberRegisterResponse.of(member);

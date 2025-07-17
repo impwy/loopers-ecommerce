@@ -19,7 +19,7 @@ import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Gender;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.domain.member.MemberRegisterRequest;
+import com.loopers.domain.member.MemberInfo;
 import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.utils.DatabaseCleanUp;
 
@@ -54,7 +54,7 @@ class MemberRegisterIntegrationTest {
     @DisplayName("회원 가입시 User 저장이 수행된다. ( spy 검증 )")
     @Test
     void registerWithSpy() {
-        Member member = Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", "2025-07-13"));
+        Member member = Member.register(new MemberInfo("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", "2025-07-13"));
         memberJpaRepository.save(member);
 
         verify(memberJpaRepository, times(1)).save(member);
