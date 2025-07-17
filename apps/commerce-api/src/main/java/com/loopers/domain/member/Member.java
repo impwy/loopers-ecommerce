@@ -42,16 +42,24 @@ public class Member extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Point point;
 
-    public static Member create(MemberCreate memberCreate) {
-        Member member = new Member();
-        member.memberId = new MemberId(memberCreate.memberId());
-        member.passwordHash = requireNonNull(memberCreate.password());
-        member.gender = requireNonNull(memberCreate.gender());
-        member.email = new Email(memberCreate.email());
-        member.birthday = memberCreate.birthday();
-        member.point = Point.create();
+    private Member(MemberId memberId, String passwordHash, Gender gender, Email email, LocalDate birthday, Point point) {
+        this.memberId = memberId;
+        this.passwordHash = passwordHash;
+        this.gender = gender;
+        this.email = email;
+        this.birthday = birthday;
+        this.point = point;
+    }
 
-        return member;
+    public static Member create(MemberCreate memberCreate) {
+        return new Member(
+                new MemberId(memberCreate.memberId()),
+                requireNonNull(memberCreate.password()),
+                requireNonNull(memberCreate.gender()),
+                new Email(memberCreate.email()),
+                memberCreate.birthday(),
+                Point.create()
+        );
     }
 
     public BigDecimal charge(BigDecimal amount) {

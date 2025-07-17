@@ -21,10 +21,14 @@ import lombok.ToString;
 public class Point extends BaseEntity {
     private BigDecimal amount;
 
+    private Point(BigDecimal amount) {
+        this.amount = amount;
+    }
+
     static Point create() {
-        Point point = new Point();
-        point.amount = BigDecimal.ZERO;
-        return point;
+        return new Point(
+                BigDecimal.ZERO
+        );
     }
 
     public BigDecimal charge(BigDecimal amount) {
