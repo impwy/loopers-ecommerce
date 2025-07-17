@@ -66,6 +66,7 @@ class MemberV1ApiE2ETest {
         void register_member() throws JsonProcessingException {
             MemberRegisterRequest memberRegisterRequest = MemberFixture.createMemberRegisterRequest();
             String memberRegisterJson = objectMapper.writeValueAsString(memberRegisterRequest);
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -92,6 +93,7 @@ class MemberV1ApiE2ETest {
             MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest("pwy6817", "secret", null,
                                                                                     "pwy6817@loopers.app", "2025-07-13");
             String memberRegisterJson = objectMapper.writeValueAsString(memberRegisterRequest);
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -176,6 +178,7 @@ class MemberV1ApiE2ETest {
         @Test
         void throwBadRequestWhenX_USER_IDHeaderNotExist() {
             String endPointGet = ENDPOINT_GET.apply(1L);
+
             ParameterizedTypeReference<?> responseType = new ParameterizedTypeReference<>() {};
             ResponseEntity<?> response =
                     testRestTemplate.exchange(endPointGet, HttpMethod.GET, new HttpEntity<>(null), responseType);
