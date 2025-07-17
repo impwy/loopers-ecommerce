@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class MemberTest {
 
@@ -25,23 +27,26 @@ class MemberTest {
     }
 
     @DisplayName("ID 가 영문 및 숫자 10자 이내 형식에 맞지 않으면, User 객체 생성에 실패한다.")
-    @Test
-    void throwIllegalArgumentException_whenMemberId_notMatch() {
-        assertThatThrownBy(() -> Member.register(new MemberRegisterRequest("invalid_ID", "secret", Gender.MALE, "pwy6817@loopers.app", "2025-07-13")))
+    @ParameterizedTest
+    @ValueSource(strings = { "invalid_id", "abcdefghij", "abc12345678", "0123456789" })
+    void throwIllegalArgumentException_whenMemberId_notMatch(String memberId) {
+        assertThatThrownBy(() -> Member.register(new MemberRegisterRequest(memberId, "secret", Gender.MALE, "pwy6817@loopers.app", "2025-07-13")))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("이메일이 xx@yy.zz 형식에 맞지 않으면, User 객체 생성에 실패한다.")
-    @Test
-    void throwIllegalArgumentException_whenEmail_notMatch() {
-        assertThatThrownBy(() -> Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, "invalid_email", "2025-07-13")))
+    @ParameterizedTest
+    @ValueSource(strings = { "invalid_email", "abc@abc", "abc.abc" })
+    void throwIllegalArgumentException_whenEmail_notMatch(String email) {
+        assertThatThrownBy(() -> Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, email, "2025-07-13")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("생년월일이 yyyy-MM-dd 형식에 맞지 않으면, User 객체 생성에 실패한다.")
-    @Test
-    void throwIllegalArgumentException_whenBirthday_notMatch() {
-        assertThatThrownBy(() -> Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", "invalid_birthday")))
+    @ParameterizedTest
+    @ValueSource(strings = { "invalid_birthday", "20250707", "2025.07.07" })
+    void throwIllegalArgumentException_whenBirthday_notMatch(String birthday) {
+        assertThatThrownBy(() -> Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", birthday)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
