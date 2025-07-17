@@ -6,7 +6,7 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 public record MemberId(String memberId) {
-    private static final Pattern MEMBER_ID_PATTERN = Pattern.compile("^[a-zA-Z0-9]{1,10}$");
+    private static final Pattern MEMBER_ID_PATTERN = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z0-9]{1,10}$");
 
     public MemberId {
         if (!MEMBER_ID_PATTERN.matcher(memberId).matches()) {

@@ -2,6 +2,8 @@ package com.loopers.application.provided;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,6 +46,7 @@ public class PointFinderIntegrationTest {
         Member result = memberFinder.find(member.getId());
 
         assertThat(result.getPoint().getAmount()).isNotNull();
+        assertThat(result.getPoint().getAmount()).isEqualTo(BigDecimal.ZERO);
     }
 
     @Transactional

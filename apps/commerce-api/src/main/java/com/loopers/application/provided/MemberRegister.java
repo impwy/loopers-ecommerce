@@ -3,7 +3,7 @@ package com.loopers.application.provided;
 import java.math.BigDecimal;
 
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberRegisterRequest;
+import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
 
 import jakarta.validation.Valid;
 

@@ -3,6 +3,7 @@ package com.loopers.domain.member;
 import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import com.loopers.domain.BaseEntity;
 
@@ -22,7 +23,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "member")
 @Getter
-@ToString(callSuper = true, exclude = "point")
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
     @Embedded
@@ -36,22 +37,29 @@ public class Member extends BaseEntity {
     @Embedded
     private Email email;
 
-    @Embedded
-    private Birthday birthday;
+    private LocalDate birthday;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Point point;
 
-    public static Member register(MemberRegisterRequest registerRequest) {
-        Member member = new Member();
-        member.memberId = new MemberId(registerRequest.memberId());
-        member.passwordHash = requireNonNull(registerRequest.password());
-        member.gender = requireNonNull(registerRequest.gender());
-        member.email = new Email(registerRequest.email());
-        member.birthday = new Birthday(registerRequest.birthDay());
-        member.point = Point.create();
+    private Member(MemberId memberId, String passwordHash, Gender gender, Email email, LocalDate birthday, Point point) {
+        this.memberId = memberId;
+        this.passwordHash = passwordHash;
+        this.gender = gender;
+        this.email = email;
+        this.birthday = birthday;
+        this.point = point;
+    }
 
-        return member;
+    public static Member create(MemberCreate memberCreate) {
+        return new Member(
+                new MemberId(memberCreate.memberId()),
+                requireNonNull(memberCreate.password()),
+                requireNonNull(memberCreate.gender()),
+                new Email(memberCreate.email()),
+                memberCreate.birthday(),
+                Point.create()
+        );
     }
 
     public BigDecimal charge(BigDecimal amount) {

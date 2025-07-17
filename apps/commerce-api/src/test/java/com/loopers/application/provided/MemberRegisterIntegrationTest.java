@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,8 +20,8 @@ import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Gender;
 import com.loopers.domain.member.Member;
+import com.loopers.domain.member.MemberCreate;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.domain.member.MemberRegisterRequest;
 import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.utils.DatabaseCleanUp;
 
@@ -44,7 +46,7 @@ class MemberRegisterIntegrationTest {
 
     @DisplayName("회원을 가입한다.")
     @Test
-    void register() {
+    void create() {
         Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
 
         assertThat(member.getId()).isNotNull();
@@ -53,8 +55,8 @@ class MemberRegisterIntegrationTest {
 
     @DisplayName("회원 가입시 User 저장이 수행된다. ( spy 검증 )")
     @Test
-    void registerWithSpy() {
-        Member member = Member.register(new MemberRegisterRequest("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", "2025-07-13"));
+    void createWithSpy() {
+        Member member = Member.create(new MemberCreate("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.now()));
         memberJpaRepository.save(member);
 
         verify(memberJpaRepository, times(1)).save(member);
@@ -62,7 +64,7 @@ class MemberRegisterIntegrationTest {
 
     @DisplayName("회원 가입시 User 저장이 수행된다. ( mock )")
     @Test
-    void registerTestWithMockito() {
+    void createTestWithMockito() {
         MemberRepository memberRepositoryMock = Mockito.mock(MemberRepository.class);
         MemberFinder memberFinderMock = Mockito.mock(MemberFinder.class);
 

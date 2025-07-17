@@ -26,9 +26,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.domain.member.MemberRegisterRequest;
 import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
+import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto;
 import com.loopers.utils.DatabaseCleanUp;
 
@@ -66,6 +66,7 @@ class MemberV1ApiE2ETest {
         void register_member() throws JsonProcessingException {
             MemberRegisterRequest memberRegisterRequest = MemberFixture.createMemberRegisterRequest();
             String memberRegisterJson = objectMapper.writeValueAsString(memberRegisterRequest);
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -82,16 +83,17 @@ class MemberV1ApiE2ETest {
                     () -> assertThat(response.getBody().data().memberId()).isEqualTo(memberRegisterRequest.memberId()),
                     () -> assertThat(response.getBody().data().emailAddress()).isEqualTo(memberRegisterRequest.email()),
                     () -> assertThat(response.getBody().data().gender()).isEqualTo(memberRegisterRequest.gender().name()),
-                    () -> assertThat(response.getBody().data().birthday()).isEqualTo(memberRegisterRequest.birthDay())
+                    () -> assertThat(response.getBody().data().birthday()).isEqualTo(memberRegisterRequest.birthday())
             );
         }
 
         @DisplayName("회원 가입 시에 성별이 없을 경우, 400 Bad Request 응답을 반환한다.")
         @Test
         void throwBadRequest_whenGenderIsNull() throws JsonProcessingException {
-            MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest("pwy6817", "secret", null,
-                                                                                    "pwy6817@loopers.app", "2025-07-13");
-            String memberRegisterJson = objectMapper.writeValueAsString(memberRegisterRequest);
+            MemberRegisterRequest memberRegister = new MemberRegisterRequest("pwy6817", "secret", null,
+                                                           "pwy6817@loopers.app", "2025-07-13");
+            String memberRegisterJson = objectMapper.writeValueAsString(memberRegister);
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -112,7 +114,7 @@ class MemberV1ApiE2ETest {
 
     @Nested
     class Get {
-        private static final Function<Long, String> ENDPOINT_GET = id -> "/api/v1/members/" + id;
+        private static final Function<Long, String> ENDPOINT_GET = id -> "/api/v1/members/me/" + id;
 
         @DisplayName("내 정보 조회에 성공할 경우, 해당하는 유저 정보를 응답으로 반환한다.")
         @Test
@@ -176,6 +178,7 @@ class MemberV1ApiE2ETest {
         @Test
         void throwBadRequestWhenX_USER_IDHeaderNotExist() {
             String endPointGet = ENDPOINT_GET.apply(1L);
+
             ParameterizedTypeReference<?> responseType = new ParameterizedTypeReference<>() {};
             ResponseEntity<?> response =
                     testRestTemplate.exchange(endPointGet, HttpMethod.GET, new HttpEntity<>(null), responseType);
