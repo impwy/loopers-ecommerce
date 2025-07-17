@@ -6,7 +6,7 @@ import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
 
 public class MemberFixture {
     public static Member createMember() {
-        return Member.register(createMemberRegisterRequest().toMemberCreate());
+        return Member.create(createMemberRegisterRequest().toMemberCreate());
     }
 
     public static MemberRegisterRequest createMemberRegisterRequest() {

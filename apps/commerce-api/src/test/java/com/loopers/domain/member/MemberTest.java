@@ -17,7 +17,7 @@ class MemberTest {
     @DisplayName("회원을 생성한다.")
     @Test
     void createMemberTest() {
-        var member = Member.register(new MemberCreate("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.parse("2025-07-13")));
+        var member = Member.create(new MemberCreate("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.parse("2025-07-13")));
 
         assertAll(
                 () -> assertThat(member.getId()).isNotNull(),
@@ -33,7 +33,7 @@ class MemberTest {
     @ParameterizedTest
     @ValueSource(strings = { "invalid_id", "abcdefghij", "abc12345678", "0123456789" })
     void throwIllegalArgumentException_whenMemberId_notMatch(String memberId) {
-        assertThatThrownBy(() -> Member.register(new MemberCreate(memberId, "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.now())))
+        assertThatThrownBy(() -> Member.create(new MemberCreate(memberId, "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.now())))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -41,7 +41,7 @@ class MemberTest {
     @ParameterizedTest
     @ValueSource(strings = { "invalid_email", "abc@abc", "abc.abc" })
     void throwIllegalArgumentException_whenEmail_notMatch(String email) {
-        assertThatThrownBy(() -> Member.register(new MemberCreate("pwy6817", "secret", Gender.MALE, email, LocalDate.now())))
+        assertThatThrownBy(() -> Member.create(new MemberCreate("pwy6817", "secret", Gender.MALE, email, LocalDate.now())))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -49,7 +49,7 @@ class MemberTest {
     @ParameterizedTest
     @ValueSource(strings = { "invalid_birthday", "20250707", "2025.07.07" })
     void throwIllegalArgumentException_whenBirthday_notMatch(String birthday) {
-        assertThatThrownBy(() -> Member.register(new MemberCreate("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.parse(birthday))))
+        assertThatThrownBy(() -> Member.create(new MemberCreate("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.parse(birthday))))
                 .isInstanceOf(DateTimeParseException.class);
     }
 }

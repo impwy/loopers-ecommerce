@@ -28,7 +28,7 @@ public class MemberModifyService implements MemberRegister {
     public Member register(MemberRegisterRequest registerRequest) {
         checkDuplicateId(registerRequest);
         MemberCreate memberCreate = registerRequest.toMemberCreate();
-        Member member = Member.register(memberCreate);
+        Member member = Member.create(memberCreate);
 
         memberRepository.save(member);
 

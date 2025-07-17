@@ -46,7 +46,7 @@ class MemberRegisterIntegrationTest {
 
     @DisplayName("회원을 가입한다.")
     @Test
-    void register() {
+    void create() {
         Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
 
         assertThat(member.getId()).isNotNull();
@@ -55,8 +55,8 @@ class MemberRegisterIntegrationTest {
 
     @DisplayName("회원 가입시 User 저장이 수행된다. ( spy 검증 )")
     @Test
-    void registerWithSpy() {
-        Member member = Member.register(new MemberCreate("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.now()));
+    void createWithSpy() {
+        Member member = Member.create(new MemberCreate("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.now()));
         memberJpaRepository.save(member);
 
         verify(memberJpaRepository, times(1)).save(member);
@@ -64,7 +64,7 @@ class MemberRegisterIntegrationTest {
 
     @DisplayName("회원 가입시 User 저장이 수행된다. ( mock )")
     @Test
-    void registerTestWithMockito() {
+    void createTestWithMockito() {
         MemberRepository memberRepositoryMock = Mockito.mock(MemberRepository.class);
         MemberFinder memberFinderMock = Mockito.mock(MemberFinder.class);
 
