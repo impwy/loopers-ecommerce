@@ -1,4 +1,4 @@
-package com.loopers.interfaces.api.member.dto;
+package com.loopers.interfaces.api.point;
 
 import java.math.BigDecimal;
 

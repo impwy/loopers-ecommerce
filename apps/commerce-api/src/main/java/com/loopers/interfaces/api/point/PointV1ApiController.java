@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.loopers.application.provided.MemberRegister;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.member.dto.PointV1Dto;
-import com.loopers.interfaces.api.member.dto.PointV1Dto.Response.PointAmountResponse;
+import com.loopers.interfaces.api.point.PointV1Dto.Response.PointAmountResponse;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.loopers.interfaces.api.member;
+package com.loopers.interfaces.api.point;
 
 public interface PointV1ApiSpec {
     String find(String memberId);
