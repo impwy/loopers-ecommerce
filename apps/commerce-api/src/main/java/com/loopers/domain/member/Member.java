@@ -23,7 +23,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "member")
 @Getter
-@ToString(callSuper = true, exclude = "point")
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
     @Embedded

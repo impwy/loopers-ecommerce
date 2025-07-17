@@ -16,7 +16,7 @@ import lombok.ToString;
 @Entity
 @Getter
 @Table(name = "point")
-@ToString(callSuper = true)
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Point extends BaseEntity {
     private BigDecimal amount;
