@@ -28,7 +28,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findById(Long memberId) {
+    public Optional<Member> find(Long memberId) {
         return memberJpaRepository.findWithPoint(memberId);
     }
 }

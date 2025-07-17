@@ -9,5 +9,5 @@ public interface MemberRepository {
 
     Optional<Member> findByMemberId(String memberId);
 
-    Optional<Member> findById(Long memberId);
+    Optional<Member> find(Long memberId);
 }
