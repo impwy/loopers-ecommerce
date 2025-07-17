@@ -3,6 +3,7 @@ package com.loopers.domain.member;
 import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import com.loopers.domain.BaseEntity;
 
@@ -36,8 +37,7 @@ public class Member extends BaseEntity {
     @Embedded
     private Email email;
 
-    @Embedded
-    private Birthday birthday;
+    private LocalDate birthday;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Point point;
@@ -48,7 +48,7 @@ public class Member extends BaseEntity {
         member.passwordHash = requireNonNull(memberCreate.password());
         member.gender = requireNonNull(memberCreate.gender());
         member.email = new Email(memberCreate.email());
-        member.birthday = new Birthday(memberCreate.birthDay());
+        member.birthday = memberCreate.birthday();
         member.point = Point.create();
 
         return member;

@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +56,7 @@ class MemberRegisterIntegrationTest {
     @DisplayName("회원 가입시 User 저장이 수행된다. ( spy 검증 )")
     @Test
     void registerWithSpy() {
-        Member member = Member.register(new MemberCreate("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", "2025-07-13"));
+        Member member = Member.register(new MemberCreate("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.now()));
         memberJpaRepository.save(member);
 
         verify(memberJpaRepository, times(1)).save(member);

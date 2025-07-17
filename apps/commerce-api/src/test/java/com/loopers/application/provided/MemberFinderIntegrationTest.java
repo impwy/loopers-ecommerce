@@ -46,7 +46,7 @@ class MemberFinderIntegrationTest {
                 () -> assertThat(result.getId()).isEqualTo(member.getId()),
                 () -> assertThat(result.getMemberId().memberId()).isEqualTo(member.getMemberId().memberId()),
                 () -> assertThat(result.getEmail().email()).isEqualTo(member.getEmail().email()),
-                () -> assertThat(result.getBirthday().birthday()).isEqualTo(member.getBirthday().birthday())
+                () -> assertThat(result.getBirthday()).isEqualTo(member.getBirthday())
         );
     }
 

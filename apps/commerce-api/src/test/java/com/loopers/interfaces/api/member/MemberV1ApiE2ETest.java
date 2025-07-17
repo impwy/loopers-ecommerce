@@ -26,7 +26,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.domain.member.MemberCreate;
 import com.loopers.infrastructure.MemberJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
@@ -84,14 +83,14 @@ class MemberV1ApiE2ETest {
                     () -> assertThat(response.getBody().data().memberId()).isEqualTo(memberRegisterRequest.memberId()),
                     () -> assertThat(response.getBody().data().emailAddress()).isEqualTo(memberRegisterRequest.email()),
                     () -> assertThat(response.getBody().data().gender()).isEqualTo(memberRegisterRequest.gender().name()),
-                    () -> assertThat(response.getBody().data().birthday()).isEqualTo(memberRegisterRequest.birthDay())
+                    () -> assertThat(response.getBody().data().birthday()).isEqualTo(memberRegisterRequest.birthday())
             );
         }
 
         @DisplayName("회원 가입 시에 성별이 없을 경우, 400 Bad Request 응답을 반환한다.")
         @Test
         void throwBadRequest_whenGenderIsNull() throws JsonProcessingException {
-            MemberCreate memberRegister = new MemberCreate("pwy6817", "secret", null,
+            MemberRegisterRequest memberRegister = new MemberRegisterRequest("pwy6817", "secret", null,
                                                            "pwy6817@loopers.app", "2025-07-13");
             String memberRegisterJson = objectMapper.writeValueAsString(memberRegister);
 
