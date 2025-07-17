@@ -36,7 +36,7 @@ public class MemberV1ApiController implements MemberV1ApiSpec {
         return ApiResponse.success(memberRegisterResponse);
     }
 
-    @GetMapping("{memberId}")
+    @GetMapping("/me/{memberId}")
     @Override
     public ApiResponse<MemberV1Dto.MemberInfoResponse> find(@PathVariable Long memberId, @RequestHeader HttpHeaders httpHeaders) {
         return ApiResponse.success(MemberInfoResponse.of(memberFinder.find(memberId)));

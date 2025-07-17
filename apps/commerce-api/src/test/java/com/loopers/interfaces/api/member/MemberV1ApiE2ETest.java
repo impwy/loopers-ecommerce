@@ -114,7 +114,7 @@ class MemberV1ApiE2ETest {
 
     @Nested
     class Get {
-        private static final Function<Long, String> ENDPOINT_GET = id -> "/api/v1/members/" + id;
+        private static final Function<Long, String> ENDPOINT_GET = id -> "/api/v1/members/me/" + id;
 
         @DisplayName("내 정보 조회에 성공할 경우, 해당하는 유저 정보를 응답으로 반환한다.")
         @Test
