@@ -13,9 +13,9 @@ public class PointV1Dto {
     }
 
     public class Response {
-        public record PointAmountResponse(BigDecimal chargedAmount) {
-            public static PointAmountResponse of(BigDecimal chargedAmount) {
-                return new PointAmountResponse(chargedAmount);
+        public record PointAmountResponse(BigDecimal amount) {
+            public static PointAmountResponse of(BigDecimal amount) {
+                return new PointAmountResponse(amount);
             }
         }
     }

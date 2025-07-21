@@ -1,4 +1,4 @@
-package com.loopers.adapter;
+package com.loopers.interfaces.api.interceptor;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

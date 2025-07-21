@@ -10,7 +10,7 @@ import com.loopers.application.provided.MemberRegister;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberCreate;
+import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
 
 import jakarta.transaction.Transactional;
@@ -27,8 +27,8 @@ public class MemberModifyService implements MemberRegister {
     @Override
     public Member register(MemberRegisterRequest registerRequest) {
         checkDuplicateId(registerRequest);
-        MemberCreate memberCreate = registerRequest.toMemberCreate();
-        Member member = Member.create(memberCreate);
+        CreateMemberSpec createMemberSpec = registerRequest.toMemberCreate();
+        Member member = Member.create(createMemberSpec);
 
         memberRepository.save(member);
 

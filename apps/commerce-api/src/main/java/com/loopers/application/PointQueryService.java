@@ -1,6 +1,7 @@
 package com.loopers.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.loopers.application.provided.MemberFinder;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @Validated
+@Transactional
 @RequiredArgsConstructor
 public class PointQueryService implements PointFinder {
     private final MemberFinder memberFinder;

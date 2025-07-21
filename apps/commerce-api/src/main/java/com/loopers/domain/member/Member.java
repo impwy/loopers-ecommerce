@@ -51,13 +51,13 @@ public class Member extends BaseEntity {
         this.point = point;
     }
 
-    public static Member create(MemberCreate memberCreate) {
+    public static Member create(CreateMemberSpec createMemberSpec) {
         return new Member(
-                new MemberId(memberCreate.memberId()),
-                requireNonNull(memberCreate.password()),
-                requireNonNull(memberCreate.gender()),
-                new Email(memberCreate.email()),
-                memberCreate.birthday(),
+                new MemberId(createMemberSpec.memberId()),
+                requireNonNull(createMemberSpec.password()),
+                requireNonNull(createMemberSpec.gender()),
+                new Email(createMemberSpec.email()),
+                createMemberSpec.birthday(),
                 Point.create()
         );
     }

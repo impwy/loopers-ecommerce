@@ -25,6 +25,10 @@ public class MemberFacade {
         return memberRegister.register(registerRequest);
     }
 
+    public BigDecimal getPoints(Long memberId) {
+        return memberFinder.find(memberId).getPoint().getAmount();
+    }
+
     public BigDecimal chargePoint(Long memberId, BigDecimal amount) {
         return memberRegister.chargePoint(memberId, amount);
     }

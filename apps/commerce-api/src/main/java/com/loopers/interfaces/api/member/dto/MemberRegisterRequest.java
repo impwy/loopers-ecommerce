@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 import com.loopers.domain.member.Gender;
-import com.loopers.domain.member.MemberCreate;
+import com.loopers.domain.member.CreateMemberSpec;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -21,11 +21,11 @@ public record MemberRegisterRequest(
     private static final Pattern BIRTHDAY_PATTERN = Pattern.compile("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$");
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public MemberCreate toMemberCreate() {
+    public CreateMemberSpec toMemberCreate() {
         checkBirthday();
 
         LocalDate formatedDate = LocalDate.parse(birthday, FORMATTER);
-        return new MemberCreate(memberId, password, gender, email, formatedDate);
+        return new CreateMemberSpec(memberId, password, gender, email, formatedDate);
     }
 
     private void checkBirthday() {

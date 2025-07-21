@@ -154,26 +154,6 @@ class MemberV1ApiE2ETest {
             assertThat(response.getStatusCode().is4xxClientError()).isTrue();
         }
 
-        @DisplayName("포인트 조회에 성공할 경우, 보유 포인트를 응답으로 반환한다.")
-        @Test
-        void returnPoint_whenGetPointSuccess() {
-            Member member = memberJpaRepository.saveAndFlush(MemberFixture.createMember());
-            String endpointGet = ENDPOINT_GET.apply(member.getId());
-
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType =
-                    new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberV1Dto.MemberInfoResponse>> response =
-                    testRestTemplate.exchange(RequestEntity.get(endpointGet)
-                                                           .header("X-USER-ID", String.valueOf(member.getMemberId()))
-                                                           .build(),
-                                              responseType);
-
-            assertAll(
-                    () -> assertThat(response.getBody().data().id()).isEqualTo(1L),
-                    () -> assertThat(response.getBody().data().amount()).isEqualTo("0.00")
-            );
-        }
-
         @DisplayName("X-USER-ID 헤더가 없을 경우, 400 Bad Request 응답을 반환한다.")
         @Test
         void throwBadRequestWhenX_USER_IDHeaderNotExist() {

@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,6 +47,31 @@ public class PointV1ApiE2ETest {
         databaseCleanUp.truncateAllTables();
     }
 
+    @DisplayName("GET /api/v1/points")
+    @Nested
+    class Get {
+        public static final Function<Long, String> ENDPOINT = id -> "/api/v1/points/" + id;
+
+        @DisplayName("포인트 조회에 성공할 경우, 보유 포인트를 응답으로 반환한다.")
+        @Test
+        void returnPoint_whenGetPointSuccess() {
+            Member member = memberJpaRepository.saveAndFlush(MemberFixture.createMember());
+            String endpointGet = ENDPOINT.apply(member.getId());
+
+            ParameterizedTypeReference<ApiResponse<PointV1Dto.Response.PointAmountResponse>> responseType =
+                    new ParameterizedTypeReference<>() {};
+            ResponseEntity<ApiResponse<PointV1Dto.Response.PointAmountResponse>> response =
+                    restTemplate.exchange(RequestEntity.get(endpointGet)
+                                                           .header("X-USER-ID", String.valueOf(member.getMemberId()))
+                                                           .build(),
+                                              responseType);
+
+            assertAll(
+                    () -> assertThat(response.getBody().data().amount()).isEqualTo("0.00")
+            );
+        }
+    }
+
     @DisplayName("POST /api/v1/points")
     @Nested
     class Post {
@@ -69,7 +95,7 @@ public class PointV1ApiE2ETest {
                     restTemplate.exchange(endpointPost, HttpMethod.POST, new HttpEntity<>(amount, headers), responseType);
 
             assertAll(
-                    () -> assertThat(response.getBody().data().chargedAmount()).isEqualTo(expectedAmount)
+                    () -> assertThat(response.getBody().data().amount()).isEqualTo(expectedAmount)
             );
         }
 
