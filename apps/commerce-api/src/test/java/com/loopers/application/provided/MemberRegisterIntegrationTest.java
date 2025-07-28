@@ -22,7 +22,7 @@ import com.loopers.domain.member.Gender;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.infrastructure.MemberJpaRepository;
+import com.loopers.infrastructure.member.MemberJpaRepository;
 import com.loopers.utils.DatabaseCleanUp;
 
 import jakarta.transaction.Transactional;
