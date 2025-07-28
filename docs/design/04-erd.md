@@ -18,7 +18,6 @@ erDiagram
         bigint id PK
         bigint member_id FK
         bigint product_id FK
-        bigint likeCount
         
         Datetime created_at
         Datetime updated_at
@@ -59,9 +58,32 @@ erDiagram
     PRODUCT {
         bigint id PK
         bigint brand_id FK
+        bigint category_id
         varchar name
         bigint price
         
+        Datetime created_at
+        Datetime updated_at
+        Datetime deleted_at
+    }
+
+    CATEGORY {
+        bigint id PK
+        varchar name
+        text description
+
+        Datetime created_at
+        Datetime updated_at
+        Datetime deleted_at
+    }
+
+    INVENTORY {
+        bigint id PK
+        bigint product_id FK
+        varchar name
+        bigint quantity
+        text description
+
         Datetime created_at
         Datetime updated_at
         Datetime deleted_at
@@ -70,6 +92,7 @@ erDiagram
     BRAND {
         bigint id PK
         varchar name
+        text description
         
         Datetime created_at
         Datetime updated_at
@@ -83,4 +106,6 @@ erDiagram
     PRODUCT ||--o{ PRODUCT_LIKE : contains
     BRAND ||--o{ PRODUCT : has
     ORDER_ITEM ||--o| PRODUCT : has
+    PRODUCT ||--|| INVENTORY : has
+    CATEGORY ||--o{ PRODUCT : has
 ```
