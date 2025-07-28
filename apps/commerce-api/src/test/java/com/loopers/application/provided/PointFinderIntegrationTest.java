@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.infrastructure.MemberJpaRepository;
+import com.loopers.infrastructure.member.MemberJpaRepository;
 import com.loopers.utils.DatabaseCleanUp;
 
 import lombok.RequiredArgsConstructor;

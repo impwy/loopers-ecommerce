@@ -1,4 +1,4 @@
-package com.loopers.infrastructure;
+package com.loopers.infrastructure.member;
 
 import java.util.Optional;
 
