@@ -35,8 +35,11 @@ public class ProductLike extends BaseEntity {
     }
 
     public static ProductLike create(Member member, Product product) {
-        if (member == null || product == null) {
-            throw new IllegalArgumentException("유저와 상품은 필수 항목입니다.");
+        if (member == null) {
+            throw new IllegalArgumentException("유저는 필수 항목입니다.");
+        }
+        if (product == null) {
+            throw new IllegalArgumentException("상품은 필수 항목입니다.");
         }
         return new ProductLike(member, product);
     }
