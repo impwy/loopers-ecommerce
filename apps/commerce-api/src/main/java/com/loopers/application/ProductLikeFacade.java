@@ -30,4 +30,11 @@ public class ProductLikeFacade {
         ProductLike productLike = ProductLike.create(member, product);
         return productLikeRegister.create(productLike);
     }
+
+    @Transactional
+    public ProductLike delete(Long memberId, Long productId) {
+        ProductLike productLike = productLikeFinder.find(memberId, productId);
+        productLike.delete();
+        return productLike;
+    }
 }

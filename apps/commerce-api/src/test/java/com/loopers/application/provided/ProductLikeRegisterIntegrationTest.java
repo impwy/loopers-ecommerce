@@ -13,6 +13,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.ProductLikeFacade;
 import com.loopers.application.required.MemberRepository;
+import com.loopers.application.required.ProductLikeRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.like.ProductLike;
 import com.loopers.domain.member.Member;
@@ -28,6 +29,9 @@ class ProductLikeRegisterIntegrationTest {
 
     @Autowired
     private ProductLikeFacade productLikeFacade;
+
+    @MockitoSpyBean
+    private ProductLikeRepository productLikeRepository;
 
     @MockitoSpyBean
     private MemberRepository memberRepository;
@@ -72,5 +76,31 @@ class ProductLikeRegisterIntegrationTest {
                 () -> assertThat(productLike.getMember().getMemberId().memberId()).isEqualTo(member.getMemberId().memberId()),
                 () -> assertThat(productLike.getProduct().getName()).isEqualTo(product.getName())
         );
+    }
+
+    @DisplayName("상품 좋아요 취소 테스트")
+    @Test
+    void cancel_productlike_test() {
+        Member member = memberRepository.save(MemberFixture.createMember());
+        Product product = productRepository.save(ProductFixture.createProduct());
+        productLikeRepository.save(ProductLike.create(member, product));
+
+        ProductLike productLike = productLikeFacade.delete(member.getId(), product.getId());
+
+        assertThat(productLike.getDeletedAt()).isNotNull();
+    }
+
+    @DisplayName("상품 좋아요 취소 후 생성 테스트")
+    @Test
+    void canceled_productlike_then_create_test() {
+        Member member = memberRepository.save(MemberFixture.createMember());
+        Product product = productRepository.save(ProductFixture.createProduct());
+        productLikeRepository.save(ProductLike.create(member, product));
+
+        ProductLike productLike = productLikeFacade.delete(member.getId(), product.getId());
+        assertThat(productLike.getDeletedAt()).isNotNull();
+
+        productLike.restore();
+        assertThat(productLike.getDeletedAt()).isNull();
     }
 }
