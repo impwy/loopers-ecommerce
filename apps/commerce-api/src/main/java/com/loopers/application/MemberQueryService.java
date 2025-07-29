@@ -1,19 +1,15 @@
 package com.loopers.application;
 
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberNotFoundException;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Validated
-@Transactional
 @RequiredArgsConstructor
 public class MemberQueryService implements MemberFinder {
     private final MemberRepository memberRepository;
