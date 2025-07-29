@@ -43,4 +43,12 @@ public class ProductLike extends BaseEntity {
         }
         return new ProductLike(member, product);
     }
+
+    public boolean isDeleted(ProductLike productLike) {
+        return productLike.getDeletedAt() != null;
+    }
+
+    public boolean isNotDeleted(ProductLike productLike) {
+        return !isDeleted(productLike);
+    }
 }

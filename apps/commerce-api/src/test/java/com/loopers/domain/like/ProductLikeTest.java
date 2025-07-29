@@ -51,4 +51,45 @@ class ProductLikeTest {
                 () -> assertThat(productLike.getProduct().getPrice()).isEqualTo(product.getPrice())
         );
     }
+
+    /**
+     * deleted_at이 존재하면 삭제된 것이다.
+     */
+    @DisplayName("상품 좋아요 취소 테스트")
+    @Test
+    void cancel_productlike_test() {
+        Member member = MemberFixture.createMember();
+        ReflectionTestUtils.setField(member, "id", 1L);
+        Product product = ProductFixture.createProduct();
+        ReflectionTestUtils.setField(product, "id", 1L);
+
+        ProductLike productLike = ProductLike.create(member, product);
+
+        productLike.delete();
+
+        assertThat(productLike.getDeletedAt()).isNotNull();
+    }
+
+    @DisplayName("취소한 상품 좋아요 다시 좋아요 테스트")
+    @Test
+    void canceled_productlike_like_test() {
+        Member member = MemberFixture.createMember();
+        ReflectionTestUtils.setField(member, "id", 1L);
+        Product product = ProductFixture.createProduct();
+        ReflectionTestUtils.setField(product, "id", 1L);
+
+        ProductLike productLike = ProductLike.create(member, product);
+
+        // 삭제
+        productLike.delete();
+        assertThat(productLike.getDeletedAt()).isNotNull();
+
+        //생성
+        productLike.restore();
+        assertAll(
+                () -> assertThat(productLike.getDeletedAt()).isNull(),
+                () -> assertThat(productLike.getMember().getMemberId().memberId()).isEqualTo(member.getMemberId().memberId()),
+                () -> assertThat(productLike.getProduct().getName()).isEqualTo(product.getName())
+        );
+    }
 }

@@ -24,8 +24,12 @@ public class ProductLikeQueryService implements ProductLikeFinder {
     @Override
     public void throwConflictExceptionHasLike(Long memberId, Long productId) {
         productLikeRepository.findByMemberIdAndProductId(memberId, productId)
-                             .ifPresent(notUse -> {
-                                 throw new CoreException(ErrorType.CONFLICT, "좋아요가 중복 되었습니다.");
+                             .ifPresent(productLike -> {
+                                 if (productLike.isNotDeleted(productLike)) {
+                                     throw new CoreException(ErrorType.CONFLICT, "좋아요가 중복 되었습니다.");
+                                 } else {
+                                     productLike.restore();
+                                 }
                              });
     }
 }
