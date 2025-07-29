@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.math.BigDecimal;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +18,7 @@ import com.loopers.domain.like.ProductLike;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
+import com.loopers.domain.product.ProductFixture;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
@@ -48,7 +47,7 @@ class ProductLikeRegisterIntegrationTest {
     @Test
     void double_create_fail_productlike_test() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        Product product = productRepository.save(Product.create("상품", "상품입니다.", BigDecimal.valueOf(500)));
+        Product product = productRepository.save(ProductFixture.createProduct());
 
         // first create like
         productLikeFacade.create(member.getId(), product.getId());
@@ -63,7 +62,7 @@ class ProductLikeRegisterIntegrationTest {
     @Test
     void create_productlike_test() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        Product product = productRepository.save(Product.create("상품", "상품입니다.", BigDecimal.valueOf(500)));
+        Product product = productRepository.save(ProductFixture.createProduct());
 
         ProductLike productLike = productLikeFacade.create(member.getId(), product.getId());
 
