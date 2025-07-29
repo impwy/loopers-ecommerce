@@ -1,5 +1,8 @@
 package com.loopers.infrastructure.product;
 
+import java.util.List;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.loopers.application.required.ProductRepository;
@@ -22,5 +25,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Product find(Long productId) {
         return productJpaRepository.findById(productId).orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
+    }
+
+    @Override
+    public List<Product> findByConditions(Sort sort) {
+        return productJpaRepository.findAll(sort);
     }
 }

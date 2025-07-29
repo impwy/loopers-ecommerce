@@ -3,12 +3,18 @@ package com.loopers.application.provided;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.ProductFacade;
@@ -51,10 +57,11 @@ class ProductFinderIntegrationTest {
     DatabaseCleanUp databaseCleanUp;
 
     Product product;
+    Brand brand;
 
     @BeforeEach
     void setUp() {
-        Brand brand = brandRepository.create(BrandFixture.createBrand());
+        brand = brandRepository.create(BrandFixture.createBrand());
         product = productRepository.save(ProductFixture.createProduct(brand));
 
     }
@@ -92,5 +99,47 @@ class ProductFinderIntegrationTest {
                 () -> assertThat(productInfo.brandDescription()).isEqualTo(brand.getDescription()),
                 () -> assertThat(productInfo.likeCount()).isOne()
         );
+    }
+
+    @DisplayName("상품 조회 시 정렬 조건 추가: latest")
+    @Test
+    void sorted_product_by_latest() {
+        Product firstProduct = productRepository.save(Product.create("상품1", "상품2입니다.", BigDecimal.valueOf(500),
+                                                                     brand, ZonedDateTime.now().plusSeconds(1L)));
+        Product secondProduct = productRepository.save(Product.create("상품2", "상품3입니다.", BigDecimal.valueOf(500),
+                                                                      brand, ZonedDateTime.now().plusSeconds(2L)));
+        Product thirdProduct = productRepository.save(Product.create("상품3", "상품4입니다.", BigDecimal.valueOf(500),
+                                                                     brand, ZonedDateTime.now().plusSeconds(3L)));
+
+        Sort latestAtSort = Sort.by(Direction.DESC, "latestAt");
+        List<Product> products = productFinder.findByConditions(latestAtSort);
+
+        assertThat(products)
+                .extracting(Product::getName)
+                .containsExactly(thirdProduct.getName(),
+                                 secondProduct.getName(),
+                                 firstProduct.getName(),
+                                 product.getName());
+    }
+
+    @DisplayName("상품 조회 시 정렬 조건 추가: price")
+    @Test
+    void sorted_product_by_price() {
+        Product firstProduct = productRepository.save(Product.create("상품1", "상품2입니다.", BigDecimal.valueOf(600),
+                                                                     brand, ZonedDateTime.now()));
+        Product secondProduct = productRepository.save(Product.create("상품2", "상품3입니다.", BigDecimal.valueOf(700),
+                                                                      brand, ZonedDateTime.now()));
+        Product thirdProduct = productRepository.save(Product.create("상품3", "상품4입니다.", BigDecimal.valueOf(800),
+                                                                     brand, ZonedDateTime.now()));
+
+        Sort priceSort = Sort.by(Direction.ASC, "price");
+        List<Product> products = productFinder.findByConditions(priceSort);
+
+        assertThat(products)
+                .extracting(Product::getName)
+                .containsExactly(product.getName(),
+                                 firstProduct.getName(),
+                                 secondProduct.getName(),
+                                 thirdProduct.getName());
     }
 }

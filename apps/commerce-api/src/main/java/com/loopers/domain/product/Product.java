@@ -1,6 +1,7 @@
 package com.loopers.domain.product;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 
 import com.loopers.domain.BaseEntity;
 import com.loopers.domain.brand.Brand;
@@ -22,20 +23,22 @@ public class Product extends BaseEntity {
     private String name;
     private String description;
     private BigDecimal price;
+    private ZonedDateTime latestAt;
 
     @JoinColumn(name = "brand_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Brand brand;
 
-    private Product(String name, String description, BigDecimal price, Brand brand) {
+    private Product(String name, String description, BigDecimal price, Brand brand, ZonedDateTime latestAt) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.brand = brand;
+        this.latestAt = latestAt;
     }
 
-    public static Product create(String name, String description, BigDecimal price, Brand brand) {
-        return new Product(name, description, price, brand);
+    public static Product create(String name, String description, BigDecimal price, Brand brand, ZonedDateTime latestAt) {
+        return new Product(name, description, price, brand, latestAt);
     }
 }
 
