@@ -12,4 +12,6 @@ public interface ProductLikeJpaRepository extends JpaRepository<ProductLike, Lon
     List<ProductLike> member(Member member);
 
     Optional<ProductLike> findByMemberIdAndProductId(Long memberId, Long productId);
+
+    Long countByProductId(Long productId);
 }

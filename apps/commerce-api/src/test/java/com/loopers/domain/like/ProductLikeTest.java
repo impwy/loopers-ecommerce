@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
@@ -15,10 +17,16 @@ import com.loopers.domain.product.ProductFixture;
 
 class ProductLikeTest {
 
+    Product product;
+
+    @BeforeEach
+    void setUp() {
+        product = ProductFixture.createProduct(BrandFixture.createBrand());
+    }
+
     @DisplayName("유저가 없을 때 상품 좋아요 생성 실패 테스트")
     @Test
     void create_fail_productlike_when_member_is_null() {
-        Product product = ProductFixture.createProduct();
         ReflectionTestUtils.setField(product, "id", 1L);
 
         assertThatThrownBy(() -> ProductLike.create(null, product))
@@ -40,7 +48,6 @@ class ProductLikeTest {
     void create_productlike_test() {
         Member member = MemberFixture.createMember();
         ReflectionTestUtils.setField(member, "id", 1L);
-        Product product = ProductFixture.createProduct();
         ReflectionTestUtils.setField(product, "id", 1L);
 
         ProductLike productLike = ProductLike.create(member, product);
@@ -60,7 +67,6 @@ class ProductLikeTest {
     void cancel_productlike_test() {
         Member member = MemberFixture.createMember();
         ReflectionTestUtils.setField(member, "id", 1L);
-        Product product = ProductFixture.createProduct();
         ReflectionTestUtils.setField(product, "id", 1L);
 
         ProductLike productLike = ProductLike.create(member, product);
@@ -75,7 +81,6 @@ class ProductLikeTest {
     void canceled_productlike_like_test() {
         Member member = MemberFixture.createMember();
         ReflectionTestUtils.setField(member, "id", 1L);
-        Product product = ProductFixture.createProduct();
         ReflectionTestUtils.setField(product, "id", 1L);
 
         ProductLike productLike = ProductLike.create(member, product);

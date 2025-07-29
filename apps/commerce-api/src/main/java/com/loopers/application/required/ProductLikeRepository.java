@@ -8,4 +8,6 @@ public interface ProductLikeRepository {
     ProductLike save(ProductLike productLike);
 
     Optional<ProductLike> findByMemberIdAndProductId(Long memberId, Long productId);
+
+    Long countByProductId(Long productId);
 }
