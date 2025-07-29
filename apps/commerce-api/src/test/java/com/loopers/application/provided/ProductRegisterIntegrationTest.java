@@ -3,8 +3,6 @@ package com.loopers.application.provided;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.math.BigDecimal;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +12,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.product.Product;
+import com.loopers.domain.product.ProductFixture;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -35,7 +34,7 @@ public class ProductRegisterIntegrationTest {
     @DisplayName("상품 생성 통합 테스트")
     @Test
     void createProductTest() {
-        Product product = productRepository.save(Product.create("상품1", "상품입니다.", BigDecimal.valueOf(500)));
+        Product product = productRepository.save(ProductFixture.createProduct());
 
         Product expected = productRegister.register(product);
 
