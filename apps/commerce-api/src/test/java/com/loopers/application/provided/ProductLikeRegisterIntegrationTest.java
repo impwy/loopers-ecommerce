@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.loopers.application.required.ProductLikeRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
+
 import com.loopers.domain.like.ProductLike;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
@@ -95,6 +97,7 @@ class ProductLikeRegisterIntegrationTest {
     @Test
     void cancel_productlike_test() {
         Member member = memberRepository.save(MemberFixture.createMember());
+
         productLikeRepository.save(ProductLike.create(member, product));
 
         ProductLike productLike = productLikeFacade.delete(member.getId(), product.getId());
@@ -106,6 +109,7 @@ class ProductLikeRegisterIntegrationTest {
     @Test
     void canceled_productlike_then_create_test() {
         Member member = memberRepository.save(MemberFixture.createMember());
+
         productLikeRepository.save(ProductLike.create(member, product));
 
         ProductLike productLike = productLikeFacade.delete(member.getId(), product.getId());

@@ -30,6 +30,7 @@ import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
 import com.loopers.domain.product.ProductInfo;
+
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -46,7 +47,6 @@ class ProductFinderIntegrationTest {
 
     @MockitoSpyBean
     private ProductLikeRepository productLikeRepository;
-
     @Autowired
     private ProductFinder productFinder;
 
