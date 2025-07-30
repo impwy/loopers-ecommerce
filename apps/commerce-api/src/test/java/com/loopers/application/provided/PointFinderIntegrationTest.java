@@ -43,7 +43,7 @@ public class PointFinderIntegrationTest {
     void returnPoint_whenMemberIdIsExist() {
         Member member = memberJpaRepository.save(MemberFixture.createMember());
 
-        Member result = memberFinder.find(member.getId());
+        Member result = memberFinder.findByMemberId(member.getMemberId());
 
         assertThat(result.getPoint().getAmount()).isNotNull();
         assertThat(result.getPoint().getAmount()).isEqualTo(BigDecimal.ZERO);

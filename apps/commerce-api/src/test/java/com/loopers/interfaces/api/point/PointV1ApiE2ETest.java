@@ -50,19 +50,18 @@ public class PointV1ApiE2ETest {
     @DisplayName("GET /api/v1/points")
     @Nested
     class Get {
-        public static final Function<Long, String> ENDPOINT = id -> "/api/v1/points/" + id;
+        public static final String ENDPOINT = "/api/v1/points";
 
         @DisplayName("포인트 조회에 성공할 경우, 보유 포인트를 응답으로 반환한다.")
         @Test
         void returnPoint_whenGetPointSuccess() {
             Member member = memberJpaRepository.saveAndFlush(MemberFixture.createMember());
-            String endpointGet = ENDPOINT.apply(member.getId());
 
             ParameterizedTypeReference<ApiResponse<PointV1Dto.Response.PointAmountResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
             ResponseEntity<ApiResponse<PointV1Dto.Response.PointAmountResponse>> response =
-                    restTemplate.exchange(RequestEntity.get(endpointGet)
-                                                           .header("X-USER-ID", String.valueOf(member.getMemberId()))
+                    restTemplate.exchange(RequestEntity.get(ENDPOINT)
+                                                           .header("X-USER-ID", member.getMemberId().memberId())
                                                            .build(),
                                               responseType);
 
@@ -75,14 +74,13 @@ public class PointV1ApiE2ETest {
     @DisplayName("POST /api/v1/points")
     @Nested
     class Post {
-        public static final Function<Long, String> ENDPOINT = id -> "/api/v1/points/charge/" + id;
+        public static final String ENDPOINT = "/api/v1/points/charge";
 
         @DisplayName("존재하는 유저가 1000원을 충전할 경우, 충전된 보유 총량을 응답으로 반환한다.")
         @Test
         void returnAmountWhenUserChargePoint() throws JsonProcessingException {
             Member member = memberJpaRepository.save(MemberFixture.createMember());
             String amount = "1000.00";
-            String endpointPost = ENDPOINT.apply(member.getId());
             BigDecimal expectedAmount = member.getPoint().getAmount().add(new BigDecimal(amount));
 
             HttpHeaders headers = new HttpHeaders();
@@ -92,7 +90,7 @@ public class PointV1ApiE2ETest {
             ParameterizedTypeReference<ApiResponse<PointV1Dto.Response.PointAmountResponse>> responseType = new ParameterizedTypeReference<>() {};
 
             ResponseEntity<ApiResponse<PointV1Dto.Response.PointAmountResponse>> response =
-                    restTemplate.exchange(endpointPost, HttpMethod.POST, new HttpEntity<>(amount, headers), responseType);
+                    restTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>(amount, headers), responseType);
 
             assertAll(
                     () -> assertThat(response.getBody().data().amount()).isEqualTo(expectedAmount)
@@ -103,13 +101,12 @@ public class PointV1ApiE2ETest {
         @Test
         void throwNotFoundExceptionWhenUserNotExist() {
             ParameterizedTypeReference<?> responseType = new ParameterizedTypeReference<>() {};
-            String endPoint = ENDPOINT.apply(999L);
             HttpHeaders headers = new HttpHeaders();
             headers.set("X-USER-ID", "");
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             ResponseEntity<?> response =
-                    restTemplate.exchange(endPoint, HttpMethod.POST, new HttpEntity<>("1000", headers), responseType);
+                    restTemplate.exchange(ENDPOINT, HttpMethod.POST, new HttpEntity<>("1000", headers), responseType);
 
             System.out.println(response);
 

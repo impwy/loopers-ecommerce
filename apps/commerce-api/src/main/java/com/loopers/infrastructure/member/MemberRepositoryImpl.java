@@ -22,13 +22,18 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findByMemberId(String memberId) {
-        Optional<Member> optionalMember = memberJpaRepository.findByMemberId(new MemberId(memberId));
+    public Optional<Member> find(Long memberId) {
+        return memberJpaRepository.findById(memberId);
+    }
+
+    @Override
+    public Optional<Member> findByMemberId(MemberId memberId) {
+        Optional<Member> optionalMember = memberJpaRepository.findByMemberId(memberId);
         return optionalMember;
     }
 
     @Override
-    public Optional<Member> find(Long memberId) {
+    public Optional<Member> findWithPoint(MemberId memberId) {
         return memberJpaRepository.findWithPoint(memberId);
     }
 }

@@ -1,5 +1,6 @@
 package com.loopers.interfaces.api.member;
 
+import com.loopers.domain.member.MemberId;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto;
@@ -27,5 +28,5 @@ public interface MemberV1ApiSpec {
     )
     ApiResponse<MemberV1Dto.MemberInfoResponse> find(
             @Schema(name = "회원 ID", description = "조회할 회원 ID")
-            Long memberId);
+            MemberId memberId);
 }
