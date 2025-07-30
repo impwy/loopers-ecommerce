@@ -23,4 +23,9 @@ public class ProductLikeRepositoryImpl implements ProductLikeRepository {
     public Optional<ProductLike> findByMemberIdAndProductId(Long memberId, Long productId) {
         return productLikeJpaRepository.findByMemberIdAndProductId(memberId, productId);
     }
+
+    @Override
+    public Long countByProductId(Long productId) {
+        return productLikeJpaRepository.countByProductId(productId);
+    }
 }

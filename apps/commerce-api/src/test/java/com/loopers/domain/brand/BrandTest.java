@@ -10,7 +10,7 @@ class BrandTest {
     @DisplayName("브랜드 생성 테스트")
     @Test
     void createBrand() {
-        Brand brand = Brand.create("브랜드", "브랜드입니다.");
+        Brand brand = BrandFixture.createBrand();
 
         assertThat(brand.getName()).isEqualTo("브랜드");
         assertThat(brand.getDescription()).isEqualTo("브랜드입니다.");

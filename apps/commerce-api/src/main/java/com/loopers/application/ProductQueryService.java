@@ -1,5 +1,10 @@
 package com.loopers.application;
 
+
+import java.util.List;
+
+import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Service;
 
 import com.loopers.application.provided.ProductFinder;
@@ -17,5 +22,10 @@ public class ProductQueryService implements ProductFinder {
     public Product find(Long productId) {
         Product product = productRepository.find(productId);
         return product;
+    }
+
+    @Override
+    public List<Product> findByConditions(Sort sort) {
+        return productRepository.findByConditions(sort);
     }
 }

@@ -3,17 +3,22 @@ package com.loopers.application.provided;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.math.BigDecimal;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import com.loopers.application.required.BrandRepository;
 import com.loopers.application.required.ProductRepository;
+import com.loopers.domain.brand.Brand;
+import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.product.Product;
+import com.loopers.domain.product.ProductFixture;
+
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -27,6 +32,17 @@ public class ProductRegisterIntegrationTest {
     @Autowired
     DatabaseCleanUp databaseCleanUp;
 
+    @MockitoSpyBean
+    private BrandRepository brandRepository;
+
+    Product product;
+
+    @BeforeEach
+    void setUp() {
+        Brand brand = brandRepository.create(BrandFixture.createBrand());
+        product = productRepository.save(ProductFixture.createProduct(brand));
+    }
+
     @AfterEach
     void tearDown() {
         databaseCleanUp.truncateAllTables();
@@ -35,8 +51,6 @@ public class ProductRegisterIntegrationTest {
     @DisplayName("상품 생성 통합 테스트")
     @Test
     void createProductTest() {
-        Product product = productRepository.save(Product.create("상품1", "상품입니다.", BigDecimal.valueOf(500)));
-
         Product expected = productRegister.register(product);
 
         assertAll(

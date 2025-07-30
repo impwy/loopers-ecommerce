@@ -7,15 +7,17 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.loopers.domain.brand.BrandFixture;
+
 class ProductTest {
 
     @DisplayName("상품을 만든다")
     @Test
     void createProduct() {
-        Product product = Product.create("상품1", "상품입니다.", BigDecimal.valueOf(500));
+        Product product = ProductFixture.createProduct(BrandFixture.createBrand());
 
-        assertThat(product.getName()).isEqualTo("상품1");
+        assertThat(product.getName()).isEqualTo("상품");
         assertThat(product.getDescription()).isEqualTo("상품입니다.");
-        assertThat(product.getPrice()).isEqualTo(BigDecimal.valueOf(500));
+        assertThat(product.getPrice().compareTo(BigDecimal.valueOf(500))).isZero();
     }
 }

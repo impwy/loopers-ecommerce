@@ -32,4 +32,9 @@ public class ProductLikeQueryService implements ProductLikeFinder {
                                  }
                              });
     }
+
+    @Override
+    public Long countByProductId(Long productId) {
+        return productLikeRepository.countByProductId(productId);
+    }
 }
