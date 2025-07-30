@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.provided.MemberRegister;
 import com.loopers.domain.member.Member;
+import com.loopers.domain.member.MemberId;
 import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -17,19 +18,19 @@ public class MemberFacade {
     private final MemberFinder memberFinder;
     private final MemberRegister memberRegister;
 
-    public Member find(Long memberId) {
-        return memberFinder.find(memberId);
+    public Member find(MemberId memberId) {
+        return memberFinder.findByMemberId(memberId);
     }
 
     public Member register(MemberRegisterRequest registerRequest) {
         return memberRegister.register(registerRequest);
     }
 
-    public BigDecimal getPoints(Long memberId) {
-        return memberFinder.find(memberId).getPoint().getAmount();
+    public BigDecimal getPoints(MemberId memberId) {
+        return memberFinder.findByMemberId(memberId).getPoint().getAmount();
     }
 
-    public BigDecimal chargePoint(Long memberId, BigDecimal amount) {
+    public BigDecimal chargePoint(MemberId memberId, BigDecimal amount) {
         return memberRegister.chargePoint(memberId, amount);
     }
 }

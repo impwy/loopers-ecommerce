@@ -13,6 +13,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
+import com.loopers.domain.member.MemberId;
 import com.loopers.utils.DatabaseCleanUp;
 
 import jakarta.transaction.Transactional;
@@ -39,7 +40,7 @@ class MemberFinderIntegrationTest {
     void find_member_info() {
         Member member = memberRepository.save(MemberFixture.createMember());
 
-        Member result = memberFinder.find(member.getId());
+        Member result = memberFinder.findByMemberId(member.getMemberId());
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
@@ -53,6 +54,6 @@ class MemberFinderIntegrationTest {
     @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
     @Test
     void find_member_fail() {
-        assertThat(memberRepository.find(-1L).orElse(null)).isNull();
+        assertThat(memberRepository.findByMemberId(new MemberId("success0")).orElse(null)).isNull();
     }
 }

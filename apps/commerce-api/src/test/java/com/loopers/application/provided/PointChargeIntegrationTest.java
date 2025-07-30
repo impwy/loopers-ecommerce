@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.loopers.domain.member.MemberId;
 import com.loopers.domain.member.MemberNotFoundException;
 
 @SpringBootTest
@@ -20,7 +21,7 @@ class PointChargeIntegrationTest {
     @DisplayName("존재하지 않는 유저 ID 로 충전을 시도한 경우, 실패한다.")
     @Test
     void failWhenChargePointNotExistedUser() {
-        assertThatThrownBy(() -> memberRegister.chargePoint(999L, new BigDecimal(1000)))
+        assertThatThrownBy(() -> memberRegister.chargePoint(new MemberId("success0"), new BigDecimal(1000)))
                 .isInstanceOf(MemberNotFoundException.class);
     }
 }

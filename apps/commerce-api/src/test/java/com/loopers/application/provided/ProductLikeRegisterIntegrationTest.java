@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.application.ProductLikeFacade;
 import com.loopers.application.required.BrandRepository;
@@ -80,6 +81,7 @@ class ProductLikeRegisterIntegrationTest {
 
     @DisplayName("상품 좋아요 테스트")
     @Test
+    @Transactional
     void create_productlike_test() {
         Member member = memberRepository.save(MemberFixture.createMember());
 

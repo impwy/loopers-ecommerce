@@ -26,9 +26,7 @@ public class Point extends BaseEntity {
     }
 
     static Point create() {
-        return new Point(
-                BigDecimal.ZERO
-        );
+        return new Point(BigDecimal.ZERO);
     }
 
     public BigDecimal charge(BigDecimal amount) {
