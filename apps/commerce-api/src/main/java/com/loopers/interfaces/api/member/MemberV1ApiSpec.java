@@ -2,7 +2,7 @@ package com.loopers.interfaces.api.member;
 
 import com.loopers.domain.member.MemberId;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
+import com.loopers.interfaces.api.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +18,7 @@ public interface MemberV1ApiSpec {
             summary = "회원생성",
             description = "회원을 생성합니다"
     )
-    ApiResponse<MemberV1Dto.MemberRegisterResponse> register(
+    ApiResponse<MemberV1Dto.Response.MemberRegisterResponse> register(
             @Schema(name = "회원 생성용 DTO", description = "생성할 회원 정보")
             MemberRegisterRequest registerRequest);
 
@@ -26,7 +26,7 @@ public interface MemberV1ApiSpec {
             summary = "회원 조회",
             description = "회원을 조회합니다"
     )
-    ApiResponse<MemberV1Dto.MemberInfoResponse> find(
+    ApiResponse<MemberV1Dto.Response.MemberInfoResponse> find(
             @Schema(name = "회원 ID", description = "조회할 회원 ID")
             MemberId memberId);
 }

@@ -12,7 +12,8 @@ import com.loopers.application.member.MemberFacade;
 import com.loopers.application.point.PointFacade;
 import com.loopers.domain.member.MemberId;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.point.PointV1Dto.Response.PointAmountResponse;
+import com.loopers.interfaces.api.point.dto.PointV1Dto;
+import com.loopers.interfaces.api.point.dto.PointV1Dto.Response.PointAmountResponse;
 
 import lombok.RequiredArgsConstructor;
 
