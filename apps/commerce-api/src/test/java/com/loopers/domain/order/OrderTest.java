@@ -16,8 +16,7 @@ class OrderTest {
     @Test
     void create_order_fail_when_user_null_test() {
         CreateOrderSpec createOrderSpec
-                = CreateOrderSpec.of(null, "123456",
-                                     new Address("00001", "Seoul", "Seongdong-gu", "Seuongsudong", "etc"));
+                = CreateOrderSpec.of(null, "123456");
 
         assertThatThrownBy(() -> create(createOrderSpec))
             .isInstanceOf(CoreException.class);
@@ -27,18 +26,7 @@ class OrderTest {
     @Test
     void create_order_fail_when_orderNo_null_test() {
         CreateOrderSpec createOrderSpec
-                = CreateOrderSpec.of(1L, null,
-                                     new Address("00001", "Seoul", "Seongdong-gu", "Seuongsudong", "etc"));
-
-        assertThatThrownBy(() -> create(createOrderSpec))
-                .isInstanceOf(CoreException.class);
-    }
-
-    @DisplayName("주문 생성 시 주소가 NULL이면 실패")
-    @Test
-    void create_order_fail_when_address_null_test() {
-        CreateOrderSpec createOrderSpec
-                = CreateOrderSpec.of(1L, "123456", null);
+                = CreateOrderSpec.of(1L, null);
 
         assertThatThrownBy(() -> create(createOrderSpec))
                 .isInstanceOf(CoreException.class);
@@ -48,15 +36,13 @@ class OrderTest {
     @Test
     void create_order_test() {
         CreateOrderSpec createOrderSpec
-                = CreateOrderSpec.of(1L, "123456",
-                                     new Address("00001", "Seoul", "Seongdong-gu", "Seuongsudong", "etc"));
+                = CreateOrderSpec.of(1L, "123456");
 
         Order order = create(createOrderSpec);
 
         assertAll(
                 () -> assertThat(order.getMemberId()).isEqualTo(createOrderSpec.memberId()),
-                () -> assertThat(order.getOrderNo()).isEqualTo(createOrderSpec.orderNo()),
-                () -> assertThat(order.getAddress()).isEqualTo(createOrderSpec.address())
+                () -> assertThat(order.getOrderNo()).isEqualTo(createOrderSpec.orderNo())
         );
     }
 }

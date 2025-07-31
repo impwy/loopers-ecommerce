@@ -6,7 +6,6 @@ import com.loopers.domain.BaseEntity;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -22,13 +21,9 @@ public class Order extends BaseEntity {
 
     private String orderNo;
 
-    @Embedded
-    private Address address;
-
-    private Order(Long memberId, String orderNo, Address address) {
+    private Order(Long memberId, String orderNo) {
         this.memberId = requireNonNull(memberId);
         this.orderNo = requireNonNull(orderNo);
-        this.address = requireNonNull(address);
     }
 
     public static Order create(CreateOrderSpec createSpec) {
@@ -38,9 +33,6 @@ public class Order extends BaseEntity {
         if (createSpec.orderNo() == null) {
             throw new CoreException(ErrorType.BAD_REQUEST, "주문번호는 필수입니다.");
         }
-        if (createSpec.address() == null) {
-            throw new CoreException(ErrorType.BAD_REQUEST, "주소는 필수입니다.");
-        }
-        return new Order(createSpec.memberId(), createSpec.orderNo(), createSpec.address());
+        return new Order(createSpec.memberId(), createSpec.orderNo());
     }
 }

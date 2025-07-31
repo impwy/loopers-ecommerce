@@ -1,7 +1,7 @@
 package com.loopers.domain.order;
 
-public record CreateOrderSpec(Long memberId, String orderNo, Address address) {
-    public static CreateOrderSpec of(Long memberId, String orderNo, Address address) {
-        return new CreateOrderSpec(memberId, orderNo, address);
+public record CreateOrderSpec(Long memberId, String orderNo) {
+    public static CreateOrderSpec of(Long memberId, String orderNo) {
+        return new CreateOrderSpec(memberId, orderNo);
     }
 }

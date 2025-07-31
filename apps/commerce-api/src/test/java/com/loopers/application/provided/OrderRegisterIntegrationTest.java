@@ -9,11 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.OrderFacade;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.application.required.ProductRepository;
-import com.loopers.domain.order.Address;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
+import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.support.error.CoreException;
 import com.loopers.utils.DatabaseCleanUp;
 
@@ -21,7 +19,7 @@ import com.loopers.utils.DatabaseCleanUp;
 class OrderRegisterIntegrationTest {
 
     @Autowired
-    private OrderFacade orderFacade;
+    private OrderRegister orderRegister;
 
     @MockitoSpyBean
     private MemberRepository memberRepository;
@@ -40,11 +38,9 @@ class OrderRegisterIntegrationTest {
     @DisplayName("존재하지 않는 유저 주문 시 실패")
     @Test
     void create_order_fail_when_user_not_existed() {
-        CreateOrderRequest createOrderRequest
-                = CreateOrderRequest.of(null, "000001",
-                                        new Address("00001", "Seoul", "Seongdong-gu","Seuongsudong", "etc"));
+        CreateOrderSpec createOrderSpec = CreateOrderSpec.of(null, "000001");
 
-        assertThatThrownBy(() -> orderFacade.register(createOrderRequest))
-            .isInstanceOf(CoreException.class);
+        assertThatThrownBy(() -> orderRegister.register(createOrderSpec))
+                .isInstanceOf(CoreException.class);
     }
 }

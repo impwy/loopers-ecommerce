@@ -47,15 +47,13 @@ class OrderFinderIntegrationTest {
     @DisplayName("주문 ID로 주문 조회 성공")
     @Test
     void find_order_by_order_id() {
-        Order order = orderRepository.save(Order.create(CreateOrderSpec.of(1L, "000000",
-                                                                          new Address("00001", "Seoul", "Seongdong-gu", "Seuongsudong", "etc"))));
+        Order order = orderRepository.save(Order.create(CreateOrderSpec.of(1L, "000000")));
 
         Order expected = orderFinder.find(order.getId());
 
         assertAll(
                 () -> assertThat(expected.getMemberId()).isEqualTo(order.getMemberId()),
-                () -> assertThat(expected.getOrderNo()).isEqualTo(order.getOrderNo()),
-                () -> assertThat(expected.getAddress()).isEqualTo(order.getAddress())
+                () -> assertThat(expected.getOrderNo()).isEqualTo(order.getOrderNo())
         );
     }
 
@@ -70,15 +68,13 @@ class OrderFinderIntegrationTest {
     @DisplayName("유저 아이디로 주문 조회 성공")
     @Test
     void find_order_by_memberId() {
-        Order order = orderRepository.save(Order.create(CreateOrderSpec.of(1L, "000000",
-                                                                           new Address("00001", "Seoul", "Seongdong-gu", "Seuongsudong", "etc"))));
+        Order order = orderRepository.save(Order.create(CreateOrderSpec.of(1L, "000000")));
 
         Order expected = orderFinder.findByMemberId(order.getMemberId());
 
         assertAll(
                 () -> assertThat(expected.getMemberId()).isEqualTo(order.getMemberId()),
-                () -> assertThat(expected.getOrderNo()).isEqualTo(order.getOrderNo()),
-                () -> assertThat(expected.getAddress()).isEqualTo(order.getAddress())
+                () -> assertThat(expected.getOrderNo()).isEqualTo(order.getOrderNo())
         );
     }
 }
