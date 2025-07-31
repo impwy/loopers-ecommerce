@@ -1,4 +1,4 @@
-package com.loopers.application;
+package com.loopers.application.order;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

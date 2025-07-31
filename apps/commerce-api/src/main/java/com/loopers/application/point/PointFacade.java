@@ -1,4 +1,4 @@
-package com.loopers.application;
+package com.loopers.application.point;
 
 import java.math.BigDecimal;
 

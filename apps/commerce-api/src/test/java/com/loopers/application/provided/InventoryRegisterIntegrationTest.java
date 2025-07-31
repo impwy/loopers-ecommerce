@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.InventoryFacade;
+import com.loopers.application.inventory.InventoryFacade;
 import com.loopers.application.required.BrandRepository;
 import com.loopers.application.required.InventoryRepository;
 import com.loopers.application.required.ProductRepository;

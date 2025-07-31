@@ -1,4 +1,4 @@
-package com.loopers.application;
+package com.loopers.application.point;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;

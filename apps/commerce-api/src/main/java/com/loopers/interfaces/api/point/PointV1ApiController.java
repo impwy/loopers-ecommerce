@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.loopers.application.MemberFacade;
-import com.loopers.application.PointFacade;
+import com.loopers.application.member.MemberFacade;
+import com.loopers.application.point.PointFacade;
 import com.loopers.domain.member.MemberId;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.point.PointV1Dto.Response.PointAmountResponse;

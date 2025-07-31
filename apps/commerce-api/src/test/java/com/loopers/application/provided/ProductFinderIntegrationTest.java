@@ -17,7 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.ProductFacade;
+import com.loopers.application.product.ProductFacade;
 import com.loopers.application.required.BrandRepository;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.application.required.ProductLikeRepository;

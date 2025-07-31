@@ -1,4 +1,4 @@
-package com.loopers.application;
+package com.loopers.application.brand;
 
 import org.springframework.stereotype.Service;
 
