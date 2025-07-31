@@ -33,10 +33,10 @@ public class OrderItem extends BaseEntity {
     }
 
     public static OrderItem create(Long orderId, Long productId, Long quantity, BigDecimal price) {
-        if (orderId == null) {
+        if (orderId == null || orderId <= 0) {
             throw new CoreException(ErrorType.BAD_REQUEST, "유저는 필수입니다.");
         }
-        if (productId == null) {
+        if (productId == null || productId <= 0) {
             throw new CoreException(ErrorType.BAD_REQUEST, "상품은 필수입니다.");
         }
         if (quantity == null || quantity <= 0) {
@@ -46,5 +46,9 @@ public class OrderItem extends BaseEntity {
             throw new CoreException(ErrorType.BAD_REQUEST, "잘못된 총 가격입니다. : " + price);
         }
         return new OrderItem(orderId, productId, quantity, price);
+    }
+
+    public static OrderItem create(CreateOrderItemSpec createSpec) {
+        return create(createSpec.orderId(), createSpec.productId(), createSpec.quantity(), createSpec.price());
     }
 }
