@@ -1,8 +1,9 @@
-package com.loopers.application.required;
+package com.loopers.application;
 
 import org.springframework.stereotype.Service;
 
 import com.loopers.application.provided.InventoryRegister;
+import com.loopers.application.required.InventoryRepository;
 import com.loopers.domain.inventory.CreateInventorySpec;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.support.error.CoreException;
