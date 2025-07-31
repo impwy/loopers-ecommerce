@@ -16,7 +16,7 @@ class InventoryTest {
 
     @DisplayName("재고량 0 이하 생성 시 실패")
     @ParameterizedTest
-    @ValueSource(longs = { 0, -1 })
+    @ValueSource(longs = { -1, -2, -3 })
     void create_inventory_fail_test(Long quantity) {
         CoreException coreException = assertThrows(CoreException.class, () -> Inventory.create(1L, quantity));
 

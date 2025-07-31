@@ -33,13 +33,21 @@ public class Inventory extends BaseEntity {
     }
 
     public static Inventory create(Long productId, Long quantity) {
-        if (quantity <= 0) {
-            throw new CoreException(ErrorType.BAD_REQUEST, "재고량은 0 이하가 될 수 없습니다: " + quantity);
+        if (quantity < 0) {
+            throw new CoreException(ErrorType.BAD_REQUEST, "재고량은 0 미만이 될 수 없습니다: " + quantity);
         }
         return new Inventory(productId, quantity);
     }
 
+    public static Inventory of(CreateInventorySpec createInventorySpec) {
+        return create(createInventorySpec.productId(), createInventorySpec.quantity());
+    }
+
     public void decrease(Long quantity) {
+        if (quantity <= 0) {
+            throw new CoreException(ErrorType.BAD_REQUEST, "잘못 된 요청 값입니다. : " + quantity);
+        }
+
         if (this.quantity <= 0 || this.quantity < quantity) {
             throw new CoreException(ErrorType.BAD_REQUEST, "잔여 재고가 없습니다.");
         }
