@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
+import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
 class OrderFinderIntegrationTest {
@@ -25,6 +27,14 @@ class OrderFinderIntegrationTest {
 
     @Autowired
     private OrderFinder orderFinder;
+
+    @Autowired
+    private DatabaseCleanUp databaseCleanUp;
+
+    @AfterEach
+    void tearDown() {
+        databaseCleanUp.truncateAllTables();
+    }
 
     @DisplayName("존재하지 않는 주문 번호 조회 시 NOT_FOUND 반환")
     @Test
