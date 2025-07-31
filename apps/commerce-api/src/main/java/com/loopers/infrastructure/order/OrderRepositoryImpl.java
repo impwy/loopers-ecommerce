@@ -1,5 +1,6 @@
 package com.loopers.infrastructure.order;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -27,5 +28,10 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public Optional<Order> findByMemberId(Long memberId) {
         return orderJpaRepository.findByMemberId(memberId);
+    }
+
+    @Override
+    public List<Order> findWithOrderItem(Long memberId) {
+        return orderJpaRepository.findWithOrderItem(memberId);
     }
 }

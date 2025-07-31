@@ -1,8 +1,12 @@
 package com.loopers.application.provided;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.required.OrderRepository;
-import com.loopers.domain.order.Address;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
 import com.loopers.support.error.CoreException;
@@ -75,6 +78,30 @@ class OrderFinderIntegrationTest {
         assertAll(
                 () -> assertThat(expected.getMemberId()).isEqualTo(order.getMemberId()),
                 () -> assertThat(expected.getOrderNo()).isNotNull()
+        );
+    }
+
+    @DisplayName("주문 조회 시 주문 아이템도 조회")
+    @Test
+    void find_order_with_order_item() {
+        Order firstOrder = Order.create(CreateOrderSpec.of(1L));
+        firstOrder.addOrderItem(1L, 10L, BigDecimal.TEN);
+        firstOrder.addOrderItem(2L, 20L, BigDecimal.TEN);
+        firstOrder.addOrderItem(3L, 30L, BigDecimal.TEN);
+        orderRepository.save(firstOrder);
+
+        Order secondOrder = Order.create(CreateOrderSpec.of(1L));
+        secondOrder.addOrderItem(1L, 10L, BigDecimal.TEN);
+        secondOrder.addOrderItem(2L, 20L, BigDecimal.TEN);
+        secondOrder.addOrderItem(3L, 30L, BigDecimal.TEN);
+        orderRepository.save(secondOrder);
+
+        List<Order> orders = orderFinder.findWithOrderItem(1L);
+
+        assertAll(
+                () -> assertThat(orders.size()).isEqualTo(2),
+                () -> assertThat(orders.getFirst().getOrderItems().size()).isEqualTo(3),
+                () -> assertThat(orders.getFirst().getOrderItems().getFirst().getQuantity()).isEqualTo(10L)
         );
     }
 }

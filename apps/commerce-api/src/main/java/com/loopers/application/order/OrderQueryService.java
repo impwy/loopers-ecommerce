@@ -1,5 +1,7 @@
 package com.loopers.application.order;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.loopers.application.provided.OrderFinder;
@@ -27,5 +29,10 @@ public class OrderQueryService implements OrderFinder {
         return orderRepository.findByMemberId(memberId)
                               .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND,
                                                                    "주문을 찾을 수 없습니다. memberId:" + memberId));
+    }
+
+    @Override
+    public List<Order> findWithOrderItem(Long memberId) {
+        return orderRepository.findWithOrderItem(memberId);
     }
 }
