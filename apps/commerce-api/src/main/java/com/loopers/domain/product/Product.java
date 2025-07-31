@@ -40,5 +40,9 @@ public class Product extends BaseEntity {
     public static Product create(String name, String description, BigDecimal price, Brand brand, ZonedDateTime latestAt) {
         return new Product(name, description, price, brand, latestAt);
     }
+
+    public BigDecimal getTotalPrice(BigDecimal quantity) {
+        return this.price.multiply(quantity);
+    }
 }
 

@@ -13,6 +13,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -39,6 +40,7 @@ public class Member extends BaseEntity {
 
     private LocalDate birthday;
 
+    @JoinColumn(name = "point_id")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Point point;
 
@@ -64,6 +66,10 @@ public class Member extends BaseEntity {
 
     public BigDecimal charge(BigDecimal amount) {
         return this.point.charge(amount);
+    }
+
+    public BigDecimal decrease(BigDecimal amount) {
+        return this.point.decrease(amount);
     }
 }
 

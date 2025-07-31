@@ -49,6 +49,6 @@ public class OrderItem extends BaseEntity {
     }
 
     public static OrderItem create(CreateOrderItemSpec createSpec) {
-        return create(createSpec.orderId(), createSpec.productId(), createSpec.quantity(), createSpec.price());
+        return create(createSpec.orderId(), createSpec.productId(), createSpec.quantity(), createSpec.totalPrice());
     }
 }
