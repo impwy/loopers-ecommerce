@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.loopers.application.provided.ProductFinder;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.product.Product;
+import com.loopers.support.error.CoreException;
+import com.loopers.support.error.ErrorType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +22,8 @@ public class ProductQueryService implements ProductFinder {
 
     @Override
     public Product find(Long productId) {
-        Product product = productRepository.find(productId);
+        Product product = productRepository.find(productId)
+                                           .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
         return product;
     }
 
