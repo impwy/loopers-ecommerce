@@ -79,7 +79,7 @@ class OrderItemRegisterIntegrationTest {
                 () -> assertThat(expected.getOrderId()).isEqualTo(createOrderItemSpec.orderId()),
                 () -> assertThat(expected.getProductId()).isEqualTo(createOrderItemSpec.productId()),
                 () -> assertThat(expected.getQuantity()).isEqualTo(createOrderItemSpec.quantity()),
-                () -> assertThat(expected.getPrice()).isEqualTo(createOrderItemSpec.price())
+                () -> assertThat(expected.getPrice()).isEqualTo(createOrderItemSpec.totalPrice())
         );
     }
 }
