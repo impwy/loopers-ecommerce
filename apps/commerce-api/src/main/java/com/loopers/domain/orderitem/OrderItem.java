@@ -3,10 +3,14 @@ package com.loopers.domain.orderitem;
 import java.math.BigDecimal;
 
 import com.loopers.domain.BaseEntity;
+import com.loopers.domain.order.Order;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,24 +21,26 @@ import lombok.NoArgsConstructor;
 @Table(name = "order_item")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem extends BaseEntity {
-    private Long orderId;
-
     private Long productId;
 
     private Long quantity;
 
     private BigDecimal price;
 
-    private OrderItem(Long orderId, Long productId, Long quantity, BigDecimal price) {
-        this.orderId = orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orders_id")
+    private Order order;
+
+    private OrderItem(Order order, Long productId, Long quantity, BigDecimal price) {
+        this.order = order;
         this.productId = productId;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public static OrderItem create(Long orderId, Long productId, Long quantity, BigDecimal price) {
-        if (orderId == null || orderId <= 0) {
-            throw new CoreException(ErrorType.BAD_REQUEST, "유저는 필수입니다.");
+    public static OrderItem create(Order order, Long productId, Long quantity, BigDecimal price) {
+        if (order == null) {
+            throw new CoreException(ErrorType.BAD_REQUEST, "잘못된 주문입니다..");
         }
         if (productId == null || productId <= 0) {
             throw new CoreException(ErrorType.BAD_REQUEST, "상품은 필수입니다.");
@@ -45,10 +51,10 @@ public class OrderItem extends BaseEntity {
         if (price == null || price.doubleValue() <= 0) {
             throw new CoreException(ErrorType.BAD_REQUEST, "잘못된 총 가격입니다. : " + price);
         }
-        return new OrderItem(orderId, productId, quantity, price);
+        return new OrderItem(order, productId, quantity, price);
     }
 
     public static OrderItem create(CreateOrderItemSpec createSpec) {
-        return create(createSpec.orderId(), createSpec.productId(), createSpec.quantity(), createSpec.totalPrice());
+        return create(createSpec.order(), createSpec.productId(), createSpec.quantity(), createSpec.totalPrice());
     }
 }
