@@ -38,7 +38,7 @@ class OrderRegisterIntegrationTest {
     @DisplayName("존재하지 않는 유저 주문 시 실패")
     @Test
     void create_order_fail_when_user_not_existed() {
-        CreateOrderSpec createOrderSpec = CreateOrderSpec.of(null, "000001");
+        CreateOrderSpec createOrderSpec = CreateOrderSpec.of(null);
 
         assertThatThrownBy(() -> orderRegister.register(createOrderSpec))
                 .isInstanceOf(CoreException.class);

@@ -16,17 +16,7 @@ class OrderTest {
     @Test
     void create_order_fail_when_user_null_test() {
         CreateOrderSpec createOrderSpec
-                = CreateOrderSpec.of(null, "123456");
-
-        assertThatThrownBy(() -> create(createOrderSpec))
-            .isInstanceOf(CoreException.class);
-    }
-
-    @DisplayName("주문 생성 시 주문번호가 NULL이면 실패")
-    @Test
-    void create_order_fail_when_orderNo_null_test() {
-        CreateOrderSpec createOrderSpec
-                = CreateOrderSpec.of(1L, null);
+                = CreateOrderSpec.of(null);
 
         assertThatThrownBy(() -> create(createOrderSpec))
                 .isInstanceOf(CoreException.class);
@@ -36,13 +26,13 @@ class OrderTest {
     @Test
     void create_order_test() {
         CreateOrderSpec createOrderSpec
-                = CreateOrderSpec.of(1L, "123456");
+                = CreateOrderSpec.of(1L);
 
         Order order = create(createOrderSpec);
 
         assertAll(
                 () -> assertThat(order.getMemberId()).isEqualTo(createOrderSpec.memberId()),
-                () -> assertThat(order.getOrderNo()).isEqualTo(createOrderSpec.orderNo())
+                () -> assertThat(order.getOrderNo()).isNotNull()
         );
     }
 }

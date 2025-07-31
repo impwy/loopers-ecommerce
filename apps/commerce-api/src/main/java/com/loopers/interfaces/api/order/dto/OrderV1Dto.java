@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 public class OrderV1Dto {
     public class Request {
-        public record CreateOrderRequest(String orderNo, Long productId, Long quantity) {
-            public static CreateOrderRequest of(String orderNo, Long productId, Long quantity) {
-                return new CreateOrderRequest(orderNo, productId, quantity);
+        public record CreateOrderRequest(Long productId, Long quantity) {
+            public static CreateOrderRequest of(Long productId, Long quantity) {
+                return new CreateOrderRequest(productId, quantity);
             }
         }
     }
