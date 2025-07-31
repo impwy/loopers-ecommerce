@@ -19,7 +19,7 @@ class PointChargeTest {
     @ValueSource(ints = { 1, 10, 100})
     void successWhenChargePointInvalid(int chargePoint) {
         Member member = MemberFixture.createMember();
-        BigDecimal amount = member.getPoint().charge(BigDecimal.valueOf(chargePoint));
+        BigDecimal amount = member.charge(BigDecimal.valueOf(chargePoint));
         assertThat(amount).isEqualTo(BigDecimal.valueOf(chargePoint));
     }
 

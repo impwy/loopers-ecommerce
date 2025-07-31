@@ -33,6 +33,15 @@ public class Point extends BaseEntity {
         if (amount.intValue() <= 0) {
             throw new CoreException(ErrorType.BAD_REQUEST, "잘못된 충전 포인트입니다 : " + amount);
         }
-        return this.amount.add(amount);
+        this.amount = this.amount.add(amount);
+        return this.amount;
+    }
+
+    public BigDecimal decrease(BigDecimal amount) {
+        if (this.amount.intValue() <= 0 || this.amount.compareTo(amount) < 0) {
+            throw new CoreException(ErrorType.BAD_REQUEST, "잔액이 부족합니다.");
+        }
+        this.amount = this.amount.subtract(amount);
+        return this.amount;
     }
 }
