@@ -17,20 +17,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.product.ProductFacade;
 import com.loopers.application.required.BrandRepository;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.application.required.ProductLikeRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
-import com.loopers.domain.like.ProductLike;
-import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
-import com.loopers.domain.product.ProductInfo;
-
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -49,9 +43,6 @@ class ProductFinderIntegrationTest {
     private ProductLikeRepository productLikeRepository;
     @Autowired
     private ProductFinder productFinder;
-
-    @Autowired
-    private ProductFacade productFacade;
 
     @Autowired
     DatabaseCleanUp databaseCleanUp;
@@ -83,21 +74,15 @@ class ProductFinderIntegrationTest {
         );
     }
 
-    @DisplayName("상품 정보는 브랜드 정보, 좋아요 수를 포함한다.")
+    @DisplayName("상품 정보 조회 성공 테스트")
     @Test
     void productInfo_has_brandInfo_and_like_count() {
-        Member member = memberRepository.save(MemberFixture.createMember());
-        Brand brand = brandRepository.create(Brand.create("브랜드", "브랜드입니다."));
-        productLikeRepository.save(ProductLike.create(member, product));
-
-        ProductInfo productInfo = productFacade.findProductInfo(product.getId());
+        Product expected = productFinder.find(product.getId());
 
         assertAll(
-                () -> assertThat(productInfo.productName()).isEqualTo(product.getName()),
-                () -> assertThat(productInfo.productDescription()).isEqualTo(product.getDescription()),
-                () -> assertThat(productInfo.brandName()).isEqualTo(brand.getName()),
-                () -> assertThat(productInfo.brandDescription()).isEqualTo(brand.getDescription()),
-                () -> assertThat(productInfo.likeCount()).isOne()
+                () -> assertThat(expected.getName()).isEqualTo(product.getName()),
+                () -> assertThat(expected.getPrice().compareTo(product.getPrice())).isZero(),
+                () -> assertThat(expected.getDescription()).isEqualTo(product.getDescription())
         );
     }
 

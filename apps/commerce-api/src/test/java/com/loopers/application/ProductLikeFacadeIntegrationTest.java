@@ -1,4 +1,4 @@
-package com.loopers.application.provided;
+package com.loopers.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,7 +32,7 @@ import com.loopers.support.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
-class ProductLikeRegisterIntegrationTest {
+class ProductLikeFacadeIntegrationTest {
 
     @Autowired
     private ProductLikeFacade productLikeFacade;
