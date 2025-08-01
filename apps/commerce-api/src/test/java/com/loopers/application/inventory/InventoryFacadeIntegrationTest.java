@@ -1,4 +1,4 @@
-package com.loopers.application;
+package com.loopers.application.inventory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.inventory.InventoryFacade;
 import com.loopers.application.required.BrandRepository;
 import com.loopers.application.required.InventoryRepository;
 import com.loopers.application.required.ProductRepository;

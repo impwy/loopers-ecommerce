@@ -1,4 +1,4 @@
-package com.loopers.application.provided;
+package com.loopers.application.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,7 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.member.MemberModifyService;
+import com.loopers.application.provided.MemberFinder;
+import com.loopers.application.provided.MemberRegister;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Gender;

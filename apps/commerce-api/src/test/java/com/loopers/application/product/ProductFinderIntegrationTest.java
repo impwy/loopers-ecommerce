@@ -1,4 +1,4 @@
-package com.loopers.application.provided;
+package com.loopers.application.product;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import com.loopers.application.provided.ProductFinder;
 import com.loopers.application.required.BrandRepository;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.application.required.ProductLikeRepository;

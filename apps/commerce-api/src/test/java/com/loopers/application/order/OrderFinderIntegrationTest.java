@@ -1,6 +1,5 @@
-package com.loopers.application.provided;
+package com.loopers.application.order;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import com.loopers.application.provided.OrderFinder;
 import com.loopers.application.required.OrderRepository;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;

@@ -1,4 +1,4 @@
-package com.loopers.application.provided;
+package com.loopers.application.order;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import com.loopers.application.provided.OrderRegister;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.order.CreateOrderSpec;

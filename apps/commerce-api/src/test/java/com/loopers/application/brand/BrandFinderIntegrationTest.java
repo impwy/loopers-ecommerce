@@ -1,4 +1,4 @@
-package com.loopers.application.provided;
+package com.loopers.application.brand;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import com.loopers.application.provided.BrandFinder;
 import com.loopers.application.required.BrandRepository;
 import com.loopers.domain.brand.Brand;
 

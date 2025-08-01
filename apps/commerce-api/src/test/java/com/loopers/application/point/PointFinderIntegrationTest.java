@@ -1,4 +1,4 @@
-package com.loopers.application.provided;
+package com.loopers.application.point;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.loopers.application.provided.MemberFinder;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.infrastructure.member.MemberJpaRepository;
