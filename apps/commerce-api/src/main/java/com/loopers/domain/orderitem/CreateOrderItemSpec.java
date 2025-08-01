@@ -2,8 +2,10 @@ package com.loopers.domain.orderitem;
 
 import java.math.BigDecimal;
 
-public record CreateOrderItemSpec(Long orderId, Long productId, Long quantity, BigDecimal totalPrice) {
-    public static CreateOrderItemSpec of(Long orderId, Long productId, Long quantity, BigDecimal totalPrice) {
-        return new CreateOrderItemSpec(orderId, productId, quantity, totalPrice);
+import com.loopers.domain.order.Order;
+
+public record CreateOrderItemSpec(Order order, Long productId, Long quantity, BigDecimal totalPrice) {
+    public static CreateOrderItemSpec of(Order order, Long productId, Long quantity, BigDecimal totalPrice) {
+        return new CreateOrderItemSpec(order, productId, quantity, totalPrice);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.loopers.application.required.ProductRepository;
+import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<Product> findByConditions(Sort sort) {
         return productJpaRepository.findAll(sort);
+    }
+
+    @Override
+    public List<Product> findByBrand(Brand brand) {
+        return productJpaRepository.findByBrand(brand);
     }
 }

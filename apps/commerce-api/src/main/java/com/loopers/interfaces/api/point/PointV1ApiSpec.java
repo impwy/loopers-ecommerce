@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import com.loopers.domain.member.MemberId;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.point.PointV1Dto.Response.PointAmountResponse;
+import com.loopers.interfaces.api.point.dto.PointV1Dto.Response.PointAmountResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;

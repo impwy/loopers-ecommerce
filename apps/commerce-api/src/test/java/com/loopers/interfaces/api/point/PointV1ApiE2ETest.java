@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
-import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +26,7 @@ import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.infrastructure.member.MemberJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
+import com.loopers.interfaces.api.point.dto.PointV1Dto;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -81,7 +81,7 @@ public class PointV1ApiE2ETest {
         void returnAmountWhenUserChargePoint() throws JsonProcessingException {
             Member member = memberJpaRepository.save(MemberFixture.createMember());
             String amount = "1000.00";
-            BigDecimal expectedAmount = member.getPoint().getAmount().add(new BigDecimal(amount));
+            BigDecimal expectedAmount = member.charge(new BigDecimal(amount));
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
