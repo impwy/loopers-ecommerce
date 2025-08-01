@@ -81,7 +81,7 @@ public class PointV1ApiE2ETest {
         void returnAmountWhenUserChargePoint() throws JsonProcessingException {
             Member member = memberJpaRepository.save(MemberFixture.createMember());
             String amount = "1000.00";
-            BigDecimal expectedAmount = member.getPoint().getAmount().add(new BigDecimal(amount));
+            BigDecimal expectedAmount = member.charge(new BigDecimal(amount));
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

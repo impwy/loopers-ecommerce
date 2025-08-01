@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.domain.member.MemberId;
+import com.loopers.interfaces.api.point.dto.PointV1Dto.Response.PointAmountResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,7 +16,8 @@ public class PointFacade {
     private final PointQueryService pointQueryService;
 
     @Transactional
-    public BigDecimal getPoints(MemberId memberId) {
-        return pointQueryService.find(memberId).getAmount();
+    public PointAmountResponse getPoints(MemberId memberId) {
+        BigDecimal amount = pointQueryService.find(memberId).getAmount();
+        return PointAmountResponse.of(amount);
     }
 }
