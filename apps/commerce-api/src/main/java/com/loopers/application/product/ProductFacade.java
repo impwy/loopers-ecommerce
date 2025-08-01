@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductFacade {
     private final ProductFinder productFinder;
     private final ProductLikeFinder productLikeFinder;
-    private final ProductBrandDomainService productBrandDomainService = new ProductBrandDomainService();
+    private final ProductBrandDomainService productBrandDomainService;
 
     @Transactional
     public ProductInfo findProductInfo(Long productId) {

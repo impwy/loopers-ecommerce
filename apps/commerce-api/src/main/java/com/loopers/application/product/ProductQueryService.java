@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.loopers.application.provided.ProductFinder;
 import com.loopers.application.required.ProductRepository;
+import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
@@ -30,5 +31,10 @@ public class ProductQueryService implements ProductFinder {
     @Override
     public List<Product> findByConditions(Sort sort) {
         return productRepository.findByConditions(sort);
+    }
+
+    @Override
+    public List<Product> findByBrand(Brand brand) {
+        return productRepository.findByBrand(brand);
     }
 }
