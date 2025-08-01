@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.loopers.application.productlike.ProductLikeFacade;
 import com.loopers.application.required.BrandRepository;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.application.required.ProductLikeRepository;

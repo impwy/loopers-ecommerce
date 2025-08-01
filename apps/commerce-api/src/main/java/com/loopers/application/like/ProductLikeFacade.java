@@ -1,4 +1,4 @@
-package com.loopers.application.productlike;
+package com.loopers.application.like;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
