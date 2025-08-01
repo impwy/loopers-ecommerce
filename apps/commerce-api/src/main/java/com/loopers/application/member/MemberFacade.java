@@ -9,6 +9,7 @@ import com.loopers.application.provided.MemberRegister;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
+import com.loopers.interfaces.api.point.dto.PointV1Dto.Response.PointAmountResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +31,8 @@ public class MemberFacade {
         return memberFinder.findByMemberId(memberId).getPoint().getAmount();
     }
 
-    public BigDecimal chargePoint(MemberId memberId, BigDecimal amount) {
-        return memberRegister.chargePoint(memberId, amount);
+    public PointAmountResponse chargePoint(MemberId memberId, BigDecimal amount) {
+        BigDecimal chargedPoint = memberRegister.chargePoint(memberId, amount);
+        return PointAmountResponse.of(chargedPoint);
     }
 }
