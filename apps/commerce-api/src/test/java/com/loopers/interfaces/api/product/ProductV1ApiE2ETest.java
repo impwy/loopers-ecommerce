@@ -31,7 +31,7 @@ import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductInfo;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductsInfoResponse;
+import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -74,11 +74,11 @@ class ProductV1ApiE2ETest {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("X-USER-ID", member.getMemberId().memberId());
 
-            ParameterizedTypeReference<ApiResponse<ProductsInfoResponse>> responseType = new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<ProductsInfoResponse>> response =
-                    testRestTemplate.exchange(ENDPOINT_GET + "/latestAt", HttpMethod.GET, new HttpEntity<>(headers), responseType);
+            ParameterizedTypeReference<ApiResponse<ProductInfoPageResponse>> responseType = new ParameterizedTypeReference<>() {};
+            ResponseEntity<ApiResponse<ProductInfoPageResponse>> response =
+                    testRestTemplate.exchange(ENDPOINT_GET + "?page=0&size=2&sort=latestAt", HttpMethod.GET, new HttpEntity<>(headers), responseType);
 
-            List<ProductInfo> productInfos = response.getBody().data().productInfos();
+            List<ProductInfo> productInfos = response.getBody().data().content();
 
             assertAll(
                     () -> assertThat(productInfos.getFirst().productId()).isEqualTo(secondProduct.getId()),
@@ -86,7 +86,9 @@ class ProductV1ApiE2ETest {
                     () -> assertThat(productInfos.getFirst().productDescription()).isEqualTo(secondProduct.getDescription()),
                     () -> assertThat(productInfos.get(1).productId()).isEqualTo(firstProduct.getId()),
                     () -> assertThat(productInfos.get(1).productName()).isEqualTo(firstProduct.getName()),
-                    () -> assertThat(productInfos.get(1).productDescription()).isEqualTo(firstProduct.getDescription())
+                    () -> assertThat(productInfos.get(1).productDescription()).isEqualTo(firstProduct.getDescription()),
+                    () -> assertThat(response.getBody().data().pageSize()).isEqualTo(2),
+                    () -> assertThat(response.getBody().data().totalElements()).isEqualTo(productInfos.size())
             );
         }
     }

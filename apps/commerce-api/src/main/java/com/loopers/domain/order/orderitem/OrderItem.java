@@ -1,4 +1,4 @@
-package com.loopers.domain.orderitem;
+package com.loopers.domain.order.orderitem;
 
 import java.math.BigDecimal;
 

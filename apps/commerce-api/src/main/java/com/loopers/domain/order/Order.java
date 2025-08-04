@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.orderitem.OrderItem;
+import com.loopers.domain.order.orderitem.OrderItem;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 
