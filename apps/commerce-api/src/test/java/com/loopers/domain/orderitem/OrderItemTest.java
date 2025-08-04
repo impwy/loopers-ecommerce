@@ -9,9 +9,8 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.loopers.domain.order.CreateOrderSpec;
-import com.loopers.domain.order.Order;
 import com.loopers.domain.order.OrderFixture;
+import com.loopers.domain.order.orderitem.OrderItem;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 
