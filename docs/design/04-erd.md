@@ -100,9 +100,23 @@ erDiagram
         Datetime deleted_at
     }
     
+    COUPON {
+        bigint id PK
+        bigint member_id FK
+        varchar code
+        enum discount_type
+        enum coupon_status
+        Datetime expired_at
+
+        Datetime created_at
+        Datetime updated_at
+        Datetime deleted_at
+    }
+    
     MEMBER ||--o| POINT : has
     MEMBER ||--o{ PRODUCT_LIKE : contains
     MEMBER ||--o{ ORDER : contains
+    MEMBER ||--o{ COUPON : has
     ORDER ||--|| ORDER_ITEM : contains
     PRODUCT ||--o{ PRODUCT_LIKE : contains
     BRAND ||--o{ PRODUCT : has
