@@ -37,6 +37,7 @@ erDiagram
     ORDER {
         bigint id PK
         bigint member_id FK
+        OrderStatus orderStatus
         
         Datetime created_at
         Datetime updated_at
