@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.loopers.domain.BaseEntity;
+import com.loopers.domain.member.point.Point;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
@@ -68,8 +69,8 @@ public class Member extends BaseEntity {
         return this.point.charge(amount);
     }
 
-    public BigDecimal decrease(BigDecimal amount) {
-        return this.point.decrease(amount);
+    public BigDecimal usePoint(BigDecimal amount) {
+        return this.point.usePoint(amount);
     }
 }
 
