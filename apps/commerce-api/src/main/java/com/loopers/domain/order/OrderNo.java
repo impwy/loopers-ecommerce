@@ -4,10 +4,15 @@ import java.time.LocalDate;
 import java.util.Random;
 
 import jakarta.persistence.Embeddable;
+import lombok.NoArgsConstructor;
 
 @Embeddable
-public record OrderNo(String value) {
+@NoArgsConstructor
+public class OrderNo {
     private static final Random RANDOM = new Random();
+    private String value;
+
+    public OrderNo(String value) {this.value = value;}
 
     public static OrderNo newOrderNo() {
         return new OrderNo(createOrderNo());
@@ -22,4 +27,6 @@ public record OrderNo(String value) {
 
         return datePart + randomNumber;
     }
+
+    public String value() {return value;}
 }
