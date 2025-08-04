@@ -26,9 +26,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.infrastructure.MemberJpaRepository;
+import com.loopers.infrastructure.member.MemberJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.member.dto.MemberRegisterRequest;
+import com.loopers.interfaces.api.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto;
 import com.loopers.utils.DatabaseCleanUp;
 
@@ -70,9 +70,9 @@ class MemberV1ApiE2ETest {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberRegisterResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberV1Dto.MemberRegisterResponse>> response =
+            ResponseEntity<ApiResponse<MemberV1Dto.Response.MemberRegisterResponse>> response =
                     testRestTemplate.exchange(ENDPOINT_POST,
                                               HttpMethod.POST,
                                               new HttpEntity<>(memberRegisterJson, headers),
@@ -97,9 +97,9 @@ class MemberV1ApiE2ETest {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberRegisterResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberV1Dto.MemberRegisterResponse>> response =
+            ResponseEntity<ApiResponse<MemberV1Dto.Response.MemberRegisterResponse>> response =
                     testRestTemplate.exchange(ENDPOINT_POST,
                                               HttpMethod.POST,
                                               new HttpEntity<>(memberRegisterJson, headers),
@@ -114,20 +114,18 @@ class MemberV1ApiE2ETest {
 
     @Nested
     class Get {
-        private static final Function<Long, String> ENDPOINT_GET = id -> "/api/v1/members/me/" + id;
+        private static final String ENDPOINT_GET = "/api/v1/members/me";
 
         @DisplayName("내 정보 조회에 성공할 경우, 해당하는 유저 정보를 응답으로 반환한다.")
         @Test
         void get_memberInfo() {
             Member member = memberJpaRepository.saveAndFlush(MemberFixture.createMember());
 
-            String endpointGet = ENDPOINT_GET.apply(member.getId());
-
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberInfoResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
-            ResponseEntity<ApiResponse<MemberV1Dto.MemberInfoResponse>> response =
-                    testRestTemplate.exchange(RequestEntity.get(endpointGet)
-                                                           .header("X-USER-ID", member.getMemberId().toString())
+            ResponseEntity<ApiResponse<MemberV1Dto.Response.MemberInfoResponse>> response =
+                    testRestTemplate.exchange(RequestEntity.get(ENDPOINT_GET)
+                                                           .header("X-USER-ID", member.getMemberId().memberId())
                                                            .build(),
                                               responseType);
 
@@ -141,11 +139,10 @@ class MemberV1ApiE2ETest {
         @DisplayName("존재하지 않는 ID 로 조회할 경우, 404 Not Found 응답을 반환한다.")
         @Test
         void throwNotFoundException_whenMemberIdIsNotExist() {
-            String endpointGet = ENDPOINT_GET.apply(999L);
 
             ParameterizedTypeReference<?> responseType = new ParameterizedTypeReference<>() {};
             ResponseEntity<?> response =
-                    testRestTemplate.exchange(RequestEntity.get(endpointGet)
+                    testRestTemplate.exchange(RequestEntity.get(ENDPOINT_GET)
                                                            .header("X-USER-ID", "")
                                                            .build(),
                                               responseType);
@@ -157,11 +154,9 @@ class MemberV1ApiE2ETest {
         @DisplayName("X-USER-ID 헤더가 없을 경우, 400 Bad Request 응답을 반환한다.")
         @Test
         void throwBadRequestWhenX_USER_IDHeaderNotExist() {
-            String endPointGet = ENDPOINT_GET.apply(1L);
-
             ParameterizedTypeReference<?> responseType = new ParameterizedTypeReference<>() {};
             ResponseEntity<?> response =
-                    testRestTemplate.exchange(endPointGet, HttpMethod.GET, new HttpEntity<>(null), responseType);
+                    testRestTemplate.exchange(ENDPOINT_GET, HttpMethod.GET, new HttpEntity<>(null), responseType);
 
             assertAll(
                     () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST)
