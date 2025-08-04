@@ -14,6 +14,8 @@ import com.loopers.support.error.ErrorType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -32,11 +34,15 @@ public class Order extends BaseEntity {
     @Embedded
     private OrderNo orderNo;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private final List<OrderItem> orderItems = new ArrayList<>();
 
     private Order(Long memberId) {
         this.memberId = requireNonNull(memberId);
+        this.orderStatus = OrderStatus.PENDING;
         this.orderNo = OrderNo.newOrderNo();
     }
 
