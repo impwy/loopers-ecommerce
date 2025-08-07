@@ -10,28 +10,28 @@ class CouponTest {
     @DisplayName("쿠폰 code null check")
     @Test
     void throw_nullPointException_when_code_is_null() {
-        assertThatThrownBy(() -> Coupon.create(null, DiscountPolicy.FIXED, CouponType.MEMBER))
+        assertThatThrownBy(() -> Coupon.create(new CreateCouponSpec(null, DiscountPolicy.FIXED, CouponType.MEMBER)))
             .isInstanceOf(NullPointerException.class);
     }
 
     @DisplayName("쿠폰 DiscountPolicy null check")
     @Test
     void throw_nullPointException_when_discountPolicy_is_null() {
-        assertThatThrownBy(() -> Coupon.create("coupon", null, CouponType.MEMBER))
+        assertThatThrownBy(() -> Coupon.create(new CreateCouponSpec("coupon", null, CouponType.MEMBER)))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @DisplayName("쿠폰 couponType null check")
     @Test
     void throw_nullPointException_when_couponType_is_null() {
-        assertThatThrownBy(() -> Coupon.create("coupon", DiscountPolicy.FIXED, null))
+        assertThatThrownBy(() -> Coupon.create(new CreateCouponSpec("coupon", DiscountPolicy.FIXED, null)))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @DisplayName("쿠폰 생성 테스트")
     @Test
     void createCoupon() {
-        Coupon coupon = Coupon.create("coupon", DiscountPolicy.FIXED, CouponType.MEMBER);
+        Coupon coupon = Coupon.create(CouponFixture.createCouponSpec());
 
         assertThat(coupon.getCode()).isEqualTo("coupon");
         assertThat(coupon.getDiscountPolicy()).isEqualTo(DiscountPolicy.FIXED);

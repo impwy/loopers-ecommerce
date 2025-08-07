@@ -30,4 +30,12 @@ public class MemberCoupon extends BaseEntity {
         this.member = member;
         this.coupon = coupon;
     }
+
+    public static MemberCoupon create(Member member, Coupon coupon) {
+        return new MemberCoupon(member, coupon);
+    }
+
+    public void addCoupon(Coupon coupon) {
+        this.coupon = coupon;
+    }
 }

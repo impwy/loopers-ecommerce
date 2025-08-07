@@ -38,7 +38,15 @@ public class Coupon extends BaseEntity {
         this.couponType = requireNonNull(couponType);
     }
 
-    public static Coupon create(String code, DiscountPolicy discountPolicy, CouponType couponType) {
-        return new Coupon(code, discountPolicy, couponType);
+    public static Coupon create(CreateCouponSpec createCouponSpec) {
+        return new Coupon(createCouponSpec.code(),
+                          createCouponSpec.discountPolicy(),
+                          createCouponSpec.couponType());
+    }
+
+    public Coupon addMemberCoupon(MemberCoupon memberCoupon) {
+        this.memberCoupons.add(memberCoupon);
+        memberCoupon.addCoupon(this);
+        return this;
     }
 }
