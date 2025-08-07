@@ -1,5 +1,7 @@
 package com.loopers.application.member;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.loopers.application.provided.MemberFinder;
@@ -24,6 +26,12 @@ public class MemberQueryService implements MemberFinder {
     @Override
     public Member findByMemberId(MemberId memberId) {
         return memberRepository.findWithPoint(memberId)
+                               .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다: " + memberId));
+    }
+
+    @Override
+    public Member findByMemberIdWithPessimisticLock(MemberId memberId) {
+        return memberRepository.findByMemberIdWithPessimisticLock(memberId)
                                .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다: " + memberId));
     }
 }

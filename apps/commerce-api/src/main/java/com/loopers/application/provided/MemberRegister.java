@@ -15,4 +15,6 @@ public interface MemberRegister {
     Member register(@Valid MemberRegisterRequest registerRequest);
 
     BigDecimal chargePoint(MemberId memberId, BigDecimal amount);
+
+    Member usePoint(MemberId memberId, BigDecimal discountedPrice);
 }

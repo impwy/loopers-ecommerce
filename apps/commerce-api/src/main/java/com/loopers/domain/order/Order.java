@@ -2,12 +2,12 @@ package com.loopers.domain.order;
 
 import static java.util.Objects.requireNonNull;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.loopers.domain.BaseEntity;
 import com.loopers.domain.order.orderitem.OrderItem;
+import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 
@@ -53,8 +53,15 @@ public class Order extends BaseEntity {
         return new Order(createSpec.memberId());
     }
 
-    public void addOrderItem(Long productId, Long quantity, BigDecimal totalPrice) {
-        OrderItem orderItem = OrderItem.create(this, productId, quantity, totalPrice);
+    public void addOrderItem(Long productId, Long quantity) {
+        OrderItem orderItem = OrderItem.create(this, productId, quantity);
         this.orderItems.add(orderItem);
+    }
+
+    public Order createOrderItems(List<CreateOrderRequest> createOrderRequests) {
+        for (CreateOrderRequest createOrderRequest : createOrderRequests) {
+            addOrderItem(createOrderRequest.productId(), createOrderRequest.quantity());
+        }
+        return this;
     }
 }

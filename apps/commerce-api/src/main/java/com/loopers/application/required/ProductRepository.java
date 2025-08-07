@@ -21,4 +21,6 @@ public interface ProductRepository {
     List<Product> findByBrand(Brand brand);
 
     Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Pageable pageable);
+
+    List<Product> findByIdIn(List<Long> productIds);
 }

@@ -1,5 +1,6 @@
 package com.loopers.infrastructure.inventory;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -27,5 +28,10 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     @Override
     public Optional<Inventory> findByProductId(Long productId) {
         return inventoryJpaRepository.findByProductId(productId);
+    }
+
+    @Override
+    public List<Inventory> findByProductIdWithPessimisticLock(List<Long> productIds) {
+        return inventoryJpaRepository.findAllByProductIdInWithPessimisticLock(productIds);
     }
 }

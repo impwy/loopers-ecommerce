@@ -85,15 +85,15 @@ class OrderFinderIntegrationTest {
     @Test
     void find_order_with_order_item() {
         Order firstOrder = Order.create(CreateOrderSpec.of(1L));
-        firstOrder.addOrderItem(1L, 10L, BigDecimal.TEN);
-        firstOrder.addOrderItem(2L, 20L, BigDecimal.TEN);
-        firstOrder.addOrderItem(3L, 30L, BigDecimal.TEN);
+        firstOrder.addOrderItem(1L, 10L);
+        firstOrder.addOrderItem(2L, 20L);
+        firstOrder.addOrderItem(3L, 30L);
         orderRepository.save(firstOrder);
 
         Order secondOrder = Order.create(CreateOrderSpec.of(1L));
-        secondOrder.addOrderItem(1L, 10L, BigDecimal.TEN);
-        secondOrder.addOrderItem(2L, 20L, BigDecimal.TEN);
-        secondOrder.addOrderItem(3L, 30L, BigDecimal.TEN);
+        secondOrder.addOrderItem(1L, 10L);
+        secondOrder.addOrderItem(2L, 20L);
+        secondOrder.addOrderItem(3L, 30L);
         orderRepository.save(secondOrder);
 
         List<Order> orders = orderFinder.findWithOrderItem(1L);
