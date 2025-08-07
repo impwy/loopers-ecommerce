@@ -12,6 +12,7 @@ import com.loopers.application.provided.CouponRegister;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CouponFixture;
 import com.loopers.domain.coupon.CouponType;
+import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.coupon.DiscountPolicy;
 import com.loopers.interfaces.api.coupon.dto.CouponV1Dto.Request.CreateCouponRequest;
 import com.loopers.support.error.CoreException;
@@ -27,7 +28,7 @@ class CouponRegisterIntegrationTest {
     @Test
     void fail_createCoupon_when_code_is_null() {
         CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> new CreateCouponRequest(null, DiscountPolicy.FIXED, CouponType.MEMBER));
+                                                   () -> new CreateCouponRequest(null, 1L, DiscountPolicy.AMOUNT, CouponType.MEMBER));
 
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         assertThat(coreException.getCustomMessage()).isEqualTo("코드는 필수 입니다.");
@@ -37,7 +38,7 @@ class CouponRegisterIntegrationTest {
     @Test
     void fail_createCoupon_when_discountPolicy_is_null() {
         CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> new CreateCouponRequest("coupon", null, CouponType.MEMBER));
+                                                   () -> new CreateCouponRequest("coupon", 1L, null, CouponType.MEMBER));
 
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         assertThat(coreException.getCustomMessage()).isEqualTo("할인 정책은 필수 입니다.");
@@ -47,7 +48,7 @@ class CouponRegisterIntegrationTest {
     @Test
     void fail_createCoupon_when_couponType_is_null() {
         CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> new CreateCouponRequest("coupon", DiscountPolicy.FIXED, null));
+                                                   () -> new CreateCouponRequest("coupon", 1L, DiscountPolicy.AMOUNT, null));
 
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         assertThat(coreException.getCustomMessage()).isEqualTo("쿠폰 타입은 필수 입니다.");
@@ -56,10 +57,10 @@ class CouponRegisterIntegrationTest {
     @DisplayName("쿠폰 생성 통합 테스트")
     @Test
     void createCouponTest() {
-        CreateCouponRequest couponRequest = CouponFixture.createCouponRequest();
-        Coupon coupon = couponRegister.create(couponRequest);
+        CreateCouponSpec couponSpec = CouponFixture.createCouponSpec();
+        Coupon coupon = couponRegister.create(couponSpec);
 
-        assertThat(coupon.getCouponType()).isEqualTo(couponRequest.couponType());
-        assertThat(coupon.getCode()).isEqualTo(couponRequest.code());
+        assertThat(coupon.getCouponType()).isEqualTo(couponSpec.couponType());
+        assertThat(coupon.getCode()).isEqualTo(couponSpec.code());
     }
 }

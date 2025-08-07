@@ -8,10 +8,10 @@ public class CouponFixture {
     }
 
     public static CreateCouponSpec createCouponSpec() {
-        return new CreateCouponSpec("coupon", DiscountPolicy.FIXED, CouponType.MEMBER);
+        return new CreateCouponSpec("coupon", 1L, DiscountPolicy.AMOUNT, CouponType.MEMBER);
     }
 
     public static CreateCouponRequest createCouponRequest() {
-        return new CreateCouponRequest("coupon", DiscountPolicy.FIXED, CouponType.MEMBER);
+        return new CreateCouponRequest("coupon", 1L, DiscountPolicy.AMOUNT, CouponType.MEMBER);
     }
 }

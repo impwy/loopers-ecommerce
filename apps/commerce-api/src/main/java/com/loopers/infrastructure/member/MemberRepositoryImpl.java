@@ -36,4 +36,9 @@ public class MemberRepositoryImpl implements MemberRepository {
     public Optional<Member> findWithPoint(MemberId memberId) {
         return memberJpaRepository.findWithPoint(memberId);
     }
+
+    @Override
+    public Optional<Member> findByMemberIdWithPessimisticLock(MemberId memberId) {
+        return memberJpaRepository.findByMemberIdWithPessimisticLock(memberId);
+    }
 }

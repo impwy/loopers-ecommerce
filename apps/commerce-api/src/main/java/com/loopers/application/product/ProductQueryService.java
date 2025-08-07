@@ -1,6 +1,10 @@
 package com.loopers.application.product;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +16,7 @@ import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.infrastructure.product.ProductQueryDslRepositoryImpl.ProductWithLikeCount;
+import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 
@@ -42,5 +47,23 @@ public class ProductQueryService implements ProductFinder {
     @Override
     public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Pageable pageable) {
         return productRepository.findWithLikeCount(sortKey, pageable);
+    }
+
+    @Override
+    public BigDecimal getTotalPrice(List<CreateOrderRequest> orderRequests) {
+        List<Long> productIds = orderRequests.stream().map(CreateOrderRequest::productId).toList();
+        List<Product> products = productRepository.findByIdIn(productIds);
+        Map<Long, Product> productMap = products.stream().collect(Collectors.toMap(Product::getId, Function.identity()));
+
+        return orderRequests.stream()
+                            .map(request -> productMap.get(request.productId())
+                                                      .getTotalPrice(BigDecimal.valueOf(request.quantity())))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Override
+    public Map<Long, Product> getProductMap(List<Long> productIds) {
+        List<Product> products = productRepository.findByIdIn(productIds);
+        return products.stream().collect(Collectors.toMap(Product::getId, Function.identity()));
     }
 }

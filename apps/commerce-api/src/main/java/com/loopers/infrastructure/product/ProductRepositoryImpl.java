@@ -44,4 +44,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Pageable pageable) {
         return productJpaRepository.findByBrandAndLikeCount(sortKey, pageable);
     }
+
+    @Override
+    public List<Product> findByIdIn(List<Long> productIds) {
+        return productJpaRepository.findAllById(productIds);
+    }
 }

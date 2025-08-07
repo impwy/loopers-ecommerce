@@ -1,8 +1,15 @@
 package com.loopers.application.provided;
 
+import java.math.BigDecimal;
+
 import com.loopers.domain.coupon.Coupon;
-import com.loopers.interfaces.api.coupon.dto.CouponV1Dto.Request.CreateCouponRequest;
+import com.loopers.domain.coupon.CreateCouponSpec;
+import com.loopers.domain.member.Member;
 
 public interface CouponRegister {
-    Coupon create(CreateCouponRequest couponRequest);
+    Coupon create(CreateCouponSpec createCouponSpec);
+
+    Coupon useMemberCoupon(Long couponId, Member member);
+
+    BigDecimal discountPrice(Long couponId, Member member, BigDecimal totalAmount);
 }

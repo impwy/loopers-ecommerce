@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 import com.loopers.domain.order.Order;
 
-public record CreateOrderItemSpec(Order order, Long productId, Long quantity, BigDecimal totalPrice) {
-    public static CreateOrderItemSpec of(Order order, Long productId, Long quantity, BigDecimal totalPrice) {
-        return new CreateOrderItemSpec(order, productId, quantity, totalPrice);
+public record CreateOrderItemSpec(Long productId, Long quantity) {
+    public static CreateOrderItemSpec of(Long productId, Long quantity) {
+        return new CreateOrderItemSpec(productId, quantity);
     }
 }

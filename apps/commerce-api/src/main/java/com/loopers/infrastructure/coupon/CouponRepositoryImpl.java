@@ -1,5 +1,7 @@
 package com.loopers.infrastructure.coupon;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.required.CouponRepository;
@@ -15,5 +17,15 @@ public class CouponRepositoryImpl implements CouponRepository {
     @Override
     public Coupon create(Coupon coupon) {
         return couponJpaRepository.save(coupon);
+    }
+
+    @Override
+    public Optional<Coupon> find(Long couponId) {
+        return couponJpaRepository.findById(couponId);
+    }
+
+    @Override
+    public Optional<Coupon> findWithPessimisticLock(Long couponId) {
+        return couponJpaRepository.findWithPessimisticLock(couponId);
     }
 }

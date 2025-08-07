@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 public class CouponV1Dto {
     public class Request {
         public record CreateCouponRequest(@NotNull String code,
+                                          @NotNull Long quantity,
                                           @NotNull DiscountPolicy discountPolicy,
                                           @NotNull CouponType couponType) {
             public CreateCouponRequest {
@@ -24,12 +25,13 @@ public class CouponV1Dto {
                     throw new CoreException(ErrorType.BAD_REQUEST, "쿠폰 타입은 필수 입니다.");
                 }
             }
-            public static CreateCouponRequest create(String code, DiscountPolicy discountPolicy, CouponType couponType) {
-                return new CreateCouponRequest(code, discountPolicy, couponType);
+            public static CreateCouponRequest create(String code, Long quantity,
+                                                     DiscountPolicy discountPolicy, CouponType couponType) {
+                return new CreateCouponRequest(code, quantity, discountPolicy, couponType);
             }
 
             public CreateCouponSpec toCreateCouponSpec() {
-                return new CreateCouponSpec(code, discountPolicy, couponType);
+                return new CreateCouponSpec(code, quantity, discountPolicy, couponType);
             }
         }
     }

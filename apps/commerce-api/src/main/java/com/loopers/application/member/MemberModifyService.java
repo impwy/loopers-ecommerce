@@ -8,9 +8,9 @@ import org.springframework.validation.annotation.Validated;
 import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.provided.MemberRegister;
 import com.loopers.application.required.MemberRepository;
+import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.domain.member.MemberId;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
 
@@ -48,5 +48,13 @@ public class MemberModifyService implements MemberRegister {
         if (memberRepository.findByMemberId(new MemberId(registerRequest.memberId())).isPresent()) {
             throw new DuplicateMemberIdException("이미 사용중인 ID 입니다: " + registerRequest.memberId());
         }
+    }
+
+    @Transactional
+    @Override
+    public Member usePoint(MemberId memberId, BigDecimal discountedPrice) {
+        Member member = memberFinder.findByMemberIdWithPessimisticLock(memberId);
+        member.usePoint(discountedPrice);
+        return member;
     }
 }
