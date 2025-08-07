@@ -1,4 +1,4 @@
-package com.loopers.domain.member;
+package com.loopers.domain.member.point;
 
 import java.math.BigDecimal;
 
@@ -25,7 +25,7 @@ public class Point extends BaseEntity {
         this.amount = amount;
     }
 
-    static Point create() {
+    public static Point create() {
         return new Point(BigDecimal.ZERO);
     }
 
@@ -37,7 +37,7 @@ public class Point extends BaseEntity {
         return this.amount;
     }
 
-    public BigDecimal decrease(BigDecimal amount) {
+    public BigDecimal usePoint(BigDecimal amount) {
         if (this.amount.intValue() <= 0 || this.amount.compareTo(amount) < 0) {
             throw new CoreException(ErrorType.BAD_REQUEST, "잔액이 부족합니다.");
         }

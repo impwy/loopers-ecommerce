@@ -51,7 +51,7 @@ public class OrderFacade {
 
             inventoryRegister.decrease(product.getId(), requestQuantity);
 
-            member.decrease(totalPrice);
+            member.usePoint(totalPrice);
 
             OrderProductInfo orderProductInfo = OrderProductInfo.of(order.getOrderNo().value(), product.getName(),
                                                                     requestQuantity, totalPrice);
