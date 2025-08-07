@@ -132,6 +132,7 @@ class OrderFacadeIntegrationTest {
     @Test
     void create_order_test() {
         CreateOrderRequest createOrderRequest = CreateOrderRequest.of(savedProduct.getId(), 10L);
+        savedMember.charge(savedProduct.getPrice().multiply(BigDecimal.TEN));
 
         List<OrderInfo> orderProductInfos = orderFacade.register(savedMember.getMemberId(),
                                                                  CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId()))
