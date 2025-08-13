@@ -124,7 +124,7 @@ class OrderFacadeIntegrationTest {
                                                                               CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId())));
 
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
-        assertThat(coreException.getCustomMessage()).isEqualTo("잔액이 부족합니다.");
+        assertThat(coreException.getMessage()).isEqualTo("잔액이 부족합니다.");
     }
 
     @DisplayName("주문 성공 테스트")

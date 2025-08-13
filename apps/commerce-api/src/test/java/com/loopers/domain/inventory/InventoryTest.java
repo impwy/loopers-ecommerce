@@ -2,15 +2,11 @@ package com.loopers.domain.inventory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
 
 class InventoryTest {
 
@@ -18,9 +14,8 @@ class InventoryTest {
     @ParameterizedTest
     @ValueSource(longs = { -1, -2, -3 })
     void create_inventory_fail_test(Long quantity) {
-        CoreException coreException = assertThrows(CoreException.class, () -> Inventory.create(1L, quantity));
-
-        assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
+        assertThatThrownBy(() -> Inventory.create(1L, quantity))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("상품 ID가 NULL일 때")
@@ -51,9 +46,8 @@ class InventoryTest {
     void decrease_inventory_fail_test() {
         Inventory inventory = Inventory.create(1L, 10L);
 
-        CoreException coreException = assertThrows(CoreException.class, () -> inventory.decrease(11L));
-
-        assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
+        assertThatThrownBy(() -> inventory.decrease(11L))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("재고 품절일 때 감소 실패 테스트")
@@ -62,10 +56,9 @@ class InventoryTest {
         Inventory inventory = Inventory.create(1L, 10L);
         inventory.decrease(10L);
 
-        CoreException coreException = assertThrows(CoreException.class, () -> inventory.decrease(1L));
-
+        assertThatThrownBy(() -> inventory.decrease(1L))
+                .isInstanceOf(IllegalArgumentException.class);
         assertThat(inventory.getInventoryStatus()).isEqualTo(InventoryStatus.SOLD_OUT);
-        assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
     }
 
     @DisplayName("재고 감소 성공 테스트")
