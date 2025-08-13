@@ -17,18 +17,22 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.application.required.BrandRepository;
+import com.loopers.application.required.CouponRepository;
 import com.loopers.application.required.InventoryRepository;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
+import com.loopers.domain.coupon.Coupon;
+import com.loopers.domain.coupon.CouponFixture;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Response.OrderProductInfo;
+import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
+import com.loopers.interfaces.api.order.dto.OrderV1Dto.Response.OrderInfo;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
@@ -51,6 +55,9 @@ class OrderFacadeIntegrationTest {
     @MockitoSpyBean
     private InventoryRepository inventoryRepository;
 
+    @MockitoSpyBean
+    private CouponRepository couponRepository;
+
     @Autowired
     DatabaseCleanUp databaseCleanUp;
 
@@ -61,6 +68,8 @@ class OrderFacadeIntegrationTest {
 
     Member savedMember;
     Product savedProduct;
+    Coupon savedCoupon;
+    Inventory savedInventory;
 
     @BeforeEach
     void setUp() {
@@ -73,7 +82,10 @@ class OrderFacadeIntegrationTest {
         savedProduct = productRepository.save(product);
 
         Inventory inventory = Inventory.create(savedProduct.getId(), 100L);
-        inventoryRepository.save(inventory);
+        savedInventory = inventoryRepository.save(inventory);
+
+        Coupon coupon = CouponFixture.createCoupon();
+        savedCoupon = couponRepository.create(coupon);
     }
 
     @DisplayName("주문 실패 테스트 : 존재하지 않는 상품")
@@ -81,7 +93,8 @@ class OrderFacadeIntegrationTest {
     void create_order_fail_when_product_not_existed() {
         CreateOrderRequest createOrderRequest = CreateOrderRequest.of(-1L, 100L);
         CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> orderFacade.register(savedMember.getMemberId(), List.of(createOrderRequest)));
+                                                   () -> orderFacade.register(savedMember.getMemberId(),
+                                                                              CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedMember.getId())));
 
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.NOT_FOUND);
         assertThat(coreException.getCustomMessage()).isEqualTo("상품을 찾을 수 없습니다.");
@@ -92,7 +105,8 @@ class OrderFacadeIntegrationTest {
     void create_order_fail_when_inventory_soldout() {
         CreateOrderRequest createOrderRequest = CreateOrderRequest.of(savedProduct.getId(), 101L);
         CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> orderFacade.register(savedMember.getMemberId(), List.of(createOrderRequest)));
+                                                   () -> orderFacade.register(savedMember.getMemberId(),
+                                                                              CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId())));
 
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         assertThat(coreException.getCustomMessage()).isEqualTo("잔여 재고가 없습니다.");
@@ -106,7 +120,8 @@ class OrderFacadeIntegrationTest {
         savedMember.charge(totalPrice.subtract(BigDecimal.ONE));
 
         CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> orderFacade.register(savedMember.getMemberId(), List.of(createOrderRequest)));
+                                                   () -> orderFacade.register(savedMember.getMemberId(),
+                                                                              CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId())));
 
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         assertThat(coreException.getCustomMessage()).isEqualTo("잔액이 부족합니다.");
@@ -117,10 +132,11 @@ class OrderFacadeIntegrationTest {
     @Test
     void create_order_test() {
         CreateOrderRequest createOrderRequest = CreateOrderRequest.of(savedProduct.getId(), 10L);
+        savedMember.charge(savedProduct.getPrice().multiply(BigDecimal.TEN));
 
-        savedMember.charge(BigDecimal.valueOf(5100));
-
-        List<OrderProductInfo> orderProductInfos = orderFacade.register(savedMember.getMemberId(), List.of(createOrderRequest));
+        List<OrderInfo> orderProductInfos = orderFacade.register(savedMember.getMemberId(),
+                                                                 CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId()))
+                                                       .getOrderInfos();
 
         BigDecimal totalPrice = savedProduct.getPrice().multiply(BigDecimal.valueOf(createOrderRequest.quantity()));
 

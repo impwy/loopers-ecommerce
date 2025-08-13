@@ -7,7 +7,7 @@ import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.provided.PointFinder;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
-import com.loopers.domain.member.Point;
+import com.loopers.domain.member.point.Point;
 
 import lombok.RequiredArgsConstructor;
 

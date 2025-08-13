@@ -14,4 +14,5 @@ public interface MemberRepository {
 
     Optional<Member> findWithPoint(MemberId memberId);
 
+    Optional<Member> findByMemberIdWithPessimisticLock(MemberId memberId);
 }

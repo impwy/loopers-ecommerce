@@ -3,12 +3,15 @@ package com.loopers.infrastructure.product;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
+import com.loopers.infrastructure.product.ProductQueryDslRepositoryImpl.ProductWithLikeCount;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,5 +38,15 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<Product> findByBrand(Brand brand) {
         return productJpaRepository.findByBrand(brand);
+    }
+
+    @Override
+    public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Pageable pageable) {
+        return productJpaRepository.findByBrandAndLikeCount(sortKey, pageable);
+    }
+
+    @Override
+    public List<Product> findByIdIn(List<Long> productIds) {
+        return productJpaRepository.findAllById(productIds);
     }
 }
