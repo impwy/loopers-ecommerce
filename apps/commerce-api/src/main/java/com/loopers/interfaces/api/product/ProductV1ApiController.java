@@ -1,5 +1,7 @@
 package com.loopers.interfaces.api.product;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,14 @@ public class ProductV1ApiController {
                                                                 @RequestParam Long brandId,
                                                                 Pageable pageable) {
         ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfo(sort, brandId, pageable);
+        return ApiResponse.success(productsInfoResponse);
+    }
+
+    @GetMapping("/denormalization")
+    public ApiResponse<ProductInfoPageResponse> getProductsInfoDenormalization(@RequestParam String sort,
+                                                                               @RequestParam List<Long> brandIds,
+                                                                               Pageable pageable) {
+        ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfoDenormalization(sort, brandIds, pageable);
         return ApiResponse.success(productsInfoResponse);
     }
 }

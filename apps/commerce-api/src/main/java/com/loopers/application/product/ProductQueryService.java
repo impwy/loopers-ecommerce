@@ -46,7 +46,14 @@ public class ProductQueryService implements ProductFinder {
 
     @Override
     public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Long brandId, Pageable pageable) {
-        return productRepository.findWithLikeCount(sortKey,brandId, pageable);
+        return productRepository.findWithLikeCount(sortKey, brandId, pageable);
+    }
+
+    @Override
+    public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey,
+                                                                             List<Long> brandIds,
+                                                                             Pageable pageable) {
+        return productRepository.findByBrandAndLikeCountDenormalization(sortKey, brandIds, pageable);
     }
 
     @Override

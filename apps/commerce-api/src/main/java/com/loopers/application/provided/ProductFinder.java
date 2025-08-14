@@ -22,6 +22,8 @@ public interface ProductFinder {
 
     Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Long brandId, Pageable pageable);
 
+    Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey, List<Long> brandId, Pageable pageable);
+
     BigDecimal getTotalPrice(List<CreateOrderRequest> orderRequests);
 
     Map<Long, Product> getProductMap(List<Long> productIds);

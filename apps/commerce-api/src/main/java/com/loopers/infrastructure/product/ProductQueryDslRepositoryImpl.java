@@ -64,12 +64,46 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
         );
     }
 
+    @Override
+    public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey,
+                                                                             List<Long> brandIds,
+                                                                             Pageable pageable) {
+        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
+
+        List<ProductWithLikeCount> content = queryFactory
+                .select(Projections.constructor(ProductWithLikeCount.class,
+                                                product,
+                                                brand,
+                                                product.likeCount
+                ))
+                .from(product)
+                .leftJoin(product.brand, brand)
+                .fetchJoin()
+                .where(brand.id.in(brandIds))
+                .orderBy(orderSpecifier)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(product.id.countDistinct())
+                .from(product)
+                .where(product.brand.id.in(brandIds))
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(
+                content,
+                pageable,
+                () -> Optional.ofNullable(total).orElse(0L)
+        );
+    }
+
     private OrderSpecifier<?> getOrderSpecifier(String sortKey, QProduct product) {
         return switch (sortKey) {
             case "price" -> product.price.desc();
             case "createdAt" -> product.createdAt.desc();
             case "latestAt" -> product.latestAt.desc();
-            case "LIKE_COUNT_DESC" -> productLike.countDistinct().desc();
+            case "LIKE_COUNT_DESC" -> product.likeCount.desc();
             default -> throw new IllegalArgumentException("지원하지 않는 정렬 조건: " + sortKey);
         };
     }
