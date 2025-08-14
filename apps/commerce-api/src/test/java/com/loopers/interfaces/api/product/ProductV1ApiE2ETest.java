@@ -76,7 +76,7 @@ class ProductV1ApiE2ETest {
 
             ParameterizedTypeReference<ApiResponse<ProductInfoPageResponse>> responseType = new ParameterizedTypeReference<>() {};
             ResponseEntity<ApiResponse<ProductInfoPageResponse>> response =
-                    testRestTemplate.exchange(ENDPOINT_GET + "?page=0&size=2&sort=latestAt", HttpMethod.GET, new HttpEntity<>(headers), responseType);
+                    testRestTemplate.exchange(ENDPOINT_GET + "?page=0&brandId="+ brand.getId() +" &size=2&sort=latestAt", HttpMethod.GET, new HttpEntity<>(headers), responseType);
 
             List<ProductInfo> productInfos = response.getBody().data().content();
 

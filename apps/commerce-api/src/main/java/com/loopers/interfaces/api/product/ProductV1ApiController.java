@@ -19,8 +19,10 @@ public class ProductV1ApiController {
     private final ProductFacade productFacade;
 
     @GetMapping
-    public ApiResponse<ProductInfoPageResponse> getProductsInfo(@RequestParam String sort, Pageable pageable) {
-        ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfo(sort, pageable);
+    public ApiResponse<ProductInfoPageResponse> getProductsInfo(@RequestParam String sort,
+                                                                @RequestParam Long brandId,
+                                                                Pageable pageable) {
+        ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfo(sort, brandId, pageable);
         return ApiResponse.success(productsInfoResponse);
     }
 }

@@ -33,7 +33,7 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
     ) {}
 
     @Override
-    public Page<ProductWithLikeCount> findByBrandAndLikeCount(String sortKey, Pageable pageable) {
+    public Page<ProductWithLikeCount> findByBrandAndLikeCount(String sortKey, Long brandId, Pageable pageable) {
         OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
 
         List<ProductWithLikeCount> content = queryFactory
@@ -45,6 +45,7 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
                 .from(product)
                 .leftJoin(product.brand, brand).fetchJoin()
                 .leftJoin(productLike).on(productLike.product.eq(product))
+                .where(brand.id.eq(brandId))
                 .groupBy(product.id)
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
@@ -68,6 +69,7 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
             case "price" -> product.price.desc();
             case "createdAt" -> product.createdAt.desc();
             case "latestAt" -> product.latestAt.desc();
+            case "LIKE_COUNT_DESC" -> productLike.countDistinct().desc();
             default -> throw new IllegalArgumentException("지원하지 않는 정렬 조건: " + sortKey);
         };
     }

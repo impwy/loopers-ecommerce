@@ -20,7 +20,7 @@ public interface ProductFinder {
 
     List<Product> findByBrand(Brand brand);
 
-    Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Pageable pageable);
+    Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Long brandId, Pageable pageable);
 
     BigDecimal getTotalPrice(List<CreateOrderRequest> orderRequests);
 

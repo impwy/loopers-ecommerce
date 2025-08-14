@@ -41,8 +41,8 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Pageable pageable) {
-        return productJpaRepository.findByBrandAndLikeCount(sortKey, pageable);
+    public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Long brandId, Pageable pageable) {
+        return productJpaRepository.findByBrandAndLikeCount(sortKey, brandId, pageable);
     }
 
     @Override
