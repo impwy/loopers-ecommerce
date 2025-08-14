@@ -24,6 +24,7 @@ public class Product extends BaseEntity {
     private String description;
     private BigDecimal price;
     private ZonedDateTime latestAt;
+    private Long likeCount;
 
     @JoinColumn(name = "brand_id")
     @ManyToOne(fetch = FetchType.LAZY)
