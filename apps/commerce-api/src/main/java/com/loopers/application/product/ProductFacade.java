@@ -14,7 +14,7 @@ import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductBrandDomainService;
 import com.loopers.domain.product.ProductInfo;
-import com.loopers.infrastructure.product.ProductQueryDslRepositoryImpl.ProductWithLikeCount;
+import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 
 import lombok.RequiredArgsConstructor;

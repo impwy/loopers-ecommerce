@@ -12,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Component;
 
-import com.loopers.domain.brand.Brand;
-import com.loopers.domain.product.Product;
 import com.loopers.domain.product.QProduct;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -25,12 +23,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository {
     private final JPQLQueryFactory queryFactory;
-
-    public record ProductWithLikeCount(
-            Product product,
-            Brand brand,
-            Long likeCount
-    ) {}
 
     @Override
     public Page<ProductWithLikeCount> findByBrandAndLikeCount(String sortKey, Long brandId, Pageable pageable) {
@@ -56,25 +48,24 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
                 content,
                 pageable,
                 () -> Optional.ofNullable(queryFactory
-                        .select(product.id.countDistinct())
-                        .from(product)
-                        .leftJoin(productLike).on(productLike.product.eq(product))
-                        .fetchOne()
+                                                  .select(product.id.countDistinct())
+                                                  .from(product)
+                                                  .leftJoin(productLike).on(productLike.product.eq(product))
+                                                  .fetchOne()
                 ).orElse(0L)
         );
     }
 
     @Override
-    public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey,
-                                                                             List<Long> brandIds,
-                                                                             Pageable pageable) {
+    public Page<ProductWithLikeCount> findByBrandDenormalization(String sortKey,
+                                                                 List<Long> brandIds,
+                                                                 Pageable pageable) {
         OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
 
         List<ProductWithLikeCount> content = queryFactory
                 .select(Projections.constructor(ProductWithLikeCount.class,
                                                 product,
-                                                brand,
-                                                product.likeCount
+                                                brand
                 ))
                 .from(product)
                 .leftJoin(product.brand, brand)

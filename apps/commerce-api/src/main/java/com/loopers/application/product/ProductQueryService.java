@@ -15,7 +15,7 @@ import com.loopers.application.provided.ProductFinder;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
-import com.loopers.infrastructure.product.ProductQueryDslRepositoryImpl.ProductWithLikeCount;
+import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
@@ -53,7 +53,11 @@ public class ProductQueryService implements ProductFinder {
     public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey,
                                                                              List<Long> brandIds,
                                                                              Pageable pageable) {
-        return productRepository.findByBrandAndLikeCountDenormalization(sortKey, brandIds, pageable);
+
+        Page<ProductWithLikeCount> productWithBrands
+                = productRepository.findByBrandDenormalization(sortKey, brandIds, pageable);
+
+        return productWithBrands;
     }
 
     @Override

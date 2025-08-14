@@ -10,7 +10,7 @@ import org.springframework.data.domain.Sort;
 
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
-import com.loopers.infrastructure.product.ProductQueryDslRepositoryImpl.ProductWithLikeCount;
+import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 
 public interface ProductFinder {
