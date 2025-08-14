@@ -26,4 +26,5 @@ public interface ProductRepository {
 
     List<Product> findByIdIn(List<Long> productIds);
 
+    Optional<Product> findByIdPessimisticLock(Long productId);
 }

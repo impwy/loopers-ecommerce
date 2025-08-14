@@ -55,4 +55,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     public List<Product> findByIdIn(List<Long> productIds) {
         return productJpaRepository.findAllById(productIds);
     }
+
+    @Override
+    public Optional<Product> findByIdPessimisticLock(Long productId) {
+        return productJpaRepository.findByIdPessimisticLock(productId);
+    }
 }

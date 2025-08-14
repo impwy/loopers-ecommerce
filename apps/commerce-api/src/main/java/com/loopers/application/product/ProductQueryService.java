@@ -77,4 +77,11 @@ public class ProductQueryService implements ProductFinder {
         List<Product> products = productRepository.findByIdIn(productIds);
         return products.stream().collect(Collectors.toMap(Product::getId, Function.identity()));
     }
+
+    @Override
+    public Product findProductPessimisticLock(Long productId) {
+        return productRepository.findByIdPessimisticLock(productId)
+                                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND,
+                                                                     "상품을 찾을 수 없습니다 " + productId));
+    }
 }

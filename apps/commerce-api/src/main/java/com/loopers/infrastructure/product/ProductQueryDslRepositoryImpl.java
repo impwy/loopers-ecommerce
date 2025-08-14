@@ -65,7 +65,8 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
         List<ProductWithLikeCount> content = queryFactory
                 .select(Projections.constructor(ProductWithLikeCount.class,
                                                 product,
-                                                brand
+                                                brand,
+                                                product.likeCount
                 ))
                 .from(product)
                 .leftJoin(product.brand, brand)

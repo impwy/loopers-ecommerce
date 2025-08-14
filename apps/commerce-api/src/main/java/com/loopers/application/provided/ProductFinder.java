@@ -27,4 +27,6 @@ public interface ProductFinder {
     BigDecimal getTotalPrice(List<CreateOrderRequest> orderRequests);
 
     Map<Long, Product> getProductMap(List<Long> productIds);
+
+    Product findProductPessimisticLock(Long productId);
 }
