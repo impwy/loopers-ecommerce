@@ -8,5 +8,5 @@ import org.springframework.data.domain.Pageable;
 public interface ProductQueryDslRepository {
     Page<ProductWithLikeCount> findByBrandAndLikeCount(String sortKey, Long brandId, Pageable pageable);
 
-    Page<ProductWithLikeCount> findByBrandDenormalization(String sortKey, List<Long> brandId, Pageable pageable);
+    Page<ProductWithBrand> findByBrandDenormalization(String sortKey, List<Long> brandId, Pageable pageable);
 }

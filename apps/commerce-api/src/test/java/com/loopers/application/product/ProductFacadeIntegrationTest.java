@@ -12,7 +12,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.connection.RedisPassword;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import com.loopers.application.required.BrandRepository;
 import com.loopers.application.required.MemberRepository;
@@ -30,6 +40,7 @@ import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoP
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
+@Testcontainers
 class ProductFacadeIntegrationTest {
     @MockitoSpyBean
     private MemberRepository memberRepository;
@@ -47,6 +58,14 @@ class ProductFacadeIntegrationTest {
     private ProductFacade productFacade;
 
     @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Container
+    static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:7.4-alpine"))
+            .withExposedPorts(6379)
+            .withCommand("redis-server --requirepass yong");
+
+    @Autowired
     DatabaseCleanUp databaseCleanUp;
 
     @AfterEach
@@ -59,6 +78,19 @@ class ProductFacadeIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
+        redisConfig.setHostName(redis.getHost());
+        redisConfig.setPort(redis.getMappedPort(6379));
+        redisConfig.setPassword(RedisPassword.of("yong"));
+
+        LettuceConnectionFactory connectionFactory =
+                new LettuceConnectionFactory(redisConfig);
+        connectionFactory.afterPropertiesSet();
+
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.afterPropertiesSet();
         brand = brandRepository.create(BrandFixture.createBrand());
         product = productRepository.save(ProductFixture.createProduct(brand));
     }

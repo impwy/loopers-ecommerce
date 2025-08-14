@@ -1,6 +1,8 @@
 package com.loopers.infrastructure.redis;
 
 import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,5 +33,15 @@ public class RedisService {
 
     public void delete(String key) {
         redisTemplate.delete(key);
+    }
+
+    public <T> List<T> multiGet(List<String> keys, Class<T> type) {
+        List<Object> objects = redisTemplate.opsForValue().multiGet(keys);
+        if (objects == null || objects.size() == 0) {
+            return Collections.emptyList();
+        }
+        return objects
+                .stream().map(type::cast)
+                .toList();
     }
 }
