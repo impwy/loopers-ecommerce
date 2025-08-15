@@ -28,7 +28,7 @@ public class ProductV1ApiController {
         return ApiResponse.success(productsInfoResponse);
     }
 
-    @GetMapping("/normalization")
+    @GetMapping("/denormalization")
     public ApiResponse<ProductInfoPageResponse> getProductsInfoDenormalization(@RequestParam String sort,
                                                                                         @RequestParam List<Long> brandIds,
                                                                                         Pageable pageable) {

@@ -33,7 +33,7 @@ export default function () {
     },
   };
 
-  const url = `${BASE}/api/v1/products/denormalize?sort=${sort}&brandIds=${brandIds.join(',')}&page=${page}`;
+  const url = `${BASE}/api/v1/products/denormalization?sort=${sort}&brandIds=${brandIds.join(',')}&page=${page}`;
 
   http.get(url, params);
 

@@ -1,6 +1,7 @@
 package com.loopers.application.product;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -87,7 +88,7 @@ public class ProductQueryService implements ProductFinder {
                                                                               () -> new CoreException(ErrorType.NOT_FOUND,
                                                                                                       "존재하지 않는 상품입니다."));
                                            likeCount = product.getLikeCount();
-                                           redisService.save(redisKey, likeCount);
+                                           redisService.save(redisKey, likeCount, Duration.ofMinutes(1));
                                        }
                                        return new ProductWithLikeCount(p.product(), p.brand(), likeCount);
                                    })
