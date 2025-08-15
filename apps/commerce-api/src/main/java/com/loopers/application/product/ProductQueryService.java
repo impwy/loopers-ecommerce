@@ -55,18 +55,18 @@ public class ProductQueryService implements ProductFinder {
     }
 
     @Override
-    public Page<ProductWithLikeCount> findByBrandAndLikeCountNormalization(String sortKey, List<Long> brandIds,
-                                                                           Pageable pageable) {
+    public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey, List<Long> brandIds,
+                                                                             Pageable pageable) {
 
         Page<ProductWithLikeCount> productWithLikeCounts
-                = productRepository.findByBrandNormalization(sortKey, brandIds, pageable);
+                = productRepository.findByBrandDenormalizationWithLike(sortKey, brandIds, pageable);
         return productWithLikeCounts;
     }
 
     @Override
-    public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey,
-                                                                             List<Long> brandIds,
-                                                                             Pageable pageable) {
+    public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalizationWithRedis(String sortKey,
+                                                                                      List<Long> brandIds,
+                                                                                      Pageable pageable) {
 
         Page<ProductWithBrand> productWithBrands
                 = productRepository.findByBrandDenormalization(sortKey, brandIds, pageable);

@@ -57,7 +57,7 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
     }
 
     @Override
-    public Page<ProductWithLikeCount> findByBrandNormalization(String sortKey, List<Long> brandIds, Pageable pageable) {
+    public Page<ProductWithLikeCount> findByBrandDenormalizationWithLike(String sortKey, List<Long> brandIds, Pageable pageable) {
         OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
 
         List<ProductWithLikeCount> content = queryFactory

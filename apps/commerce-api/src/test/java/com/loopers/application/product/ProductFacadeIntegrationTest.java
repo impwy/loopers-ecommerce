@@ -119,9 +119,9 @@ class ProductFacadeIntegrationTest {
         productRepository.save(product);
 
         ProductInfoPageResponse productInfoPageResponse
-                = productFacade.findProductsInfoDenormalization("LIKE_COUNT_DESC",
-                                                                List.of(brand.getId()),
-                                                                PageRequest.of(0, 10));
+                = productFacade.findProductsInfoDenormalizationWithRedis("LIKE_COUNT_DESC",
+                                                                         List.of(brand.getId()),
+                                                                         PageRequest.of(0, 10));
         List<ProductInfo> content = productInfoPageResponse.content();
 
         assertAll(

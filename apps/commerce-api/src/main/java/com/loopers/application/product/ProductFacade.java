@@ -48,8 +48,8 @@ public class ProductFacade {
     }
 
     @Transactional
-    public ProductInfoPageResponse findProductsInfoNormalization(String sort, List<Long> brandIds, Pageable pageable) {
-        Page<ProductWithLikeCount> withLikeCount = productFinder.findByBrandAndLikeCountNormalization(sort, brandIds, pageable);
+    public ProductInfoPageResponse findProductsInfoDenormalization(String sort, List<Long> brandIds, Pageable pageable) {
+        Page<ProductWithLikeCount> withLikeCount = productFinder.findByBrandAndLikeCountDenormalization(sort, brandIds, pageable);
 
         List<ProductInfo> productInfos
                 = withLikeCount.stream()
@@ -61,8 +61,8 @@ public class ProductFacade {
     }
 
     @Transactional
-    public ProductInfoPageResponse findProductsInfoDenormalization(String sort, List<Long> brandIds, Pageable pageable) {
-        Page<ProductWithLikeCount> withLikeCount = productFinder.findByBrandAndLikeCountDenormalization(sort, brandIds, pageable);
+    public ProductInfoPageResponse findProductsInfoDenormalizationWithRedis(String sort, List<Long> brandIds, Pageable pageable) {
+        Page<ProductWithLikeCount> withLikeCount = productFinder.findByBrandAndLikeCountDenormalizationWithRedis(sort, brandIds, pageable);
 
         List<ProductInfo> productInfos
                 = withLikeCount.stream()
