@@ -48,6 +48,19 @@ public class ProductFacade {
     }
 
     @Transactional
+    public ProductInfoPageResponse findProductsInfoNormalization(String sort, List<Long> brandIds, Pageable pageable) {
+        Page<ProductWithLikeCount> withLikeCount = productFinder.findByBrandAndLikeCountNormalization(sort, brandIds, pageable);
+
+        List<ProductInfo> productInfos
+                = withLikeCount.stream()
+                               .map(p -> productBrandDomainService.findProductWithBrand(p.product(),
+                                                                                        p.product().getBrand(),
+                                                                                        p.likeCount()))
+                               .toList();
+        return ProductInfoPageResponse.from(new PageImpl<>(productInfos, pageable, withLikeCount.getTotalElements()));
+    }
+
+    @Transactional
     public ProductInfoPageResponse findProductsInfoDenormalization(String sort, List<Long> brandIds, Pageable pageable) {
         Page<ProductWithLikeCount> withLikeCount = productFinder.findByBrandAndLikeCountDenormalization(sort, brandIds, pageable);
 

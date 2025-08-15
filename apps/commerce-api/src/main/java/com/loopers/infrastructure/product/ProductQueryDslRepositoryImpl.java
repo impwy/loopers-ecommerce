@@ -57,6 +57,38 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
     }
 
     @Override
+    public Page<ProductWithLikeCount> findByBrandNormalization(String sortKey, List<Long> brandIds, Pageable pageable) {
+        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
+
+        List<ProductWithLikeCount> content = queryFactory
+                .select(Projections.constructor(ProductWithLikeCount.class,
+                                                product,
+                                                brand,
+                                                product.likeCount
+                ))
+                .from(product)
+                .leftJoin(product.brand, brand)
+                .fetchJoin()
+                .where(brand.id.in(brandIds))
+                .orderBy(orderSpecifier)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(product.id.countDistinct())
+                .from(product)
+                .where(product.brand.id.in(brandIds))
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(
+                content,
+                pageable,
+                () -> Optional.ofNullable(total).orElse(0L)
+        );
+    }
+
+    @Override
     public Page<ProductWithBrand> findByBrandDenormalization(String sortKey,
                                                              List<Long> brandIds,
                                                              Pageable pageable) {

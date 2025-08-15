@@ -23,7 +23,9 @@ public interface ProductRepository {
 
     Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Long brandId, Pageable pageable);
 
-    Page<ProductWithBrand> findByBrandDenormalization(String sortKey, List<Long> brandId, Pageable pageable);
+    Page<ProductWithLikeCount> findByBrandNormalization(String sortKey, List<Long> brandIds, Pageable pageable);
+
+    Page<ProductWithBrand> findByBrandDenormalization(String sortKey, List<Long> brandIds, Pageable pageable);
 
     List<Product> findByIdIn(List<Long> productIds);
 

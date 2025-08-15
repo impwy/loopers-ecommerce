@@ -45,6 +45,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public Page<ProductWithLikeCount> findByBrandNormalization(String sortKey, List<Long> brandIds, Pageable pageable) {
+        return productJpaRepository.findByBrandNormalization(sortKey, brandIds, pageable);
+    }
+
+    @Override
     public Page<ProductWithBrand> findByBrandDenormalization(String sortKey,
                                                                  List<Long> brandIds,
                                                                  Pageable pageable) {

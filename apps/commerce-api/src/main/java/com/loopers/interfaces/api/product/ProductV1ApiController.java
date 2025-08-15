@@ -28,6 +28,14 @@ public class ProductV1ApiController {
         return ApiResponse.success(productsInfoResponse);
     }
 
+    @GetMapping("/normalization")
+    public ApiResponse<ProductInfoPageResponse> getProductsInfoNormalization(@RequestParam String sort,
+                                                                               @RequestParam List<Long> brandIds,
+                                                                               Pageable pageable) {
+        ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfoNormalization(sort, brandIds, pageable);
+        return ApiResponse.success(productsInfoResponse);
+    }
+
     @GetMapping("/denormalization")
     public ApiResponse<ProductInfoPageResponse> getProductsInfoDenormalization(@RequestParam String sort,
                                                                                @RequestParam List<Long> brandIds,
