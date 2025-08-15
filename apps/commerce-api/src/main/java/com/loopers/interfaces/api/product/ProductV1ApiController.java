@@ -36,7 +36,7 @@ public class ProductV1ApiController {
         return ApiResponse.success(productsInfoResponse);
     }
 
-    @GetMapping("/denormalization")
+    @GetMapping("/redis")
     public ApiResponse<ProductInfoPageResponse> getProductsInfoDenormalizationWithRedis(@RequestParam String sort,
                                                                                         @RequestParam List<Long> brandIds,
                                                                                         Pageable pageable) {
