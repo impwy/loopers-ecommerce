@@ -75,11 +75,11 @@ public class ProductQueryService implements ProductFinder {
                 = productWithBrands.stream()
                                    .map(p -> {
                                        String redisKey = "product:like:" + p.product().getId();
-                                       Optional<Long> likeCountOpt = redisService.get(redisKey, Long.class);
+                                       Optional<Integer> likeCountOpt = redisService.get(redisKey, Integer.class);
 
                                        long likeCount;
                                        if (likeCountOpt.isPresent()) {
-                                           likeCount = likeCountOpt.get();
+                                           likeCount = likeCountOpt.get().longValue();
                                        } else {
                                            Product product
                                                    = productRepository.find(p.product().getId())
