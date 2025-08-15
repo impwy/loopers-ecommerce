@@ -25,7 +25,7 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
     private final JPQLQueryFactory queryFactory;
 
     @Override
-    public Page<ProductWithLikeCount> findByBrandAndLikeCount(String sortKey, Long brandId, Pageable pageable) {
+    public Page<ProductWithLikeCount> findByBrandAndLikeCount(String sortKey, List<Long> brandIds, Pageable pageable) {
         OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
 
         List<ProductWithLikeCount> content = queryFactory
@@ -37,7 +37,7 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
                 .from(product)
                 .leftJoin(product.brand, brand).fetchJoin()
                 .leftJoin(productLike).on(productLike.product.eq(product))
-                .where(brand.id.eq(brandId))
+                .where(brand.id.in(brandIds))
                 .groupBy(product.id)
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())

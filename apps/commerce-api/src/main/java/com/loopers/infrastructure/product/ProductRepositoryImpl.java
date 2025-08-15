@@ -40,8 +40,8 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Long brandId, Pageable pageable) {
-        return productJpaRepository.findByBrandAndLikeCount(sortKey, brandId, pageable);
+    public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable) {
+        return productJpaRepository.findByBrandAndLikeCount(sortKey, brandIds, pageable);
     }
 
     @Override

@@ -35,8 +35,8 @@ public class ProductFacade {
     }
 
     @Transactional
-    public ProductInfoPageResponse findProductsInfo(String sort, Long brandId, Pageable pageable) {
-        Page<ProductWithLikeCount> withLikeCount = productFinder.findWithLikeCount(sort, brandId, pageable);
+    public ProductInfoPageResponse findProductsInfo(String sort, List<Long> brandIds, Pageable pageable) {
+        Page<ProductWithLikeCount> withLikeCount = productFinder.findWithLikeCount(sort, brandIds, pageable);
 
         List<ProductInfo> productInfos
                 = withLikeCount.stream()

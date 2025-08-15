@@ -22,9 +22,9 @@ public class ProductV1ApiController {
 
     @GetMapping
     public ApiResponse<ProductInfoPageResponse> getProductsInfo(@RequestParam String sort,
-                                                                @RequestParam Long brandId,
+                                                                @RequestParam List<Long> brandIds,
                                                                 Pageable pageable) {
-        ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfo(sort, brandId, pageable);
+        ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfo(sort, brandIds, pageable);
         return ApiResponse.success(productsInfoResponse);
     }
 

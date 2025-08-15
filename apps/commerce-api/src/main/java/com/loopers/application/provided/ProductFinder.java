@@ -20,7 +20,7 @@ public interface ProductFinder {
 
     List<Product> findByBrand(Brand brand);
 
-    Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Long brandId, Pageable pageable);
+    Page<ProductWithLikeCount> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable);
 
     Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey, List<Long> brandId, Pageable pageable);
 
