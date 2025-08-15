@@ -1,6 +1,9 @@
 package com.loopers.application.order;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +16,7 @@ import com.loopers.application.provided.OrderRegister;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.order.CreateOrderSpec;
+import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
 import com.loopers.support.error.CoreException;
 import com.loopers.utils.DatabaseCleanUp;
 
@@ -40,8 +44,9 @@ class OrderRegisterIntegrationTest {
     @Test
     void create_order_fail_when_user_not_existed() {
         CreateOrderSpec createOrderSpec = CreateOrderSpec.of(null);
+        CreateOrderItemSpec createOrderItemSpec = CreateOrderItemSpec.of(1L, 10L);
 
-        assertThatThrownBy(() -> orderRegister.register(createOrderSpec))
+        assertThatThrownBy(() -> orderRegister.createOrder(createOrderSpec, List.of(createOrderItemSpec)))
                 .isInstanceOf(CoreException.class);
     }
 }

@@ -24,6 +24,7 @@ public class Product extends BaseEntity {
     private String description;
     private BigDecimal price;
     private ZonedDateTime latestAt;
+    private Long likeCount;
 
     @JoinColumn(name = "brand_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,6 +36,7 @@ public class Product extends BaseEntity {
         this.price = price;
         this.brand = brand;
         this.latestAt = latestAt;
+        this.likeCount = 0L;
     }
 
     public static Product create(String name, String description, BigDecimal price, Brand brand, ZonedDateTime latestAt) {
@@ -43,6 +45,14 @@ public class Product extends BaseEntity {
 
     public BigDecimal getTotalPrice(BigDecimal quantity) {
         return this.price.multiply(quantity);
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount += 1L;
+    }
+
+    public void decreaseLikeCount() {
+        this.likeCount -= 1L;
     }
 }
 

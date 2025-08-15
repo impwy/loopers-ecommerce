@@ -3,6 +3,8 @@ package com.loopers.application.product;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +19,8 @@ import com.loopers.application.required.BrandRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
+import com.loopers.domain.product.CreateProductSpec;
 import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductFixture;
-
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -36,12 +37,11 @@ public class ProductRegisterIntegrationTest {
     @MockitoSpyBean
     private BrandRepository brandRepository;
 
-    Product product;
+    Brand brand;
 
     @BeforeEach
     void setUp() {
-        Brand brand = brandRepository.create(BrandFixture.createBrand());
-        product = productRepository.save(ProductFixture.createProduct(brand));
+        brand = brandRepository.create(BrandFixture.createBrand());
     }
 
     @AfterEach
@@ -52,12 +52,13 @@ public class ProductRegisterIntegrationTest {
     @DisplayName("상품 생성 통합 테스트")
     @Test
     void createProductTest() {
-        Product expected = productRegister.register(product);
+        CreateProductSpec createProductSpec = new CreateProductSpec("상품", "상품입니다.", BigDecimal.valueOf(500), brand, ZonedDateTime.now());
+        Product expected = productRegister.register(createProductSpec);
 
         assertAll(
-                () -> assertThat(expected.getName()).isEqualTo(product.getName()),
-                () -> assertThat(expected.getPrice().abs()).isEqualTo(product.getPrice().abs()),
-                () -> assertThat(expected.getDescription()).isEqualTo(product.getDescription())
+                () -> assertThat(expected.getName()).isEqualTo(createProductSpec.name()),
+                () -> assertThat(expected.getPrice().abs()).isEqualTo(createProductSpec.price().abs()),
+                () -> assertThat(expected.getDescription()).isEqualTo(createProductSpec.description())
         );
     }
 }

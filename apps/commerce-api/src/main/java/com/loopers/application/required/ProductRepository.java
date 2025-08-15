@@ -9,7 +9,8 @@ import org.springframework.data.domain.Sort;
 
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
-import com.loopers.infrastructure.product.ProductQueryDslRepositoryImpl.ProductWithLikeCount;
+import com.loopers.infrastructure.product.ProductWithBrand;
+import com.loopers.infrastructure.product.ProductWithLikeCount;
 
 public interface ProductRepository {
     Product save(Product product);
@@ -20,7 +21,13 @@ public interface ProductRepository {
 
     List<Product> findByBrand(Brand brand);
 
-    Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Pageable pageable);
+    Page<ProductWithLikeCount> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable);
+
+    Page<ProductWithLikeCount> findByBrandDenormalizationWithLike(String sortKey, List<Long> brandIds, Pageable pageable);
+
+    Page<ProductWithBrand> findByBrandDenormalization(String sortKey, List<Long> brandIds, Pageable pageable);
 
     List<Product> findByIdIn(List<Long> productIds);
+
+    Optional<Product> findByIdPessimisticLock(Long productId);
 }

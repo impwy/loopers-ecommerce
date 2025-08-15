@@ -17,10 +17,9 @@ import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
+import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,17 +37,17 @@ public class OrderFacade {
     public OrderInfos register(MemberId memberId, CreateOrderWithCouponRequest createOrderWithCouponRequest) {
         Member member = memberFinder.findByMemberId(memberId);
         Long couponId = createOrderWithCouponRequest.couponId();
+
         List<CreateOrderRequest> orderRequests = createOrderWithCouponRequest.createOrderRequests();
 
         // 주문 생성
-        Order order = orderRegister.register(CreateOrderSpec.of(member.getId()));
+        List<CreateOrderItemSpec> createOrderItemSpecs
+                = orderRequests.stream()
+                               .map(request -> CreateOrderItemSpec.of(request.productId(), request.quantity()))
+                               .toList();
+        CreateOrderSpec createOrderSpec = CreateOrderSpec.of(member.getId());
 
-        // 주문서 생성
-        try {
-            order.createOrderItems(orderRequests);
-        } catch (IllegalArgumentException e) {
-            throw new CoreException(ErrorType.NOT_FOUND, e.getMessage());
-        }
+        Order order = orderRegister.createOrder(createOrderSpec, createOrderItemSpecs);
 
         // 재고 차감
         inventoryRegister.decreaseProducts(orderRequests);

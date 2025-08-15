@@ -1,5 +1,7 @@
 package com.loopers.interfaces.api.product;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +21,26 @@ public class ProductV1ApiController {
     private final ProductFacade productFacade;
 
     @GetMapping
-    public ApiResponse<ProductInfoPageResponse> getProductsInfo(@RequestParam String sort, Pageable pageable) {
-        ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfo(sort, pageable);
+    public ApiResponse<ProductInfoPageResponse> getProductsInfo(@RequestParam String sort,
+                                                                @RequestParam List<Long> brandIds,
+                                                                Pageable pageable) {
+        ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfo(sort, brandIds, pageable);
+        return ApiResponse.success(productsInfoResponse);
+    }
+
+    @GetMapping("/denormalization")
+    public ApiResponse<ProductInfoPageResponse> getProductsInfoDenormalization(@RequestParam String sort,
+                                                                                        @RequestParam List<Long> brandIds,
+                                                                                        Pageable pageable) {
+        ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfoDenormalization(sort, brandIds, pageable);
+        return ApiResponse.success(productsInfoResponse);
+    }
+
+    @GetMapping("/redis")
+    public ApiResponse<ProductInfoPageResponse> getProductsInfoDenormalizationWithRedis(@RequestParam String sort,
+                                                                                        @RequestParam List<Long> brandIds,
+                                                                                        Pageable pageable) {
+        ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfoDenormalizationWithRedis(sort, brandIds, pageable);
         return ApiResponse.success(productsInfoResponse);
     }
 }

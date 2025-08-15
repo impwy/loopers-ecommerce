@@ -10,7 +10,7 @@ import org.springframework.data.domain.Sort;
 
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
-import com.loopers.infrastructure.product.ProductQueryDslRepositoryImpl.ProductWithLikeCount;
+import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 
 public interface ProductFinder {
@@ -20,9 +20,15 @@ public interface ProductFinder {
 
     List<Product> findByBrand(Brand brand);
 
-    Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Pageable pageable);
+    Page<ProductWithLikeCount> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable);
+
+    Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey, List<Long> brandId, Pageable pageable);
+
+    Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalizationWithRedis(String sortKey, List<Long> brandId, Pageable pageable);
 
     BigDecimal getTotalPrice(List<CreateOrderRequest> orderRequests);
 
     Map<Long, Product> getProductMap(List<Long> productIds);
+
+    Product findProductPessimisticLock(Long productId);
 }

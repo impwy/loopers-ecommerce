@@ -13,6 +13,8 @@ import com.loopers.application.required.InventoryRepository;
 import com.loopers.domain.inventory.CreateInventorySpec;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
+import com.loopers.support.error.CoreException;
+import com.loopers.support.error.ErrorType;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +27,23 @@ public class InventoryModifyService implements InventoryRegister {
 
     @Override
     public Inventory register(CreateInventorySpec createInventorySpec) {
-        Inventory inventory = Inventory.of(createInventorySpec);
-        return inventoryRepository.save(inventory);
+        try {
+            Inventory inventory = Inventory.of(createInventorySpec);
+            return inventoryRepository.save(inventory);
+        } catch (IllegalArgumentException e) {
+            throw new CoreException(ErrorType.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @Override
     public Inventory decrease(Long productId, Long quantity) {
         Inventory inventory = inventoryFinder.findByProductId(productId);
 
-        inventory.decrease(quantity);
+        try {
+            inventory.decrease(quantity);
+        } catch (IllegalArgumentException e) {
+            throw new CoreException(ErrorType.BAD_REQUEST, e.getMessage());
+        }
 
         return inventory;
     }
@@ -45,9 +55,13 @@ public class InventoryModifyService implements InventoryRegister {
         List<Inventory> inventorys = inventoryRepository.findByProductIdWithPessimisticLock(productIds);
         Map<Long, Inventory> inventoryMap = inventorys.stream().collect(Collectors.toMap(Inventory::getId, Function.identity()));
 
-        orderRequests.forEach(orderRequest -> {
-            inventoryMap.get(orderRequest.productId()).decrease(orderRequest.quantity());
-        });
+        try {
+            orderRequests.forEach(orderRequest -> {
+                inventoryMap.get(orderRequest.productId()).decrease(orderRequest.quantity());
+            });
+        } catch (IllegalArgumentException e) {
+            throw new CoreException(ErrorType.BAD_REQUEST, e.getMessage());
+        }
 
         return inventorys;
     }

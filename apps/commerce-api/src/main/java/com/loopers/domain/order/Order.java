@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.loopers.domain.BaseEntity;
+import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
 import com.loopers.domain.order.orderitem.OrderItem;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.support.error.CoreException;
@@ -48,7 +49,7 @@ public class Order extends BaseEntity {
 
     public static Order create(CreateOrderSpec createSpec) {
         if (createSpec.memberId() == null) {
-            throw new CoreException(ErrorType.BAD_REQUEST, "사용자는 필수입니다.");
+            throw new IllegalArgumentException("사용자는 필수입니다.");
         }
         return new Order(createSpec.memberId());
     }
@@ -58,9 +59,9 @@ public class Order extends BaseEntity {
         this.orderItems.add(orderItem);
     }
 
-    public Order createOrderItems(List<CreateOrderRequest> createOrderRequests) {
-        for (CreateOrderRequest createOrderRequest : createOrderRequests) {
-            addOrderItem(createOrderRequest.productId(), createOrderRequest.quantity());
+    public Order createOrderItems(List<CreateOrderItemSpec> createOrderItemSpecs) {
+        for (CreateOrderItemSpec createOrderItemSpec : createOrderItemSpecs) {
+            addOrderItem(createOrderItemSpec.productId(), createOrderItemSpec.quantity());
         }
         return this;
     }

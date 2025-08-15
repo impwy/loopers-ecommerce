@@ -19,7 +19,7 @@ class OrderTest {
                 = CreateOrderSpec.of(null);
 
         assertThatThrownBy(() -> create(createOrderSpec))
-                .isInstanceOf(CoreException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 생성 성공")
