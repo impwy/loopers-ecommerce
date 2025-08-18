@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class RedisService {
+public class RedisRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
     public void save(String key, Object value) {

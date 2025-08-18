@@ -7,7 +7,7 @@ import com.loopers.application.provided.ProductRegister;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.product.CreateProductSpec;
 import com.loopers.domain.product.Product;
-import com.loopers.infrastructure.redis.RedisService;
+import com.loopers.infrastructure.redis.RedisRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductModifyService implements ProductRegister {
     private final ProductRepository productRepository;
     private final ProductFinder productFinder;
-    private final RedisService redisService;
+    private final RedisRepository redisRepository;
 
     @Override
     public Product register(CreateProductSpec createProductSpec) {
@@ -31,7 +31,7 @@ public class ProductModifyService implements ProductRegister {
         Product savedProduct = productRepository.save(product);
 
         String key = "product:like:" + product.getId();
-        redisService.save(key, product.getLikeCount());
+        redisRepository.save(key, product.getLikeCount());
         return savedProduct;
     }
 

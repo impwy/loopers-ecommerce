@@ -20,7 +20,7 @@ import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.infrastructure.product.ProductWithBrand;
 import com.loopers.infrastructure.product.ProductWithLikeCount;
-import com.loopers.infrastructure.redis.RedisService;
+import com.loopers.infrastructure.redis.RedisRepository;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductQueryService implements ProductFinder {
     private final ProductRepository productRepository;
-    private final RedisService redisService;
+    private final RedisRepository redisRepository;
 
     @Override
     public Product find(Long productId) {
@@ -76,7 +76,7 @@ public class ProductQueryService implements ProductFinder {
                 = productWithBrands.stream()
                                    .map(p -> {
                                        String redisKey = "product:like:" + p.product().getId();
-                                       Optional<Integer> likeCountOpt = redisService.get(redisKey, Integer.class);
+                                       Optional<Integer> likeCountOpt = redisRepository.get(redisKey, Integer.class);
 
                                        long likeCount;
                                        if (likeCountOpt.isPresent()) {
@@ -88,7 +88,7 @@ public class ProductQueryService implements ProductFinder {
                                                                               () -> new CoreException(ErrorType.NOT_FOUND,
                                                                                                       "존재하지 않는 상품입니다."));
                                            likeCount = product.getLikeCount();
-                                           redisService.save(redisKey, likeCount, Duration.ofMinutes(1));
+                                           redisRepository.save(redisKey, likeCount, Duration.ofMinutes(1));
                                        }
                                        return new ProductWithLikeCount(p.product(), p.brand(), likeCount);
                                    })
