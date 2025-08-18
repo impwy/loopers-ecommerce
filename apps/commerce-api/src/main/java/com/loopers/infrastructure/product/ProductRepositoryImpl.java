@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
-import com.loopers.infrastructure.product.ProductQueryDslRepositoryImpl.ProductWithLikeCount;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,12 +40,29 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Pageable pageable) {
-        return productJpaRepository.findByBrandAndLikeCount(sortKey, pageable);
+    public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable) {
+        return productJpaRepository.findByBrandAndLikeCount(sortKey, brandIds, pageable);
+    }
+
+    @Override
+    public Page<ProductWithLikeCount> findByBrandDenormalizationWithLike(String sortKey, List<Long> brandIds, Pageable pageable) {
+        return productJpaRepository.findByBrandDenormalizationWithLike(sortKey, brandIds, pageable);
+    }
+
+    @Override
+    public Page<ProductWithBrand> findByBrandDenormalization(String sortKey,
+                                                             List<Long> brandIds,
+                                                             Pageable pageable) {
+        return productJpaRepository.findByBrandDenormalization(sortKey, brandIds, pageable);
     }
 
     @Override
     public List<Product> findByIdIn(List<Long> productIds) {
         return productJpaRepository.findAllById(productIds);
+    }
+
+    @Override
+    public Optional<Product> findByIdPessimisticLock(Long productId) {
+        return productJpaRepository.findByIdPessimisticLock(productId);
     }
 }

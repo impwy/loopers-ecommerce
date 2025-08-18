@@ -12,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Component;
 
-import com.loopers.domain.brand.Brand;
-import com.loopers.domain.product.Product;
 import com.loopers.domain.product.QProduct;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -26,14 +24,8 @@ import lombok.RequiredArgsConstructor;
 public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository {
     private final JPQLQueryFactory queryFactory;
 
-    public record ProductWithLikeCount(
-            Product product,
-            Brand brand,
-            Long likeCount
-    ) {}
-
     @Override
-    public Page<ProductWithLikeCount> findByBrandAndLikeCount(String sortKey, Pageable pageable) {
+    public Page<ProductWithLikeCount> findByBrandAndLikeCount(String sortKey, List<Long> brandIds, Pageable pageable) {
         OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
 
         List<ProductWithLikeCount> content = queryFactory
@@ -45,6 +37,7 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
                 .from(product)
                 .leftJoin(product.brand, brand).fetchJoin()
                 .leftJoin(productLike).on(productLike.product.eq(product))
+                .where(brand.id.in(brandIds))
                 .groupBy(product.id)
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
@@ -55,11 +48,76 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
                 content,
                 pageable,
                 () -> Optional.ofNullable(queryFactory
-                        .select(product.id.countDistinct())
-                        .from(product)
-                        .leftJoin(productLike).on(productLike.product.eq(product))
-                        .fetchOne()
+                                                  .select(product.id.countDistinct())
+                                                  .from(product)
+                                                  .leftJoin(productLike).on(productLike.product.eq(product))
+                                                  .fetchOne()
                 ).orElse(0L)
+        );
+    }
+
+    @Override
+    public Page<ProductWithLikeCount> findByBrandDenormalizationWithLike(String sortKey, List<Long> brandIds, Pageable pageable) {
+        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
+
+        List<ProductWithLikeCount> content = queryFactory
+                .select(Projections.constructor(ProductWithLikeCount.class,
+                                                product,
+                                                brand,
+                                                product.likeCount
+                ))
+                .from(product)
+                .leftJoin(product.brand, brand)
+                .fetchJoin()
+                .where(brand.id.in(brandIds))
+                .orderBy(orderSpecifier)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(product.id.countDistinct())
+                .from(product)
+                .where(product.brand.id.in(brandIds))
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(
+                content,
+                pageable,
+                () -> Optional.ofNullable(total).orElse(0L)
+        );
+    }
+
+    @Override
+    public Page<ProductWithBrand> findByBrandDenormalization(String sortKey,
+                                                             List<Long> brandIds,
+                                                             Pageable pageable) {
+        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
+
+        List<ProductWithBrand> content = queryFactory
+                .select(Projections.constructor(ProductWithBrand.class,
+                                                product,
+                                                brand
+                ))
+                .from(product)
+                .leftJoin(product.brand, brand)
+                .fetchJoin()
+                .where(brand.id.in(brandIds))
+                .orderBy(orderSpecifier)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(product.id.countDistinct())
+                .from(product)
+                .where(product.brand.id.in(brandIds))
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(
+                content,
+                pageable,
+                () -> Optional.ofNullable(total).orElse(0L)
         );
     }
 
@@ -68,6 +126,7 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
             case "price" -> product.price.desc();
             case "createdAt" -> product.createdAt.desc();
             case "latestAt" -> product.latestAt.desc();
+            case "LIKE_COUNT_DESC" -> product.likeCount.desc();
             default -> throw new IllegalArgumentException("지원하지 않는 정렬 조건: " + sortKey);
         };
     }

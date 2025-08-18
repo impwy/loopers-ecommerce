@@ -1,12 +1,15 @@
 package com.loopers.application.product;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -15,7 +18,9 @@ import com.loopers.application.provided.ProductFinder;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
-import com.loopers.infrastructure.product.ProductQueryDslRepositoryImpl.ProductWithLikeCount;
+import com.loopers.infrastructure.product.ProductWithBrand;
+import com.loopers.infrastructure.product.ProductWithLikeCount;
+import com.loopers.infrastructure.redis.RedisService;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
@@ -26,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductQueryService implements ProductFinder {
     private final ProductRepository productRepository;
+    private final RedisService redisService;
 
     @Override
     public Product find(Long productId) {
@@ -45,8 +51,50 @@ public class ProductQueryService implements ProductFinder {
     }
 
     @Override
-    public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, Pageable pageable) {
-        return productRepository.findWithLikeCount(sortKey, pageable);
+    public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable) {
+        return productRepository.findWithLikeCount(sortKey, brandIds, pageable);
+    }
+
+    @Override
+    public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey, List<Long> brandIds,
+                                                                             Pageable pageable) {
+
+        Page<ProductWithLikeCount> productWithLikeCounts
+                = productRepository.findByBrandDenormalizationWithLike(sortKey, brandIds, pageable);
+        return productWithLikeCounts;
+    }
+
+    @Override
+    public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalizationWithRedis(String sortKey,
+                                                                                      List<Long> brandIds,
+                                                                                      Pageable pageable) {
+
+        Page<ProductWithBrand> productWithBrands
+                = productRepository.findByBrandDenormalization(sortKey, brandIds, pageable);
+
+        List<ProductWithLikeCount> content
+                = productWithBrands.stream()
+                                   .map(p -> {
+                                       String redisKey = "product:like:" + p.product().getId();
+                                       Optional<Integer> likeCountOpt = redisService.get(redisKey, Integer.class);
+
+                                       long likeCount;
+                                       if (likeCountOpt.isPresent()) {
+                                           likeCount = likeCountOpt.get().longValue();
+                                       } else {
+                                           Product product
+                                                   = productRepository.find(p.product().getId())
+                                                                      .orElseThrow(
+                                                                              () -> new CoreException(ErrorType.NOT_FOUND,
+                                                                                                      "존재하지 않는 상품입니다."));
+                                           likeCount = product.getLikeCount();
+                                           redisService.save(redisKey, likeCount, Duration.ofMinutes(1));
+                                       }
+                                       return new ProductWithLikeCount(p.product(), p.brand(), likeCount);
+                                   })
+                                   .toList();
+
+        return new PageImpl<>(content, pageable, productWithBrands.getTotalElements());
     }
 
     @Override
@@ -65,5 +113,12 @@ public class ProductQueryService implements ProductFinder {
     public Map<Long, Product> getProductMap(List<Long> productIds) {
         List<Product> products = productRepository.findByIdIn(productIds);
         return products.stream().collect(Collectors.toMap(Product::getId, Function.identity()));
+    }
+
+    @Override
+    public Product findProductPessimisticLock(Long productId) {
+        return productRepository.findByIdPessimisticLock(productId)
+                                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND,
+                                                                     "상품을 찾을 수 없습니다 " + productId));
     }
 }
