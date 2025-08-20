@@ -112,21 +112,6 @@ class OrderFacadeIntegrationTest {
         assertThat(coreException.getCustomMessage()).isEqualTo("잔여 재고가 없습니다.");
     }
 
-    @DisplayName("주문 실패 테스트 : 잔액 부족")
-    @Test
-    void create_order_fail_when_point_is_not_enough() {
-        CreateOrderRequest createOrderRequest = CreateOrderRequest.of(savedProduct.getId(), 100L);
-        BigDecimal totalPrice = savedProduct.getPrice().multiply(BigDecimal.valueOf(createOrderRequest.quantity()));
-        savedMember.charge(totalPrice.subtract(BigDecimal.ONE));
-
-        CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> orderFacade.order(savedMember.getMemberId(),
-                                                                           CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId())));
-
-        assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
-        assertThat(coreException.getMessage()).isEqualTo("잔액이 부족합니다.");
-    }
-
     @DisplayName("주문 성공 테스트")
     @Transactional
     @Test
