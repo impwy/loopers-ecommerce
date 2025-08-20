@@ -25,17 +25,6 @@ class PaymentsTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("transactionKey null 실패 테스트")
-    @Test
-    void fail_when_transactionKey_is_null() {
-        CreatePaymentSpec createPaymentSpec = new CreatePaymentSpec(1L, 1L, null, CardType.SAMSUNG,
-                                                                    "1234-1234-1234-1234", BigDecimal.TEN,
-                                                                    PaymentType.CARD);
-
-        assertThatThrownBy(() -> Payments.create(createPaymentSpec))
-                .isInstanceOf(NullPointerException.class);
-    }
-
     @DisplayName("totalAmount null 실패 테스트")
     @Test
     void fail_when_totalAmount_is_null() {

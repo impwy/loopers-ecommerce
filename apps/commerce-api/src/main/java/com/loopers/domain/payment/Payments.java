@@ -55,7 +55,7 @@ public class Payments extends BaseEntity {
                      BigDecimal totalAmount, PaymentType paymentType) {
         this.orderId = requireNonNull(orderId);
         this.memberId = requireNonNull(memberId);
-        this.transactionKey = requireNonNull(transactionKey);
+        this.transactionKey = transactionKey;
         this.cardType = cardType;
         if (!REGEX_CARD_NO.matcher(cardNo).matches()) {
             throw new IllegalArgumentException("잘못된 카드 번호 입니다.");
