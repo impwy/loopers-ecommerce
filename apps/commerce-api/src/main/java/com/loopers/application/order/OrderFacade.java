@@ -33,7 +33,7 @@ public class OrderFacade {
     private final CouponRegister couponRegister;
     private final ProductFinder productFinder;
 
-    public OrderInfos register(MemberId memberId, CreateOrderWithCouponRequest createOrderWithCouponRequest) {
+    public OrderInfos order(MemberId memberId, CreateOrderWithCouponRequest createOrderWithCouponRequest) {
         Member member = memberFinder.findByMemberId(memberId);
         Long couponId = createOrderWithCouponRequest.couponId();
 
@@ -71,6 +71,6 @@ public class OrderFacade {
         BigDecimal discountedPrice = couponRegister.discountPrice(couponId, member, totalPrice);
         memberRegister.usePoint(memberId, discountedPrice);
 
-        return OrderInfos.of(orderRequests, order, productFinder);
+        return OrderInfos.of(orderRequests, order, productFinder, totalPrice);
     }
 }
