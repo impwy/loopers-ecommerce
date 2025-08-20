@@ -3,6 +3,7 @@ package com.loopers.domain.payment;
 import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
+import java.util.regex.Pattern;
 
 import com.loopers.domain.BaseEntity;
 
@@ -48,12 +49,17 @@ public class Payments extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
+    private final Pattern REGEX_CARD_NO = Pattern.compile("^\\d{4}-\\d{4}-\\d{4}-\\d{4}$");
+
     private Payments(Long orderId, Long memberId, String transactionKey, CardType cardType, String cardNo,
                      BigDecimal totalAmount, PaymentType paymentType, PaymentStatus paymentStatus) {
         this.orderId = requireNonNull(orderId);
         this.memberId = requireNonNull(memberId);
         this.transactionKey = transactionKey;
         this.cardType = cardType;
+        if (!REGEX_CARD_NO.matcher(cardNo).matches()) {
+            throw new IllegalArgumentException("잘못된 카드 번호 입니다.");
+        }
         this.cardNo = cardNo;
         this.totalAmount = totalAmount;
         this.paymentType = paymentType;
