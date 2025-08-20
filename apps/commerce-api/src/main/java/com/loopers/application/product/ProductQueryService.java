@@ -18,11 +18,9 @@ import com.loopers.application.provided.ProductFinder;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductTotalAmountRequest;
 import com.loopers.infrastructure.product.ProductWithBrand;
 import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.infrastructure.redis.RedisRepository;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 

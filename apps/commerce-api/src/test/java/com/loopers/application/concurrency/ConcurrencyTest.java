@@ -32,13 +32,12 @@ import com.loopers.domain.coupon.CouponType;
 import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.coupon.DiscountPolicy;
 import com.loopers.domain.inventory.CreateInventorySpec;
-import com.loopers.domain.inventory.DecreaseInventoryRequest;
+import com.loopers.application.inventory.DecreaseInventoryRequest;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest

@@ -11,9 +11,7 @@ import com.loopers.application.provided.InventoryFinder;
 import com.loopers.application.provided.InventoryRegister;
 import com.loopers.application.required.InventoryRepository;
 import com.loopers.domain.inventory.CreateInventorySpec;
-import com.loopers.domain.inventory.DecreaseInventoryRequest;
 import com.loopers.domain.inventory.Inventory;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 

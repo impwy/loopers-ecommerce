@@ -1,4 +1,4 @@
-package com.loopers.domain.inventory;
+package com.loopers.application.inventory;
 
 public record DecreaseInventoryRequest(Long productId, Long quantity) {
 }

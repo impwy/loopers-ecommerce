@@ -1,4 +1,4 @@
-package com.loopers.domain.product;
+package com.loopers.application.product;
 
 public record ProductTotalAmountRequest(Long productId, Long quantity) {
 }

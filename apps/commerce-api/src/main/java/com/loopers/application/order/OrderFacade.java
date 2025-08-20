@@ -11,13 +11,13 @@ import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.provided.MemberRegister;
 import com.loopers.application.provided.OrderRegister;
 import com.loopers.application.provided.ProductFinder;
-import com.loopers.domain.inventory.DecreaseInventoryRequest;
+import com.loopers.application.inventory.DecreaseInventoryRequest;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
-import com.loopers.domain.product.ProductTotalAmountRequest;
+import com.loopers.application.product.ProductTotalAmountRequest;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
 
