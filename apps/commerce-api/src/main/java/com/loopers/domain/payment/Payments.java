@@ -52,18 +52,18 @@ public class Payments extends BaseEntity {
     private final Pattern REGEX_CARD_NO = Pattern.compile("^\\d{4}-\\d{4}-\\d{4}-\\d{4}$");
 
     private Payments(Long orderId, Long memberId, String transactionKey, CardType cardType, String cardNo,
-                     BigDecimal totalAmount, PaymentType paymentType, PaymentStatus paymentStatus) {
+                     BigDecimal totalAmount, PaymentType paymentType) {
         this.orderId = requireNonNull(orderId);
         this.memberId = requireNonNull(memberId);
-        this.transactionKey = transactionKey;
+        this.transactionKey = requireNonNull(transactionKey);
         this.cardType = cardType;
         if (!REGEX_CARD_NO.matcher(cardNo).matches()) {
             throw new IllegalArgumentException("잘못된 카드 번호 입니다.");
         }
         this.cardNo = cardNo;
-        this.totalAmount = totalAmount;
+        this.totalAmount = requireNonNull(totalAmount);
         this.paymentType = paymentType;
-        this.paymentStatus = paymentStatus;
+        this.paymentStatus = PaymentStatus.PENDING;
     }
 
     public static Payments create(CreatePaymentSpec createPaymentSpec) {
@@ -74,8 +74,7 @@ public class Payments extends BaseEntity {
                 createPaymentSpec.cardType(),
                 createPaymentSpec.cardNo(),
                 createPaymentSpec.totalAmount(),
-                createPaymentSpec.paymentType(),
-                createPaymentSpec.paymentStatus()
+                createPaymentSpec.paymentType()
         );
     }
 }
