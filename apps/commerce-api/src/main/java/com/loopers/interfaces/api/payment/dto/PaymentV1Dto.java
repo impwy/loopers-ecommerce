@@ -9,7 +9,6 @@ public class PaymentV1Dto {
     public class Request {
         public record PaymentRequest(Long orderId, String cardNo, CardType cardType,
                                      BigDecimal totalAmount, PaymentType paymentType) {
-
         }
     }
 }
