@@ -18,6 +18,7 @@ import com.loopers.application.provided.ProductFinder;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
+import com.loopers.domain.product.ProductTotalAmountRequest;
 import com.loopers.infrastructure.product.ProductWithBrand;
 import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.infrastructure.redis.RedisRepository;
@@ -98,12 +99,12 @@ public class ProductQueryService implements ProductFinder {
     }
 
     @Override
-    public BigDecimal getTotalPrice(List<CreateOrderRequest> orderRequests) {
-        List<Long> productIds = orderRequests.stream().map(CreateOrderRequest::productId).toList();
+    public BigDecimal getTotalPrice(List<ProductTotalAmountRequest> productTotalAmountRequests) {
+        List<Long> productIds = productTotalAmountRequests.stream().map(ProductTotalAmountRequest::productId).toList();
         List<Product> products = productRepository.findByIdIn(productIds);
         Map<Long, Product> productMap = products.stream().collect(Collectors.toMap(Product::getId, Function.identity()));
 
-        return orderRequests.stream()
+        return productTotalAmountRequests.stream()
                             .map(request -> productMap.get(request.productId())
                                                       .getTotalPrice(BigDecimal.valueOf(request.quantity())))
                             .reduce(BigDecimal.ZERO, BigDecimal::add);

@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.application.provided.CouponRegister;
 import com.loopers.application.provided.InventoryRegister;
@@ -13,11 +11,13 @@ import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.provided.MemberRegister;
 import com.loopers.application.provided.OrderRegister;
 import com.loopers.application.provided.ProductFinder;
+import com.loopers.domain.inventory.DecreaseInventoryRequest;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
+import com.loopers.domain.product.ProductTotalAmountRequest;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
 
@@ -33,7 +33,6 @@ public class OrderFacade {
     private final CouponRegister couponRegister;
     private final ProductFinder productFinder;
 
-    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public OrderInfos register(MemberId memberId, CreateOrderWithCouponRequest createOrderWithCouponRequest) {
         Member member = memberFinder.findByMemberId(memberId);
         Long couponId = createOrderWithCouponRequest.couponId();
@@ -50,10 +49,20 @@ public class OrderFacade {
         Order order = orderRegister.createOrder(createOrderSpec, createOrderItemSpecs);
 
         // 재고 차감
-        inventoryRegister.decreaseProducts(orderRequests);
+        List<DecreaseInventoryRequest> decreaseInventoryRequests
+                = orderRequests.stream()
+                               .map(request ->
+                                            new DecreaseInventoryRequest(request.productId(), request.quantity()))
+                               .toList();
+        inventoryRegister.decreaseProducts(decreaseInventoryRequests);
 
         // 총 금액
-        BigDecimal totalPrice = productFinder.getTotalPrice(orderRequests);
+        List<ProductTotalAmountRequest> productTotalAmountRequests
+                = orderRequests.stream()
+                               .map(request ->
+                                            new ProductTotalAmountRequest(request.productId(), request.quantity()))
+                               .toList();
+        BigDecimal totalPrice = productFinder.getTotalPrice(productTotalAmountRequests);
 
         // 쿠폰 생성 및 감소
         couponRegister.useMemberCoupon(couponId, member);

@@ -11,6 +11,7 @@ import com.loopers.application.provided.InventoryFinder;
 import com.loopers.application.provided.InventoryRegister;
 import com.loopers.application.required.InventoryRepository;
 import com.loopers.domain.inventory.CreateInventorySpec;
+import com.loopers.domain.inventory.DecreaseInventoryRequest;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.support.error.CoreException;
@@ -50,13 +51,13 @@ public class InventoryModifyService implements InventoryRegister {
 
     @Transactional
     @Override
-    public List<Inventory> decreaseProducts(List<CreateOrderRequest> orderRequests) {
-        List<Long> productIds = orderRequests.stream().map(CreateOrderRequest::productId).toList();
+    public List<Inventory> decreaseProducts(List<DecreaseInventoryRequest> decreaseInventoryRequests) {
+        List<Long> productIds = decreaseInventoryRequests.stream().map(DecreaseInventoryRequest::productId).toList();
         List<Inventory> inventorys = inventoryRepository.findByProductIdWithPessimisticLock(productIds);
         Map<Long, Inventory> inventoryMap = inventorys.stream().collect(Collectors.toMap(Inventory::getId, Function.identity()));
 
         try {
-            orderRequests.forEach(orderRequest -> {
+            decreaseInventoryRequests.forEach(orderRequest -> {
                 inventoryMap.get(orderRequest.productId()).decrease(orderRequest.quantity());
             });
         } catch (IllegalArgumentException e) {
