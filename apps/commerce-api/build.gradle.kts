@@ -15,6 +15,9 @@ dependencies {
     implementation ("io.github.resilience4j:resilience4j-spring-boot3")
     implementation ("org.springframework.boot:spring-boot-starter-aop")
 
+    //feign
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
     // querydsl
     annotationProcessor("com.querydsl:querydsl-apt::jakarta")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
