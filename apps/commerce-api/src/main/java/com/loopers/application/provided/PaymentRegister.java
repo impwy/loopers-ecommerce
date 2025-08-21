@@ -7,5 +7,5 @@ import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PaymentReques
 public interface PaymentRegister {
     Payments createPayment(Long memberId, PaymentRequest paymentRequest);
 
-    void requestPayment(MemberId memberId, PaymentRequest paymentRequest);
+    void requestPayment(String orderId, MemberId memberId, PaymentRequest paymentRequest);
 }

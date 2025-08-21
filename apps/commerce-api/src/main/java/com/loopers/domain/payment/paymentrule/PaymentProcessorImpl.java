@@ -10,7 +10,7 @@ import com.loopers.domain.payment.PaymentType;
 
 @Component
 public class PaymentProcessorImpl implements PaymentProcessor {
-    private Map<PaymentType, PaymentService> paymentServiceMap;
+    Map<PaymentType, PaymentService> paymentServiceMap;
 
     public PaymentProcessorImpl(Map<String, PaymentService> paymentServiceMap) {
         this.paymentServiceMap = paymentServiceMap.entrySet().stream()

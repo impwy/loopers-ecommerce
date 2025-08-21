@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class Payments extends BaseEntity {
 
     @Column(name = "order_id")
-    private Long orderId;
+    private String orderId;
 
     @Column(name = "member_id")
     private Long memberId;
@@ -51,7 +51,7 @@ public class Payments extends BaseEntity {
 
     private final Pattern REGEX_CARD_NO = Pattern.compile("^\\d{4}-\\d{4}-\\d{4}-\\d{4}$");
 
-    private Payments(Long orderId, Long memberId, String transactionKey, CardType cardType, String cardNo,
+    private Payments(String orderId, Long memberId, String transactionKey, CardType cardType, String cardNo,
                      BigDecimal totalAmount, PaymentType paymentType) {
         this.orderId = requireNonNull(orderId);
         this.memberId = requireNonNull(memberId);

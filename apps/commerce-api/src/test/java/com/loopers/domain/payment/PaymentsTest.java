@@ -17,7 +17,7 @@ class PaymentsTest {
     @ParameterizedTest
     @ValueSource(strings = { "fail", "abcd-efgh-ijkl-mnop", "123-123-123-123" })
     void fail_when_card_number_is_wrong_test(String cardNo) {
-        CreatePaymentSpec createPaymentSpec = new CreatePaymentSpec(1L, 1L, "transactionKey",
+        CreatePaymentSpec createPaymentSpec = new CreatePaymentSpec("orderId", 1L, "transactionKey",
                                                                     CardType.SAMSUNG, cardNo, BigDecimal.TEN,
                                                                     PaymentType.CARD);
 
@@ -28,7 +28,7 @@ class PaymentsTest {
     @DisplayName("totalAmount null 실패 테스트")
     @Test
     void fail_when_totalAmount_is_null() {
-        CreatePaymentSpec createPaymentSpec = new CreatePaymentSpec(1L, 1L, "transactionKey", CardType.SAMSUNG,
+        CreatePaymentSpec createPaymentSpec = new CreatePaymentSpec("orderId", 1L, "transactionKey", CardType.SAMSUNG,
                                                                     "1234-1234-1234-1234", null,
                                                                     PaymentType.CARD);
 
@@ -39,7 +39,7 @@ class PaymentsTest {
     @DisplayName("결제 정보 생성 테스트")
     @Test
     void success_create_payment_test() {
-        CreatePaymentSpec createPaymentSpec = new CreatePaymentSpec(1L, 1L, "transactionKey",
+        CreatePaymentSpec createPaymentSpec = new CreatePaymentSpec("orderId", 1L, "transactionKey",
                                                                     CardType.SAMSUNG, "1234-1234-1234-1234", BigDecimal.TEN,
                                                                     PaymentType.CARD);
 

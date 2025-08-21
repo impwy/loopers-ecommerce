@@ -14,9 +14,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.provided.PaymentRegister;
 import com.loopers.application.required.MemberRepository;
+import com.loopers.application.required.OrderRepository;
 import com.loopers.application.required.PaymentRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
+import com.loopers.domain.order.Order;
+import com.loopers.domain.order.OrderFixture;
 import com.loopers.domain.payment.CardType;
 import com.loopers.domain.payment.PaymentType;
 import com.loopers.domain.payment.Payments;
@@ -32,6 +35,9 @@ class PaymentRegisterIntegrationTest {
     @MockitoSpyBean
     private MemberRepository memberRepository;
 
+    @MockitoSpyBean
+    private OrderRepository orderRepository;
+
     @Autowired
     private PaymentRegister paymentRegister;
 
@@ -46,13 +52,14 @@ class PaymentRegisterIntegrationTest {
     @DisplayName("결제 생성 통합 테스트")
     @Test
     void create_payment_test() {
+        Order order = orderRepository.save(OrderFixture.createOrder());
         Member member = memberRepository.save(MemberFixture.createMember());
-        PaymentRequest paymentRequest = new PaymentRequest(member.getId(), "1111-2222-3333-4444", CardType.SAMSUNG, BigDecimal.TEN, PaymentType.CARD);
+        PaymentRequest paymentRequest = new PaymentRequest(order.getId(), "1111-2222-3333-4444", CardType.SAMSUNG, BigDecimal.TEN, PaymentType.CARD);
 
-        Payments payment = paymentRegister.createPayment(1L, paymentRequest);
+        Payments payment = paymentRegister.createPayment(member.getId(), paymentRequest);
 
         assertAll(
-                () -> assertThat(payment.getOrderId()).isEqualTo(1L),
+                () -> assertThat(payment.getOrderId()).isEqualTo(order.getOrderNo().value()),
                 () -> assertThat(payment.getMemberId()).isEqualTo(member.getId()),
                 () -> assertThat(payment.getCardType()).isEqualTo(CardType.SAMSUNG),
                 () -> assertThat(payment.getCardNo()).isEqualTo(paymentRequest.cardNo())
