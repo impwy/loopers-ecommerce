@@ -4,11 +4,11 @@ import org.springframework.stereotype.Component;
 
 import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.provided.OrderFinder;
+import com.loopers.application.provided.OrderRegister;
 import com.loopers.application.provided.PaymentRegister;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.order.Order;
-import com.loopers.domain.payment.PaymentGateway;
 import com.loopers.domain.payment.PaymentStatus;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PaymentRequest;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
@@ -23,7 +23,7 @@ public class PaymentFacade {
     private final PaymentRegister paymentRegister;
     private final MemberFinder memberFinder;
     private final OrderFinder orderFinder;
-    private final PaymentGateway paymentGateway;
+    private final OrderRegister orderRegister;
 
     // 결제 요청
     @Transactional
@@ -36,18 +36,22 @@ public class PaymentFacade {
 
     // 결제 콜백
     public void callback(MemberId memberId, TransactionResponse transactionResponse) {
-        // 결제 상태를 조회한다.
-        TransactionDetailResponse transactionDetailResponse
-                = paymentGateway.getPaymentDetailResponse(memberId, transactionResponse.transactionKey());
+        // 결제 상태 조회
+        TransactionDetailResponse paymentDetailResponse =
+                paymentRegister.getPaymentDetailResponse(memberId, transactionResponse);
+        PaymentStatus paymentStatus = paymentDetailResponse.status();
 
-        PaymentStatus paymentStatus = transactionDetailResponse.status();
+        String orderId = paymentDetailResponse.orderId();
 
-        if (PaymentStatus.SUCCESS == paymentStatus) {
-
-        } else if (PaymentStatus.FAILED == paymentStatus) {
-
-        } else if (PaymentStatus.PENDING == paymentStatus) {
-
+        switch (paymentStatus) {
+            case SUCCESS -> {
+//                paymentRegister.successPayment(orderId);
+//                orderRegister.successOrder(orderId);
+            }
+            case FAILED -> {
+//                paymentRegister.failPayment(orderId);
+//                orderRegister.failOrder(orderId);
+            }
         }
     }
 }
