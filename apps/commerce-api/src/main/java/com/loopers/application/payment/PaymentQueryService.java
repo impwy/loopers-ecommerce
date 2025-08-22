@@ -1,5 +1,7 @@
 package com.loopers.application.payment;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.provided.PaymentFinder;
@@ -14,8 +16,7 @@ public class PaymentQueryService implements PaymentFinder {
     private final PaymentRepository paymentRepository;
 
     @Override
-    public Payments getPayments(String orderId) {
-        return paymentRepository.findByOrderId(orderId)
-                                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 결제입니다."));
+    public List<Payments> getPayments(String orderId) {
+        return paymentRepository.findALlByOrderId(orderId);
     }
 }

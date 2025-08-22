@@ -1,5 +1,7 @@
 package com.loopers.application.payment;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.provided.OrderFinder;
@@ -11,8 +13,6 @@ import com.loopers.domain.order.Order;
 import com.loopers.domain.payment.CreatePaymentSpec;
 import com.loopers.domain.payment.PaymentGateway;
 import com.loopers.domain.payment.Payments;
-import com.loopers.domain.payment.paymentrule.PaymentProcessor;
-import com.loopers.domain.payment.paymentrule.PaymentService;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PaymentRequest;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionResponse;
@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PaymentModifyService implements PaymentRegister {
     private final PaymentRepository paymentRepository;
-    private final PaymentProcessor paymentProcessor;
     private final OrderFinder orderFinder;
     private final PaymentGateway paymentGateway;
     private final PaymentFinder paymentFinder;
@@ -37,27 +36,21 @@ public class PaymentModifyService implements PaymentRegister {
     }
 
     @Override
-    public void requestPayment(String orderId, MemberId memberId, PaymentRequest paymentRequest) {
-        PaymentService paymentService = paymentProcessor.getProcessor(paymentRequest.paymentType());
-        paymentService.requestPayment(orderId, memberId, paymentRequest);
-    }
-
-    @Override
     public TransactionDetailResponse getPaymentDetailResponse(MemberId memberId, TransactionResponse transactionResponse) {
         return paymentGateway.getPaymentDetailResponse(memberId, transactionResponse.transactionKey());
     }
 
     @Override
     public void successPayment(String orderId) {
-        Payments payments = paymentFinder.getPayments(orderId);
-        payments.successPayments();
-        paymentRepository.save(payments);
+        List<Payments> payments = paymentFinder.getPayments(orderId);
+        payments.forEach(Payments::successPayments);
+        paymentRepository.saveAll(payments);
     }
 
     @Override
     public void failPayment(String orderId) {
-        Payments payments = paymentFinder.getPayments(orderId);
-        payments.failPayments();
-        paymentRepository.save(payments);
+        List<Payments> payments = paymentFinder.getPayments(orderId);
+        payments.forEach(Payments::failPayments);
+        paymentRepository.saveAll(payments);
     }
 }

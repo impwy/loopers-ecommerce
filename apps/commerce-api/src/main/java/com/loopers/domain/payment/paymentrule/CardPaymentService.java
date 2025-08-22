@@ -2,7 +2,8 @@ package com.loopers.domain.payment.paymentrule;
 
 import org.springframework.stereotype.Component;
 
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.Member;
+import com.loopers.domain.order.Order;
 import com.loopers.domain.payment.PaymentGateway;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PaymentRequest;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
@@ -16,10 +17,10 @@ public class CardPaymentService implements PaymentService {
     public static final String callbackUrl = "http://localhost:8080/api/v1/payments/pg-callback";
 
     @Override
-    public void requestPayment(String orderId, MemberId memberId, PaymentRequest payment) {
+    public void requestPayment(Order order, Member member, PaymentRequest payment) {
         PaymentRequest paymentRequest = payment;
-        PgPaymentRequest pgPaymentRequest = PgPaymentRequest.of(orderId, paymentRequest, callbackUrl);
+        PgPaymentRequest pgPaymentRequest = PgPaymentRequest.of(order.getOrderNo().value(), paymentRequest, callbackUrl);
 
-        paymentGateway.requestPayment(memberId, pgPaymentRequest);
+        paymentGateway.requestPayment(member.getMemberId(), pgPaymentRequest);
     }
 }

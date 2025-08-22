@@ -10,6 +10,8 @@ import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.payment.PaymentStatus;
+import com.loopers.domain.payment.paymentrule.PaymentProcessor;
+import com.loopers.domain.payment.paymentrule.PaymentService;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PaymentRequest;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionResponse;
@@ -24,6 +26,7 @@ public class PaymentFacade {
     private final MemberFinder memberFinder;
     private final OrderFinder orderFinder;
     private final OrderRegister orderRegister;
+    private final PaymentProcessor paymentProcessor;
 
     // 결제 요청
     @Transactional
@@ -31,7 +34,9 @@ public class PaymentFacade {
         Member member = memberFinder.findByMemberId(memberId);
         Order order = orderFinder.find(paymentRequest.orderId());
         paymentRegister.createPayment(member.getId(), paymentRequest);
-        paymentRegister.requestPayment(order.getOrderNo().value(), memberId, paymentRequest);
+
+        PaymentService paymentService = paymentProcessor.getProcessor(paymentRequest.paymentType());
+        paymentService.requestPayment(order, member, paymentRequest);
     }
 
     // 결제 콜백

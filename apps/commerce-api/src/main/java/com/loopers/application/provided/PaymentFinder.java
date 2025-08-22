@@ -1,7 +1,9 @@
 package com.loopers.application.provided;
 
+import java.util.List;
+
 import com.loopers.domain.payment.Payments;
 
 public interface PaymentFinder {
-    Payments getPayments(String orderId);
+    List<Payments> getPayments(String orderId);
 }

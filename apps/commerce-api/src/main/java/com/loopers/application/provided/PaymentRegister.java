@@ -9,8 +9,6 @@ import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionR
 public interface PaymentRegister {
     Payments createPayment(Long memberId, PaymentRequest paymentRequest);
 
-    void requestPayment(String orderId, MemberId memberId, PaymentRequest paymentRequest);
-
     TransactionDetailResponse getPaymentDetailResponse(MemberId memberId, TransactionResponse transactionResponse);
 
     void successPayment(String orderId);

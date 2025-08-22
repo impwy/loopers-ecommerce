@@ -1,5 +1,6 @@
 package com.loopers.infrastructure.payment;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,17 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     }
 
     @Override
+    public List<Payments> saveAll(List<Payments> payments) {
+        return paymentJpaRepository.saveAll(payments);
+    }
+
+    @Override
     public Optional<Payments> findByOrderId(String orderId) {
         return paymentJpaRepository.findByOrderId(orderId);
+    }
+
+    @Override
+    public List<Payments> findALlByOrderId(String orderId) {
+        return paymentJpaRepository.findAllByOrderId(orderId);
     }
 }
