@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import com.loopers.domain.member.MemberId;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
@@ -17,10 +16,10 @@ import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionR
 public interface PgFeignClient {
 
     @PostMapping("/api/v1/payments")
-    ApiResponse<TransactionResponse> requestPayment(@RequestHeader("X-USER-ID") MemberId memberId,
+    ApiResponse<TransactionResponse> requestPayment(@RequestHeader("X-USER-ID") String memberId,
                                                     @RequestBody PgPaymentRequest paymentRequest);
 
     @GetMapping("/api/v1/payments/{transactionKey}")
-    ApiResponse<TransactionDetailResponse> getPaymentStatus(@RequestHeader("X-USER-ID") MemberId memberId,
+    ApiResponse<TransactionDetailResponse> getPaymentStatus(@RequestHeader("X-USER-ID") String memberId,
                                                             @PathVariable String transactionKey);
 }

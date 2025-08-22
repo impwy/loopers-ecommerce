@@ -25,11 +25,12 @@ public class PaymentGatewayImpl implements PaymentGateway {
     @Override
     public void requestPayment(MemberId memberId, PgPaymentRequest pgPaymentRequest) {
         try {
-            pgFeignClient.requestPayment(memberId, pgPaymentRequest);
+            pgFeignClient.requestPayment(memberId.memberId(), pgPaymentRequest);
         } catch (FeignException e) {
             if (e.status() >= 400 && e.status() < 500) {
                 throw new CoreException(ErrorType.BAD_REQUEST, e.contentUTF8());
             }
+            throw e;
         }
     }
 
@@ -37,12 +38,12 @@ public class PaymentGatewayImpl implements PaymentGateway {
     @Override
     public TransactionDetailResponse getPaymentDetailResponse(MemberId memberId, String transactionKey) {
         ApiResponse<TransactionDetailResponse> paymentStatusResponse =
-                pgFeignClient.getPaymentStatus(memberId, transactionKey);
+                pgFeignClient.getPaymentStatus(memberId.memberId(), transactionKey);
         return paymentStatusResponse.data();
     }
 
-    public void fallbackPgPayment(PgPaymentRequest pgPaymentRequest, Throwable throwable) {
+    public void fallbackPgPayment(MemberId memberId, PgPaymentRequest pgPaymentRequest, Throwable throwable) {
         log.warn("pg 요청에 실패했습니다. : {}", throwable.getMessage());
-        // 다른 PG사에 연결한다.
+        // TODO: 다른 PG사에 연결하는 로직을 추가할 수 있습니다.
     }
 }
