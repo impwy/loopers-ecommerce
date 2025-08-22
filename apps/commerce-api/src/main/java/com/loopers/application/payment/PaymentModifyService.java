@@ -33,6 +33,6 @@ public class PaymentModifyService implements PaymentRegister {
     @Override
     public void requestPayment(String orderId, MemberId memberId, PaymentRequest paymentRequest) {
         PaymentService paymentService = paymentProcessor.getProcessor(paymentRequest.paymentType());
-        paymentService.pay(orderId, memberId, paymentRequest);
+        paymentService.requestPayment(orderId, memberId, paymentRequest);
     }
 }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 public class PointPaymentService implements PaymentService {
 
     @Override
-    public <T> void pay(String orderId, MemberId memberId, T payment) {
+    public <T> void requestPayment(String orderId, MemberId memberId, T payment) {
+        // 포인트를 차감한다.
     }
 }
