@@ -38,8 +38,16 @@ public class PaymentFacade {
     public void callback(MemberId memberId, TransactionResponse transactionResponse) {
         // 결제 상태를 조회한다.
         TransactionDetailResponse transactionDetailResponse
-                = paymentGateway.getPaymentStatus(memberId, transactionResponse.transactionKey());
+                = paymentGateway.getPaymentDetailResponse(memberId, transactionResponse.transactionKey());
 
         PaymentStatus paymentStatus = transactionDetailResponse.status();
+
+        if (PaymentStatus.SUCCESS == paymentStatus) {
+
+        } else if (PaymentStatus.FAILED == paymentStatus) {
+
+        } else if (PaymentStatus.PENDING == paymentStatus) {
+
+        }
     }
 }

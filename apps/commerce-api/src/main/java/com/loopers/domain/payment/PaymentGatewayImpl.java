@@ -21,7 +21,7 @@ public class PaymentGatewayImpl implements PaymentGateway {
     }
 
     @Override
-    public TransactionDetailResponse getPaymentStatus(MemberId memberId, String transactionKey) {
+    public TransactionDetailResponse getPaymentDetailResponse(MemberId memberId, String transactionKey) {
         ApiResponse<TransactionDetailResponse> paymentStatusResponse = pgFeignClient.getPaymentStatus(memberId, transactionKey);
         return paymentStatusResponse.data();
     }

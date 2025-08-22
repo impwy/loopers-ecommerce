@@ -7,5 +7,5 @@ import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionD
 public interface PaymentGateway {
     void requestPayment(MemberId memberId, PgPaymentRequest pgPaymentRequest);
 
-    TransactionDetailResponse getPaymentStatus(MemberId memberId, String transactionKey);
+    TransactionDetailResponse getPaymentDetailResponse(MemberId memberId, String transactionKey);
 }
