@@ -8,10 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.loopers.domain.order.Order;
+import com.loopers.domain.order.OrderNo;
 
 public interface OrderJpaRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByMemberId(Long memberId);
 
     @Query("SELECT o FROM Order o JOIN FETCH o.orderItems where o.memberId =:memberId")
     List<Order> findWithOrderItem(@Param("memberId") Long memberId);
+
+    Optional<Order> findByOrderNo(OrderNo orderNo);
 }
