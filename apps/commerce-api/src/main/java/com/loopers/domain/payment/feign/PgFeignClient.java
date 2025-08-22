@@ -19,7 +19,8 @@ public interface PgFeignClient {
     @PostMapping("/api/v1/payments")
     ApiResponse<TransactionResponse> requestPayment(@RequestHeader("X-USER-ID") MemberId memberId,
                                                     @RequestBody PgPaymentRequest paymentRequest);
-    @GetMapping("/{transactionKey}")
+
+    @GetMapping("/api/v1/payments/{transactionKey}")
     ApiResponse<TransactionDetailResponse> getPaymentStatus(@RequestHeader("X-USER-ID") MemberId memberId,
                                                             @PathVariable String transactionKey);
 }
