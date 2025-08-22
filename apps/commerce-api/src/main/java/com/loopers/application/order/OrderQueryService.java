@@ -35,4 +35,11 @@ public class OrderQueryService implements OrderFinder {
     public List<Order> findWithOrderItem(Long memberId) {
         return orderRepository.findWithOrderItem(memberId);
     }
+
+    @Override
+    public Order findByOrderNo(String orderNo) {
+        return orderRepository.findByOrderNo(orderNo)
+                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND,
+                                                     "주문을 찾을 수 없습니다. orderNo:" + orderNo));
+    }
 }

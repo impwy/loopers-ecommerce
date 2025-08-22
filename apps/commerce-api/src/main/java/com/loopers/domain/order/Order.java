@@ -65,4 +65,12 @@ public class Order extends BaseEntity {
         }
         return this;
     }
+
+    public void successOrder() {
+        this.orderStatus = OrderStatus.PAYMENT_COMPLETED;
+    }
+
+    public void failOrder() {
+        this.orderStatus = OrderStatus.PAYMENT_PENDING;
+    }
 }

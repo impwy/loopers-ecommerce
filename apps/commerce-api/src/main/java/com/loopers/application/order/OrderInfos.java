@@ -15,15 +15,18 @@ import lombok.Getter;
 @Getter
 public class OrderInfos {
     private final List<OrderInfo> orderInfos;
+    private final BigDecimal totalPrice;
 
-    public OrderInfos(List<OrderInfo> orderInfos) {
+    public OrderInfos(List<OrderInfo> orderInfos, BigDecimal totalPrice) {
         if (orderInfos == null || orderInfos.isEmpty()) {
             throw new IllegalArgumentException("OrderInfo 목록이 비어있을 수 없습니다.");
         }
         this.orderInfos = List.copyOf(orderInfos);
+        this.totalPrice = totalPrice;
     }
 
-    public static OrderInfos of(List<CreateOrderRequest> orderRequests, Order order, ProductFinder productFinder) {
+    public static OrderInfos of(List<CreateOrderRequest> orderRequests, Order order,
+                                ProductFinder productFinder, BigDecimal totalPrice) {
         List<Long> productIds = orderRequests.stream()
                                              .map(CreateOrderRequest::productId)
                                              .distinct()
@@ -37,6 +40,6 @@ public class OrderInfos {
                                 c.quantity(),
                                 product.getTotalPrice(BigDecimal.valueOf(c.quantity())));
         }).toList();
-        return new OrderInfos(orderInfos);
+        return new OrderInfos(orderInfos, totalPrice);
     }
 }

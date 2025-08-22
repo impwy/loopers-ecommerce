@@ -13,14 +13,6 @@ services:
       - MYSQL_COLLATE=utf8mb4_general_ci
     volumes:
       - mysql-8-data:/var/lib/mysql
-  cache:
-    image: redis:7.4-alpine
-    restart: always
-    ports:
-      - "6379:6379"
-    command: redis-server --save 20 1 --loglevel warning --requirepass yong
-    volumes:
-      - cache:/data
 
   redis-master:
     image: redis:7.0
@@ -68,8 +60,6 @@ services:
       retries: 10
 
 volumes:
-  cache:
-    driver: local
   mysql-8-data:
   redis_master_data:
   redis_readonly_data:

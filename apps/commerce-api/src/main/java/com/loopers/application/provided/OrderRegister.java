@@ -8,4 +8,8 @@ import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
 
 public interface OrderRegister {
     Order createOrder(CreateOrderSpec createOrderSpec, List<CreateOrderItemSpec> createOrderItemSpecs);
+
+    void successOrder(String orderId);
+
+    void failOrder(String orderId);
 }

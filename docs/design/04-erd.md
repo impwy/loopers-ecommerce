@@ -137,6 +137,7 @@ erDiagram
         bigint id PK
         bigint order_id FK
         bigint member_id FK
+        String paymentKey
         Bigdecimal totalAmount
         PaymentMethod paymentMethod
         PaymentStatus paymentStatus
@@ -157,6 +158,6 @@ erDiagram
     PRODUCT ||--|| INVENTORY : has
     CATEGORY ||--o{ CATEGORY_ITEM : contains
     CATEGORY_ITEM }o-- || PRODUCT : contains
-    ORDER ||--|| PAYMENTS : has
+    ORDER ||--o{ PAYMENTS : contains
     MEMBER_COUPON ||--o{ ORDER_ITEM : contains
 ```

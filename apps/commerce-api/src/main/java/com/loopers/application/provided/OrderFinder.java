@@ -10,4 +10,6 @@ public interface OrderFinder {
     Order findByMemberId(Long memberId);
 
     List<Order> findWithOrderItem(Long memberId);
+
+    Order findByOrderNo(String orderNo);
 }
