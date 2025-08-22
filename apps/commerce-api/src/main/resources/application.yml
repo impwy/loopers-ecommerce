@@ -44,8 +44,8 @@ feign:
   client:
     config:
       pg-client:
-        connectTimeout: 10000
-        readTimeout: 10000
+        connectTimeout: 1000
+        readTimeout: 1000
 
 ---
 spring:

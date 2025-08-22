@@ -5,10 +5,12 @@ import org.springframework.stereotype.Component;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.payment.feign.PgFeignClient;
 import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PaymentRequest;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
 import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
+import com.loopers.support.error.CoreException;
+import com.loopers.support.error.ErrorType;
 
+import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,18 +24,24 @@ public class PaymentGatewayImpl implements PaymentGateway {
     @CircuitBreaker(name = "pgCircuit", fallbackMethod = "fallbackPgPayment")
     @Override
     public void requestPayment(MemberId memberId, PgPaymentRequest pgPaymentRequest) {
-        pgFeignClient.requestPayment(memberId, pgPaymentRequest);
+        try {
+            pgFeignClient.requestPayment(memberId, pgPaymentRequest);
+        } catch (FeignException e) {
+            if (e.status() >= 400 && e.status() < 500) {
+                throw new CoreException(ErrorType.BAD_REQUEST, e.contentUTF8());
+            }
+        }
     }
 
-    @CircuitBreaker(name = "pgCircuit", fallbackMethod = "fallbackPgPayment")
+    @CircuitBreaker(name = "pgCircuit")
     @Override
     public TransactionDetailResponse getPaymentDetailResponse(MemberId memberId, String transactionKey) {
-        ApiResponse<TransactionDetailResponse> paymentStatusResponse = pgFeignClient.getPaymentStatus(memberId,
-                                                                                                      transactionKey);
+        ApiResponse<TransactionDetailResponse> paymentStatusResponse =
+                pgFeignClient.getPaymentStatus(memberId, transactionKey);
         return paymentStatusResponse.data();
     }
 
-    public void fallbackPgPayment(PaymentRequest paymentRequest, Throwable throwable) {
+    public void fallbackPgPayment(PgPaymentRequest pgPaymentRequest, Throwable throwable) {
         log.warn("pg 요청에 실패했습니다. : {}", throwable.getMessage());
         // 다른 PG사에 연결한다.
     }

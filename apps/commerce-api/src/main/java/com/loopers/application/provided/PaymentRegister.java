@@ -12,4 +12,8 @@ public interface PaymentRegister {
     void requestPayment(String orderId, MemberId memberId, PaymentRequest paymentRequest);
 
     TransactionDetailResponse getPaymentDetailResponse(MemberId memberId, TransactionResponse transactionResponse);
+
+    void successPayment(String orderId);
+
+    void failPayment(String orderId);
 }

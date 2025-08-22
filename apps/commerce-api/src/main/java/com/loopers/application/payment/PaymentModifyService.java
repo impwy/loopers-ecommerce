@@ -3,6 +3,7 @@ package com.loopers.application.payment;
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.provided.OrderFinder;
+import com.loopers.application.provided.PaymentFinder;
 import com.loopers.application.provided.PaymentRegister;
 import com.loopers.application.required.PaymentRepository;
 import com.loopers.domain.member.MemberId;
@@ -25,6 +26,7 @@ public class PaymentModifyService implements PaymentRegister {
     private final PaymentProcessor paymentProcessor;
     private final OrderFinder orderFinder;
     private final PaymentGateway paymentGateway;
+    private final PaymentFinder paymentFinder;
 
     @Override
     public Payments createPayment(Long memberId, PaymentRequest paymentRequest) {
@@ -43,5 +45,19 @@ public class PaymentModifyService implements PaymentRegister {
     @Override
     public TransactionDetailResponse getPaymentDetailResponse(MemberId memberId, TransactionResponse transactionResponse) {
         return paymentGateway.getPaymentDetailResponse(memberId, transactionResponse.transactionKey());
+    }
+
+    @Override
+    public void successPayment(String orderId) {
+        Payments payments = paymentFinder.getPayments(orderId);
+        payments.successPayments();
+        paymentRepository.save(payments);
+    }
+
+    @Override
+    public void failPayment(String orderId) {
+        Payments payments = paymentFinder.getPayments(orderId);
+        payments.failPayments();
+        paymentRepository.save(payments);
     }
 }

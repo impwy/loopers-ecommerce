@@ -16,8 +16,8 @@ public class CardPaymentService implements PaymentService {
     public static final String callbackUrl = "http://localhost:8080/api/v1/payments/pg-callback";
 
     @Override
-    public <T> void requestPayment(String orderId, MemberId memberId, T payment) {
-        PaymentRequest paymentRequest = (PaymentRequest) payment;
+    public void requestPayment(String orderId, MemberId memberId, PaymentRequest payment) {
+        PaymentRequest paymentRequest = payment;
         PgPaymentRequest pgPaymentRequest = PgPaymentRequest.of(orderId, paymentRequest, callbackUrl);
 
         paymentGateway.requestPayment(memberId, pgPaymentRequest);

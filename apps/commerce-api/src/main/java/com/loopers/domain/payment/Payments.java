@@ -77,4 +77,12 @@ public class Payments extends BaseEntity {
                 createPaymentSpec.paymentType()
         );
     }
+
+    public void successPayments() {
+        this.paymentStatus = PaymentStatus.SUCCESS;
+    }
+
+    public void failPayments() {
+        this.paymentStatus = PaymentStatus.FAILED;
+    }
 }

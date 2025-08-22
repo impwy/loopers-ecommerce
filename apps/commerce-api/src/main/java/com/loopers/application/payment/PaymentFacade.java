@@ -35,6 +35,7 @@ public class PaymentFacade {
     }
 
     // 결제 콜백
+    @Transactional
     public void callback(MemberId memberId, TransactionResponse transactionResponse) {
         // 결제 상태 조회
         TransactionDetailResponse paymentDetailResponse =
@@ -45,12 +46,12 @@ public class PaymentFacade {
 
         switch (paymentStatus) {
             case SUCCESS -> {
-//                paymentRegister.successPayment(orderId);
-//                orderRegister.successOrder(orderId);
+                paymentRegister.successPayment(orderId);
+                orderRegister.successOrder(orderId);
             }
             case FAILED -> {
-//                paymentRegister.failPayment(orderId);
-//                orderRegister.failOrder(orderId);
+                paymentRegister.failPayment(orderId);
+                orderRegister.failOrder(orderId);
             }
         }
     }
