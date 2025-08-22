@@ -8,8 +8,10 @@ import com.loopers.domain.payment.PaymentType;
 
 public class PaymentV1Dto {
     public class Response {
-        public record TransactionResponse(String transactionKey, PaymentStatus status, String reason) {
-        }
+        public record TransactionResponse(String transactionKey, PaymentStatus status, String reason) {}
+
+        public record TransactionDetailResponse(String transactionKey, String orderId, CardType cardType,
+                                                String cardNo, BigDecimal amount, PaymentStatus status, String reason) {}
     }
     public class Request {
         public record PaymentRequest(Long orderId, String cardNo, CardType cardType,

@@ -28,7 +28,7 @@ public class PaymentV1ApiController implements PaymentV1ApiSpec {
 
     @PostMapping("/pg-callback")
     @Override
-    public void callback(@RequestBody TransactionResponse transactionResponse) {
-        log.info("callback : {}", transactionResponse);
+    public void callback(MemberId memberId, @RequestBody TransactionResponse transactionResponse) {
+        paymentFacade.callback(memberId, transactionResponse);
     }
 }

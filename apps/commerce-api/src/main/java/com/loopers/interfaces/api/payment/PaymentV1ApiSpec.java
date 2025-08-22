@@ -22,5 +22,5 @@ public interface PaymentV1ApiSpec {
             summary = "결제 콜백",
             description = "결제 콜백을 받는다."
     )
-    void callback(TransactionResponse transactionResponse);
+    void callback(MemberId memberId, TransactionResponse transactionResponse);
 }

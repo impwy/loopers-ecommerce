@@ -24,7 +24,7 @@ public class CardPaymentService implements PaymentService {
         PaymentRequest paymentRequest = (PaymentRequest) payment;
         PgPaymentRequest pgPaymentRequest = PgPaymentRequest.of(orderId, paymentRequest, callbackUrl);
 
-        paymentGateway.requestPayment(memberId.memberId(), pgPaymentRequest);
+        paymentGateway.requestPayment(memberId, pgPaymentRequest);
     }
 
     public void fallbackPgPayment(PaymentRequest paymentRequest, Throwable throwable) {
