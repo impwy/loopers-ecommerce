@@ -1,0 +1,27 @@
+package com.loopers.infrastructure.coupon;
+
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
+
+import com.loopers.application.provided.CouponRegister;
+import com.loopers.application.provided.MemberFinder;
+import com.loopers.domain.coupon.CouponUsed;
+import com.loopers.domain.member.Member;
+
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor
+public class CouponEventHandler {
+    private final CouponRegister couponRegister;
+    private final MemberFinder memberFinder;
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handle(CouponUsed event) {
+        Member member = memberFinder.findByMemberId(event.memberId());
+        couponRegister.useMemberCoupon(event.couponId(), member);
+    }
+}

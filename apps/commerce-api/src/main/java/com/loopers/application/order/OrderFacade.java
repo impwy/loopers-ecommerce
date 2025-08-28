@@ -3,15 +3,16 @@ package com.loopers.application.order;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.inventory.DecreaseInventoryRequest;
 import com.loopers.application.product.ProductTotalAmountRequest;
-import com.loopers.application.provided.CouponRegister;
 import com.loopers.application.provided.InventoryRegister;
 import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.provided.OrderRegister;
 import com.loopers.application.provided.ProductFinder;
+import com.loopers.domain.coupon.CouponUsed;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.order.CreateOrderSpec;
@@ -29,16 +30,13 @@ public class OrderFacade {
     private final OrderRegister orderRegister;
     private final MemberFinder memberFinder;
     private final InventoryRegister inventoryRegister;
-    private final CouponRegister couponRegister;
     private final ProductFinder productFinder;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public OrderInfos order(MemberId memberId, CreateOrderWithCouponRequest createOrderWithCouponRequest) {
         Member member = memberFinder.findByMemberId(memberId);
         Long couponId = createOrderWithCouponRequest.couponId();
-
-        // 쿠폰 생성 및 감소
-        couponRegister.useMemberCoupon(couponId, member);
 
         List<CreateOrderRequest> orderRequests = createOrderWithCouponRequest.createOrderRequests();
 
@@ -58,6 +56,9 @@ public class OrderFacade {
                                             new DecreaseInventoryRequest(request.productId(), request.quantity()))
                                .toList();
         inventoryRegister.decreaseProducts(decreaseInventoryRequests);
+
+        // 쿠폰 생성 및 감소
+        eventPublisher.publishEvent(new CouponUsed(couponId, member.getMemberId()));
 
         // 총 금액
         List<ProductTotalAmountRequest> productTotalAmountRequests
