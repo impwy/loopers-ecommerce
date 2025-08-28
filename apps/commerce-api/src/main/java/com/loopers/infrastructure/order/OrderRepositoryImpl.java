@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.loopers.application.required.OrderRepository;
 import com.loopers.domain.order.Order;
+import com.loopers.domain.order.OrderNo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,5 +34,10 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public List<Order> findWithOrderItem(Long memberId) {
         return orderJpaRepository.findWithOrderItem(memberId);
+    }
+
+    @Override
+    public Optional<Order> findByOrderNo(String orderNo) {
+        return orderJpaRepository.findByOrderNo(new OrderNo(orderNo));
     }
 }

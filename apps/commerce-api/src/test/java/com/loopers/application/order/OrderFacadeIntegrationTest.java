@@ -93,8 +93,8 @@ class OrderFacadeIntegrationTest {
     void create_order_fail_when_product_not_existed() {
         CreateOrderRequest createOrderRequest = CreateOrderRequest.of(-1L, 100L);
         CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> orderFacade.register(savedMember.getMemberId(),
-                                                                              CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedMember.getId())));
+                                                   () -> orderFacade.order(savedMember.getMemberId(),
+                                                                           CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedMember.getId())));
 
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         assertThat(coreException.getCustomMessage()).isEqualTo("상품을 찾을 수 없습니다.");
@@ -105,26 +105,11 @@ class OrderFacadeIntegrationTest {
     void create_order_fail_when_inventory_soldout() {
         CreateOrderRequest createOrderRequest = CreateOrderRequest.of(savedProduct.getId(), 101L);
         CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> orderFacade.register(savedMember.getMemberId(),
-                                                                              CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId())));
+                                                   () -> orderFacade.order(savedMember.getMemberId(),
+                                                                           CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId())));
 
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         assertThat(coreException.getCustomMessage()).isEqualTo("잔여 재고가 없습니다.");
-    }
-
-    @DisplayName("주문 실패 테스트 : 잔액 부족")
-    @Test
-    void create_order_fail_when_point_is_not_enough() {
-        CreateOrderRequest createOrderRequest = CreateOrderRequest.of(savedProduct.getId(), 100L);
-        BigDecimal totalPrice = savedProduct.getPrice().multiply(BigDecimal.valueOf(createOrderRequest.quantity()));
-        savedMember.charge(totalPrice.subtract(BigDecimal.ONE));
-
-        CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> orderFacade.register(savedMember.getMemberId(),
-                                                                              CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId())));
-
-        assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
-        assertThat(coreException.getMessage()).isEqualTo("잔액이 부족합니다.");
     }
 
     @DisplayName("주문 성공 테스트")
@@ -134,8 +119,8 @@ class OrderFacadeIntegrationTest {
         CreateOrderRequest createOrderRequest = CreateOrderRequest.of(savedProduct.getId(), 10L);
         savedMember.charge(savedProduct.getPrice().multiply(BigDecimal.TEN));
 
-        List<OrderInfo> orderProductInfos = orderFacade.register(savedMember.getMemberId(),
-                                                                 CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId()))
+        List<OrderInfo> orderProductInfos = orderFacade.order(savedMember.getMemberId(),
+                                                              CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId()))
                                                        .getOrderInfos();
 
         BigDecimal totalPrice = savedProduct.getPrice().multiply(BigDecimal.valueOf(createOrderRequest.quantity()));

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.loopers.application.provided.OrderFinder;
 import com.loopers.application.provided.OrderRegister;
 import com.loopers.application.required.OrderRepository;
 import com.loopers.domain.order.CreateOrderSpec;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderModifyService implements OrderRegister {
     private final OrderRepository orderRepository;
+    private final OrderFinder orderFinder;
 
     @Override
     public Order createOrder(CreateOrderSpec createOrderSpec, List<CreateOrderItemSpec> createOrderItemSpecs) {
@@ -28,5 +30,19 @@ public class OrderModifyService implements OrderRegister {
         } catch (IllegalArgumentException e) {
             throw new CoreException(ErrorType.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    @Override
+    public void successOrder(String orderId) {
+        Order order = orderFinder.findByOrderNo(orderId);
+        order.successOrder();
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void failOrder(String orderId) {
+        Order order = orderFinder.findByOrderNo(orderId);
+        order.failOrder();
+        orderRepository.save(order);
     }
 }
