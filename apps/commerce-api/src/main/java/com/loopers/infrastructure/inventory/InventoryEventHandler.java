@@ -16,7 +16,7 @@ public class InventoryEventHandler {
     private final InventoryRegister inventoryRegister;
 
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(ProductInventoryUsed event) {
         inventoryRegister.decreaseProducts(event.decreaseInventoryRequests());
     }
