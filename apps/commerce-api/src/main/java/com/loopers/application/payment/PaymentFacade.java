@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import com.loopers.application.provided.MemberFinder;
 import com.loopers.application.provided.OrderFinder;
-import com.loopers.application.provided.OrderRegister;
 import com.loopers.application.provided.PaymentRegister;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
@@ -25,8 +24,9 @@ public class PaymentFacade {
     private final PaymentRegister paymentRegister;
     private final MemberFinder memberFinder;
     private final OrderFinder orderFinder;
-    private final OrderRegister orderRegister;
     private final PaymentProcessor paymentProcessor;
+    private final PaymentSuccessHandler paymentSuccessHandler;
+    private final PaymentFailureHandler paymentFailureHandler;
 
     // 결제 요청
     @Transactional
@@ -51,12 +51,10 @@ public class PaymentFacade {
 
         switch (paymentStatus) {
             case SUCCESS -> {
-                paymentRegister.successPayment(orderId);
-                orderRegister.successOrder(orderId);
+                paymentSuccessHandler.handle(orderId);
             }
             case FAILED -> {
-                paymentRegister.failPayment(orderId);
-                orderRegister.failOrder(orderId);
+                paymentFailureHandler.handle(memberId, orderId);
             }
         }
     }

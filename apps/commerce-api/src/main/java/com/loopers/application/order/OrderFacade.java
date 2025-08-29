@@ -42,7 +42,7 @@ public class OrderFacade {
         // 주문 생성
         List<CreateOrderItemSpec> createOrderItemSpecs
                 = orderRequests.stream()
-                               .map(request -> CreateOrderItemSpec.of(request.productId(), request.quantity()))
+                               .map(request -> CreateOrderItemSpec.of(request.productId(), request.quantity(), couponId))
                                .toList();
         CreateOrderSpec createOrderSpec = CreateOrderSpec.of(member.getId());
 
