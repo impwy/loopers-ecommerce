@@ -6,9 +6,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import com.loopers.application.provided.InventoryFinder;
 import com.loopers.application.provided.InventoryRegister;
+import com.loopers.application.provided.OrderFinder;
+import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.inventory.InventoryRollback;
 import com.loopers.domain.inventory.ProductInventoryUsed;
+import com.loopers.domain.order.Order;
+import com.loopers.domain.order.orderitem.OrderItem;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InventoryEventHandler {
     private final InventoryRegister inventoryRegister;
+    private final OrderFinder orderFinder;
+    private final InventoryFinder inventoryFinder;
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
@@ -27,6 +34,10 @@ public class InventoryEventHandler {
     @EventListener
     public void handle(InventoryRollback inventoryRollback) {
         String orderId = inventoryRollback.orderId();
-
+        Order order = orderFinder.findByOrderNo(orderId);
+        order.getOrderItems().forEach(orderItem -> {
+            Inventory inventory = inventoryFinder.findByProductId(orderItem.getProductId());
+            inventory.increase(orderItem.getQuantity());
+        });
     }
 }
