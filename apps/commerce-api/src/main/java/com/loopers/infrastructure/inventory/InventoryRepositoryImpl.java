@@ -34,4 +34,9 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     public List<Inventory> findByProductIdWithPessimisticLock(List<Long> productIds) {
         return inventoryJpaRepository.findAllByProductIdInWithPessimisticLock(productIds);
     }
+
+    @Override
+    public List<Inventory> findAllByProductIdIn(List<Long> productIds) {
+        return inventoryJpaRepository.findAllByProductIdIn(productIds);
+    }
 }
