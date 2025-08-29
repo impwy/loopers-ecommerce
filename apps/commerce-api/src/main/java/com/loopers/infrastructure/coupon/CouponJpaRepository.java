@@ -19,7 +19,6 @@ public interface CouponJpaRepository extends JpaRepository<Coupon, Long> {
     @Query("select c from Coupon c where c.id = :couponId")
     Optional<Coupon> findWithPessimisticLock(@Param("couponId") Long couponId);
 
-
-    @Query("SELECT mc FROM MemberCoupon mc JOIN FETCH mc.coupon WHERE mc.member.memberId =:memberId AND mc.coupon =:couponId")
-    Optional<MemberCoupon> findByMemberIdAndCouponId(MemberId memberId, Long couponId);
+    @Query("SELECT mc FROM MemberCoupon mc JOIN FETCH mc.coupon WHERE mc.member.memberId =:memberId AND mc.coupon.id =:couponId")
+    Optional<MemberCoupon> findByMemberIdAndCouponId(@Param("memberId") MemberId memberId, @Param("couponId") Long couponId);
 }

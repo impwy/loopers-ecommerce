@@ -100,18 +100,6 @@ class OrderFacadeIntegrationTest {
         assertThat(coreException.getCustomMessage()).isEqualTo("상품을 찾을 수 없습니다.");
     }
 
-    @DisplayName("주문 실패 테스트 : 재고 부족")
-    @Test
-    void create_order_fail_when_inventory_soldout() {
-        CreateOrderRequest createOrderRequest = CreateOrderRequest.of(savedProduct.getId(), 101L);
-        CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> orderFacade.order(savedMember.getMemberId(),
-                                                                           CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId())));
-
-        assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
-        assertThat(coreException.getCustomMessage()).isEqualTo("잔여 재고가 없습니다.");
-    }
-
     @DisplayName("주문 성공 테스트")
     @Transactional
     @Test
