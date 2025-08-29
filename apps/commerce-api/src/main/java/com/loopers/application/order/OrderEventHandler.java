@@ -1,23 +1,24 @@
-package com.loopers.application.payment;
+package com.loopers.application.order;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.loopers.application.provided.PaymentRegister;
-import com.loopers.domain.payment.PaymentFail;
+import com.loopers.application.provided.OrderRegister;
+import com.loopers.domain.order.OrderFail;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class PaymentEventHandler {
-    private final PaymentRegister paymentRegister;
+public class OrderEventHandler {
+    private final OrderRegister orderRegister;
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void failPayment(PaymentFail paymentFail) {
-        paymentRegister.failPayment(paymentFail.orderId());
+    public void failOrder(OrderFail orderFail) {
+        String orderId = orderFail.orderId();
+        orderRegister.failOrder(orderId);
     }
 }
