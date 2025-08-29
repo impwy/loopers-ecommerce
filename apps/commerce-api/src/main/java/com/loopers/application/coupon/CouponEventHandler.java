@@ -1,4 +1,4 @@
-package com.loopers.infrastructure.coupon;
+package com.loopers.application.coupon;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;

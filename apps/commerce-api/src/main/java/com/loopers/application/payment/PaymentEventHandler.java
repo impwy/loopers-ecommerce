@@ -1,4 +1,4 @@
-package com.loopers.infrastructure.payment;
+package com.loopers.application.payment;
 
 import org.springframework.stereotype.Component;
 

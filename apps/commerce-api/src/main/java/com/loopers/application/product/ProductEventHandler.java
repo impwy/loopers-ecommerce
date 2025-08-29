@@ -1,4 +1,4 @@
-package com.loopers.infrastructure.product;
+package com.loopers.application.product;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
