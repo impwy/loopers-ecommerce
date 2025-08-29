@@ -1,4 +1,4 @@
-package com.loopers.domain.payment.paymentrule;
+package com.loopers.application.payment.paymentrule;
 
 import org.springframework.stereotype.Component;
 
