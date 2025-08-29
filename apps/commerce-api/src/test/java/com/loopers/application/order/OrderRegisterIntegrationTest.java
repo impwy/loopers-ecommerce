@@ -1,7 +1,6 @@
 package com.loopers.application.order;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ class OrderRegisterIntegrationTest {
     @Test
     void create_order_fail_when_user_not_existed() {
         CreateOrderSpec createOrderSpec = CreateOrderSpec.of(null);
-        CreateOrderItemSpec createOrderItemSpec = CreateOrderItemSpec.of(1L, 10L);
+        CreateOrderItemSpec createOrderItemSpec = CreateOrderItemSpec.of(1L, 10L, 1L);
 
         assertThatThrownBy(() -> orderRegister.createOrder(createOrderSpec, List.of(createOrderItemSpec)))
                 .isInstanceOf(CoreException.class);

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -14,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import com.loopers.application.provided.CouponRegister;
 import com.loopers.application.provided.OrderFinder;
 import com.loopers.application.required.OrderRepository;
+import com.loopers.domain.coupon.Coupon;
+import com.loopers.domain.coupon.CouponFixture;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
 import com.loopers.support.error.CoreException;
@@ -30,6 +32,9 @@ class OrderFinderIntegrationTest {
 
     @Autowired
     private OrderFinder orderFinder;
+
+    @Autowired
+    private CouponRegister couponRegister;
 
     @Autowired
     private DatabaseCleanUp databaseCleanUp;
@@ -84,16 +89,18 @@ class OrderFinderIntegrationTest {
     @DisplayName("주문 조회 시 주문 아이템도 조회")
     @Test
     void find_order_with_order_item() {
+        Coupon coupon = couponRegister.create(CouponFixture.createCouponSpec());
+        Long couponId = coupon.getId();
         Order firstOrder = Order.create(CreateOrderSpec.of(1L));
-        firstOrder.addOrderItem(1L, 10L);
-        firstOrder.addOrderItem(2L, 20L);
-        firstOrder.addOrderItem(3L, 30L);
+        firstOrder.addOrderItem(1L, 10L, couponId);
+        firstOrder.addOrderItem(2L, 20L, couponId);
+        firstOrder.addOrderItem(3L, 30L, couponId);
         orderRepository.save(firstOrder);
 
         Order secondOrder = Order.create(CreateOrderSpec.of(1L));
-        secondOrder.addOrderItem(1L, 10L);
-        secondOrder.addOrderItem(2L, 20L);
-        secondOrder.addOrderItem(3L, 30L);
+        secondOrder.addOrderItem(1L, 10L, couponId);
+        secondOrder.addOrderItem(2L, 20L, couponId);
+        secondOrder.addOrderItem(3L, 30L, couponId);
         orderRepository.save(secondOrder);
 
         List<Order> orders = orderFinder.findWithOrderItem(1L);
