@@ -1,6 +1,5 @@
 package com.loopers.application.coupon;
 
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -32,7 +31,7 @@ public class CouponEventHandler {
     }
 
     @Async
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(CouponRollback couponRollback) {
         String orderId = couponRollback.orderId();
         Order order = orderFinder.findByOrderNo(orderId);

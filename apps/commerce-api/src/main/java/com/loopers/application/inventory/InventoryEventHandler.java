@@ -1,6 +1,5 @@
 package com.loopers.application.inventory;
 
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -13,7 +12,6 @@ import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.inventory.InventoryRollback;
 import com.loopers.domain.inventory.ProductInventoryUsed;
 import com.loopers.domain.order.Order;
-import com.loopers.domain.order.orderitem.OrderItem;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +29,7 @@ public class InventoryEventHandler {
     }
 
     @Async
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(InventoryRollback inventoryRollback) {
         String orderId = inventoryRollback.orderId();
         Order order = orderFinder.findByOrderNo(orderId);
