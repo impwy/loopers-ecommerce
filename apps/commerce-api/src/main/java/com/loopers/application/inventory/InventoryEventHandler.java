@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
@@ -28,13 +27,11 @@ public class InventoryEventHandler {
     private final OrderFinder orderFinder;
     private final InventoryRepository inventoryRepository;
 
-    @Async
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(ProductInventoryUsed event) {
         inventoryRegister.decreaseProducts(event.decreaseInventoryRequests());
     }
 
-    @Async
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(InventoryRollback inventoryRollback) {

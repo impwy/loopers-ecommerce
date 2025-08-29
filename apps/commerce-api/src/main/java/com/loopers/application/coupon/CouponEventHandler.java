@@ -1,6 +1,5 @@
 package com.loopers.application.coupon;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -23,14 +22,12 @@ public class CouponEventHandler {
     private final MemberFinder memberFinder;
     private final OrderFinder orderFinder;
 
-    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(CouponUsed event) {
         Member member = memberFinder.findByMemberId(event.memberId());
         couponRegister.useMemberCoupon(event.couponId(), member);
     }
 
-    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(CouponRollback couponRollback) {
         String orderId = couponRollback.orderId();
