@@ -1,4 +1,4 @@
-package com.loopers.domain.payment.paymentrule;
+package com.loopers.application.payment.paymentrule;
 
 import com.loopers.domain.member.Member;
 import com.loopers.domain.order.Order;

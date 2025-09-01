@@ -62,4 +62,8 @@ public class Coupon extends BaseEntity {
         this.quantity -= 1;
         return quantity;
     }
+
+    public void rollback() {
+        this.quantity += 1;
+    }
 }

@@ -40,4 +40,9 @@ public class OrderRepositoryImpl implements OrderRepository {
     public Optional<Order> findByOrderNo(String orderNo) {
         return orderJpaRepository.findByOrderNo(new OrderNo(orderNo));
     }
+
+    @Override
+    public Optional<Order> findByOrderNoWithItems(String orderNo) {
+        return orderJpaRepository.findByOrderNoWithItems(new OrderNo(orderNo));
+    }
 }

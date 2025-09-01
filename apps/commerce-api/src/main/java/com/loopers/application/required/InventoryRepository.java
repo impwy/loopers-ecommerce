@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.loopers.domain.inventory.Inventory;
-import com.loopers.domain.product.Product;
 
 public interface InventoryRepository {
     Inventory save(Inventory inventory);
@@ -14,4 +13,6 @@ public interface InventoryRepository {
     Optional<Inventory> findByProductId(Long productId);
 
     List<Inventory> findByProductIdWithPessimisticLock(List<Long> productIds);
+
+    List<Inventory> findAllByProductIdIn(List<Long> productIds);
 }

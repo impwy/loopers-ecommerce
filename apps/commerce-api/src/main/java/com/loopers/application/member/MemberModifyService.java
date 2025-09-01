@@ -3,6 +3,8 @@ package com.loopers.application.member;
 import java.math.BigDecimal;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.validation.annotation.Validated;
 
 import com.loopers.application.provided.MemberFinder;
@@ -12,6 +14,7 @@ import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.point.PointUsageRequest;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
@@ -63,5 +66,10 @@ public class MemberModifyService implements MemberRegister {
             throw new CoreException(ErrorType.BAD_REQUEST, e.getMessage());
         }
         return member;
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handle(PointUsageRequest event) {
+        usePoint(event.memberId(), event.totalAmount());
     }
 }

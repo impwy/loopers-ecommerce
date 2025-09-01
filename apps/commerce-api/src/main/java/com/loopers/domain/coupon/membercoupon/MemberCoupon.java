@@ -49,4 +49,8 @@ public class MemberCoupon extends BaseEntity {
     public void useCoupon() {
         this.couponStatus = CouponStatus.USED;
     }
+
+    public void rollback() {
+        this.couponStatus = CouponStatus.CREATED;
+    }
 }

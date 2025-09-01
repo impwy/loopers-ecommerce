@@ -17,4 +17,7 @@ public interface OrderJpaRepository extends JpaRepository<Order, Long> {
     List<Order> findWithOrderItem(@Param("memberId") Long memberId);
 
     Optional<Order> findByOrderNo(OrderNo orderNo);
+
+    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.orderItems WHERE o.orderNo = :orderNo")
+    Optional<Order> findByOrderNoWithItems(@Param("orderNo") OrderNo orderNo);
 }

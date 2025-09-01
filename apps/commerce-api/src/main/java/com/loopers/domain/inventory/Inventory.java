@@ -62,4 +62,8 @@ public class Inventory extends BaseEntity {
             this.inventoryStatus = InventoryStatus.SOLD_OUT;
         }
     }
+
+    public void increase(Long quantity) {
+        this.quantity += quantity;
+    }
 }

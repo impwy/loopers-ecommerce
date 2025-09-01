@@ -2,6 +2,7 @@ package com.loopers.application.product;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.loopers.application.provided.ProductFinder;
 import com.loopers.application.provided.ProductLikeFinder;
 import com.loopers.domain.brand.Brand;
+import com.loopers.domain.product.LikeDecrease;
+import com.loopers.domain.product.LikeIncrease;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductBrandDomainService;
 import com.loopers.domain.product.ProductInfo;
@@ -25,6 +28,7 @@ public class ProductFacade {
     private final ProductFinder productFinder;
     private final ProductLikeFinder productLikeFinder;
     private final ProductBrandDomainService productBrandDomainService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public ProductInfo findProductInfo(Long productId) {
@@ -71,5 +75,15 @@ public class ProductFacade {
                                                                                         p.likeCount()))
                                .toList();
         return ProductInfoPageResponse.from(new PageImpl<>(productInfos, pageable, withLikeCount.getTotalElements()));
+    }
+
+    @Transactional
+    public void increaseLikeCount(Long productId) {
+        eventPublisher.publishEvent(new LikeIncrease(productId));
+    }
+
+    @Transactional
+    public void decreaseLikeCount(Long productId) {
+        eventPublisher.publishEvent(new LikeDecrease(productId));
     }
 }

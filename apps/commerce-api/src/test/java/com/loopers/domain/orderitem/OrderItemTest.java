@@ -16,7 +16,7 @@ class OrderItemTest {
     @Test
     void create_order_fail_when_memberId_is_null() {
         IllegalArgumentException illegalArgumentException
-                = assertThrows(IllegalArgumentException.class, () -> OrderItem.create(null, 1L, 1L));
+                = assertThrows(IllegalArgumentException.class, () -> OrderItem.create(null, 1L, 1L, 1L));
 
         assertThat(illegalArgumentException.getMessage()).isEqualTo("잘못된 주문입니다.");
     }
@@ -25,7 +25,7 @@ class OrderItemTest {
     @Test
     void create_order_fail_when_productId_is_null() {
         IllegalArgumentException illegalArgumentException
-                = assertThrows(IllegalArgumentException.class, () -> OrderItem.create(OrderFixture.createOrder(), null, 1L));
+                = assertThrows(IllegalArgumentException.class, () -> OrderItem.create(OrderFixture.createOrder(), null, 1L, 1L));
 
         assertThat(illegalArgumentException.getMessage()).isEqualTo("상품을 찾을 수 없습니다.");
     }
@@ -34,7 +34,7 @@ class OrderItemTest {
     @Test
     void create_order_fail_when_quantity_is_invalid() {
         IllegalArgumentException illegalArgumentException
-                = assertThrows(IllegalArgumentException.class, () -> OrderItem.create(OrderFixture.createOrder(), 1L, -1L));
+                = assertThrows(IllegalArgumentException.class, () -> OrderItem.create(OrderFixture.createOrder(), 1L, -1L, 1L));
 
         assertThat(illegalArgumentException.getMessage()).isEqualTo("잘못된 수량입니다. : -1");
     }
@@ -43,7 +43,7 @@ class OrderItemTest {
     @Test
     void create_order_fail_when_quantity_is_null() {
         IllegalArgumentException illegalArgumentException
-                = assertThrows(IllegalArgumentException.class, () -> OrderItem.create(OrderFixture.createOrder(), 1L, null));
+                = assertThrows(IllegalArgumentException.class, () -> OrderItem.create(OrderFixture.createOrder(), 1L, null, 1L));
 
         assertThat(illegalArgumentException.getMessage()).isEqualTo("잘못된 수량입니다. : null");
     }
@@ -51,7 +51,7 @@ class OrderItemTest {
     @DisplayName("주문 생성 성공")
     @Test
     void create_order_test() {
-        OrderItem orderItem = OrderItem.create(OrderFixture.createOrder(), 1L, 1L);
+        OrderItem orderItem = OrderItem.create(OrderFixture.createOrder(), 1L, 1L, 1L);
 
         assertAll(
                 () -> assertThat(orderItem.getProductId()).isEqualTo(1L),

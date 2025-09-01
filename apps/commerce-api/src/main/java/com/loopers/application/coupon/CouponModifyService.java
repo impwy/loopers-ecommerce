@@ -15,6 +15,7 @@ import com.loopers.domain.coupon.discount.DiscountServiceFactory;
 import com.loopers.domain.coupon.membercoupon.CouponStatus;
 import com.loopers.domain.coupon.membercoupon.MemberCoupon;
 import com.loopers.domain.member.Member;
+import com.loopers.domain.member.MemberId;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 
@@ -64,5 +65,14 @@ public class CouponModifyService implements CouponRegister {
         Calculator calculator = discountServiceFactory.getCalculator(coupon.getDiscountPolicy());
         BigDecimal discountedPrice = calculator.discount(totalAmount);
         return discountedPrice;
+    }
+
+    @Transactional
+    @Override
+    public void rollback(MemberId memberId, Long couponId) {
+        MemberCoupon memberCoupon = couponFinder.findMemberCoupon(memberId, couponId);
+        memberCoupon.rollback();
+        Coupon coupon = couponFinder.find(couponId);
+        coupon.rollback();
     }
 }

@@ -8,11 +8,9 @@ import java.util.List;
 import com.loopers.domain.BaseEntity;
 import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
 import com.loopers.domain.order.orderitem.OrderItem;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -30,6 +28,8 @@ import lombok.ToString;
 @Table(name = "orders")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order extends BaseEntity {
+
+    @Column(name = "member_id")
     private Long memberId;
 
     @Embedded
@@ -37,6 +37,7 @@ public class Order extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private final List<OrderItem> orderItems = new ArrayList<>();
@@ -54,14 +55,14 @@ public class Order extends BaseEntity {
         return new Order(createSpec.memberId());
     }
 
-    public void addOrderItem(Long productId, Long quantity) {
-        OrderItem orderItem = OrderItem.create(this, productId, quantity);
+    public void addOrderItem(Long productId, Long quantity, Long couponId) {
+        OrderItem orderItem = OrderItem.create(this, productId, quantity, couponId);
         this.orderItems.add(orderItem);
     }
 
     public Order createOrderItems(List<CreateOrderItemSpec> createOrderItemSpecs) {
         for (CreateOrderItemSpec createOrderItemSpec : createOrderItemSpecs) {
-            addOrderItem(createOrderItemSpec.productId(), createOrderItemSpec.quantity());
+            addOrderItem(createOrderItemSpec.productId(), createOrderItemSpec.quantity(), createOrderItemSpec.couponId());
         }
         return this;
     }

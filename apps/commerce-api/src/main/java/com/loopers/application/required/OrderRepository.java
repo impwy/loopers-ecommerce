@@ -15,4 +15,6 @@ public interface OrderRepository {
     List<Order> findWithOrderItem(Long memberId);
 
     Optional<Order> findByOrderNo(String orderNo);
+
+    Optional<Order> findByOrderNoWithItems(String orderNo);
 }
