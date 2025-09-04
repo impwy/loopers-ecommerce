@@ -7,6 +7,8 @@ public record ProductPayload(Long productId, String eventId, ProductEventType ev
 
     public enum ProductEventType {
         PRODUCT_LIKE_INCREMENT,
-        PRODUCT_LIKE_DECREMENT
+        PRODUCT_LIKE_DECREMENT,
+        PRODUCT_SALE,
+        PRODUCT_VIEW
     }
 }

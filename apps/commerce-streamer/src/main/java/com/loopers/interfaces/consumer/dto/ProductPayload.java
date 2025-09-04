@@ -2,13 +2,13 @@ package com.loopers.interfaces.consumer.dto;
 
 import java.time.ZonedDateTime;
 
-import lombok.Data;
+public record ProductPayload(Long productId, String eventId, ProductEventType eventType,
+                             Long version, ZonedDateTime publishedAt) {
 
-@Data
-public class ProductPayload {
-    private Long productId;
-    private String eventId;
-    private String eventType;
-    private Long version;
-    private ZonedDateTime publishedAt;
+    public enum ProductEventType {
+        PRODUCT_LIKE_INCREMENT,
+        PRODUCT_LIKE_DECREMENT,
+        PRODUCT_SALE,
+        PRODUCT_VIEW
+    }
 }

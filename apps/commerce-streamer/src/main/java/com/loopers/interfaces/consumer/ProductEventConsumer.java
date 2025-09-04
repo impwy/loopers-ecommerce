@@ -6,6 +6,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
+import com.loopers.application.provided.ProductMetricsRegister;
 import com.loopers.confg.kafka.KafkaConfig;
 import com.loopers.interfaces.consumer.dto.ProductPayload;
 
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class ProductEventConsumer {
+    private final ProductMetricsRegister productMetricsRegister;
 
     @KafkaListener(
             topics = "product-event",
@@ -24,7 +26,7 @@ public class ProductEventConsumer {
     )
     public void productLikeListener(List<ProductPayload> messages,
                                     Acknowledgment acknowledgment) {
-        messages.forEach(message -> log.info("product-event: {}", message));
+        productMetricsRegister.dailyUpdates(messages);
         acknowledgment.acknowledge();
     }
 }
