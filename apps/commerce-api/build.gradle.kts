@@ -29,4 +29,6 @@ dependencies {
     testImplementation(testFixtures(project(":modules:redis")))
     testImplementation(testFixtures(project(":modules:kafka")))
     testImplementation("org.awaitility:awaitility:4.2.0")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("org.testcontainers:kafka")
 }
