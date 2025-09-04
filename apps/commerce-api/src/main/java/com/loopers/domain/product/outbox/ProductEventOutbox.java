@@ -33,14 +33,15 @@ public class ProductEventOutbox extends BaseEntity {
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
+    private ProductOutboxStatus productOutboxStatus = ProductOutboxStatus.PENDING;
 
     @Column(name = "published_at")
     private ZonedDateTime publishedAt;
 
-    public enum Status {
+    public enum ProductOutboxStatus {
         PENDING,
-        PROCESSED
+        COMPLETED,
+        FAILED
     }
 
     public enum ProductOutboxEventType {
@@ -70,5 +71,10 @@ public class ProductEventOutbox extends BaseEntity {
                 createProductOutbox.version(),
                 createProductOutbox.publishedAt()
         );
+    }
+
+
+    public void changeStatus(ProductOutboxStatus productOutboxStatus) {
+        this.productOutboxStatus = productOutboxStatus;
     }
 }

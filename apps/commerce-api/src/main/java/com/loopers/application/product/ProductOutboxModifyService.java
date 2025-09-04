@@ -3,11 +3,14 @@ package com.loopers.application.product;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.loopers.application.provided.ProductOutboxFinder;
 import com.loopers.application.provided.ProductOutboxRegister;
 import com.loopers.application.required.ProductEventOutboxRepository;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
+import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductOutboxModifyService implements ProductOutboxRegister {
     private final ProductEventOutboxRepository productEventOutboxRepository;
+    private final ProductOutboxFinder productOutboxFinder;
 
+    @Transactional
     @Override
     public ProductEventOutbox register(CreateProductOutbox createProductOutbox) {
         Optional<ProductEventOutbox> productEventOutboxOpt =
@@ -27,5 +32,13 @@ public class ProductOutboxModifyService implements ProductOutboxRegister {
         }
 
         return productEventOutboxRepository.save(createProductOutbox);
+    }
+
+    @Transactional
+    @Override
+    public ProductEventOutbox changeStatus(Long id, ProductOutboxStatus productOutboxStatus) {
+        ProductEventOutbox productEventOutbox = productOutboxFinder.find(id);
+        productEventOutbox.changeStatus(productOutboxStatus);
+        return productEventOutbox;
     }
 }

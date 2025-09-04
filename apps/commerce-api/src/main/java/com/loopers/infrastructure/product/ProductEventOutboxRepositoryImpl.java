@@ -28,4 +28,9 @@ public class ProductEventOutboxRepositoryImpl implements ProductEventOutboxRepos
                                                                               ProductOutboxEventType eventType) {
         return productOutboxRepository.findByProductIdAndEventIdAndEventType(productId, eventId, eventType);
     }
+
+    @Override
+    public Optional<ProductEventOutbox> findById(Long id) {
+        return productOutboxRepository.findById(id);
+    }
 }

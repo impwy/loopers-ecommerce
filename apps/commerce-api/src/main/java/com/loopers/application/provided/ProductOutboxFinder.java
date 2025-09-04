@@ -5,4 +5,6 @@ import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxEventTy
 
 public interface ProductOutboxFinder {
     ProductEventOutbox findByProductIdAndEventIdAndEventType(Long productId, String eventId, ProductOutboxEventType eventType);
+
+    ProductEventOutbox find(Long id);
 }

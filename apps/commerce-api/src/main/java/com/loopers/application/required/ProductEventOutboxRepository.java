@@ -11,4 +11,6 @@ public interface ProductEventOutboxRepository {
 
     Optional<ProductEventOutbox> findByProductIdAndEventIdAndEventType(Long productId, String eventId,
                                                                        ProductOutboxEventType eventType);
+
+    Optional<ProductEventOutbox> findById(Long id);
 }
