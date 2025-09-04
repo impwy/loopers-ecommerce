@@ -1,5 +1,7 @@
 package com.loopers.application.product;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.provided.ProductOutboxRegister;
@@ -16,6 +18,14 @@ public class ProductOutboxModifyService implements ProductOutboxRegister {
 
     @Override
     public ProductEventOutbox register(CreateProductOutbox createProductOutbox) {
+        Optional<ProductEventOutbox> productEventOutboxOpt =
+                productEventOutboxRepository.findByProductIdAndEventIdAndEventType(createProductOutbox.productId(),
+                                                                                   createProductOutbox.eventId(),
+                                                                                   createProductOutbox.eventType());
+        if (productEventOutboxOpt.isPresent()) {
+            return productEventOutboxOpt.get();
+        }
+
         return productEventOutboxRepository.save(createProductOutbox);
     }
 }
