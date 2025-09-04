@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -32,14 +31,13 @@ public class InventoryEventHandler {
         inventoryRegister.decreaseProducts(event.decreaseInventoryRequests());
     }
 
-    @Transactional
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(InventoryRollback inventoryRollback) {
         String orderId = inventoryRollback.orderId();
         Order order = orderFinder.findByOrderNo(orderId);
 
         Map<Long, Long> productQuantityMap = order.getOrderItems().stream()
-                .collect(Collectors.toMap(OrderItem::getProductId, OrderItem::getQuantity));
+                                                  .collect(Collectors.toMap(OrderItem::getProductId, OrderItem::getQuantity));
 
         List<Long> productIds = order.getOrderItems().stream().map(OrderItem::getProductId).toList();
 
