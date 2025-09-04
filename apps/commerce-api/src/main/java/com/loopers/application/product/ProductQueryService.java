@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.loopers.application.provided.ProductFinder;
-import com.loopers.application.required.CachedPage;
+import com.loopers.infrastructure.redis.CachedPage;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;

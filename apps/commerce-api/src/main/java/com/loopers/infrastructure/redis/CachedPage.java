@@ -1,4 +1,4 @@
-package com.loopers.application.required;
+package com.loopers.infrastructure.redis;
 
 import java.util.List;
 
