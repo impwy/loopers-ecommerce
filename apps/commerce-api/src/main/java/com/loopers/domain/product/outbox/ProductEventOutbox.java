@@ -56,4 +56,14 @@ public class ProductEventOutbox extends BaseEntity {
                                             String payload, ZonedDateTime publishedAt) {
         return new ProductEventOutbox(eventId, eventType, version, payload, publishedAt);
     }
+
+    public static ProductEventOutbox create(CreateProductOutbox createProductOutbox) {
+        return new ProductEventOutbox(
+                createProductOutbox.eventId(),
+                createProductOutbox.eventType(),
+                createProductOutbox.version(),
+                createProductOutbox.payload(),
+                createProductOutbox.publishedAt()
+        );
+    }
 }
