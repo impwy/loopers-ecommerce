@@ -21,7 +21,7 @@ public class ProductEventConsumer {
 
     @KafkaListener(
             topics = "product-event",
-            groupId = "loopers-default-consumer",
+            groupId = "product-consumer",
             containerFactory = KafkaConfig.BATCH_LISTENER
     )
     public void productLikeListener(List<ProductPayload> messages,

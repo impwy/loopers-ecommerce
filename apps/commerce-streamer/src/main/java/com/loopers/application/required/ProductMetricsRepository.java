@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
-import com.loopers.domain.ProductMetrics;
+import com.loopers.domain.product.ProductMetrics;
 
 public interface ProductMetricsRepository {
     Optional<ProductMetrics> findByProductIdAndPublishedAt(Long productId, LocalDate date);

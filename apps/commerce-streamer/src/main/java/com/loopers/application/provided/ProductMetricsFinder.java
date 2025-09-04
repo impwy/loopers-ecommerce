@@ -2,7 +2,7 @@ package com.loopers.application.provided;
 
 import java.time.LocalDate;
 
-import com.loopers.domain.ProductMetrics;
+import com.loopers.domain.product.ProductMetrics;
 
 public interface ProductMetricsFinder {
     ProductMetrics findByProductIdAndPublishedAt(Long productId, LocalDate date);

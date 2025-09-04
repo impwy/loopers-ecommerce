@@ -1,4 +1,4 @@
-package com.loopers.domain;
+package com.loopers.domain.product;
 
 public enum ProductEventType {
     PRODUCT_LIKE_INCREMENT,

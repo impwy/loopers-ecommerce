@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.required.ProductMetricsRepository;
-import com.loopers.domain.ProductMetrics;
+import com.loopers.domain.product.ProductMetrics;
 
 import lombok.RequiredArgsConstructor;
 

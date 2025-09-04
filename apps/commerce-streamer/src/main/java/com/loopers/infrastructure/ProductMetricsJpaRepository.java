@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.loopers.domain.ProductMetrics;
+import com.loopers.domain.product.ProductMetrics;
 
 public interface ProductMetricsJpaRepository extends JpaRepository<ProductMetrics, Long> {
     Optional<ProductMetrics> findByProductIdAndPublishedAt(Long productId, LocalDate date);

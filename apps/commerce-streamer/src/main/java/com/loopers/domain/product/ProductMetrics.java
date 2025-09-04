@@ -1,8 +1,8 @@
-package com.loopers.domain;
+package com.loopers.domain.product;
 
 import java.time.LocalDate;
 
-import com.loopers.domain.product.CreateProductMetricsSpec;
+import com.loopers.domain.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

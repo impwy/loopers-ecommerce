@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.application.provided.ProductMetricsRegister;
 import com.loopers.application.required.ProductMetricsRepository;
-import com.loopers.domain.ProductMetrics;
+import com.loopers.domain.product.ProductMetrics;
 import com.loopers.domain.product.CreateProductMetricsSpec;
 import com.loopers.interfaces.consumer.dto.ProductPayload;
 
