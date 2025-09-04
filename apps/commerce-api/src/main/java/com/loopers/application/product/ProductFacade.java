@@ -20,7 +20,7 @@ import com.loopers.domain.product.ProductBrandDomainService;
 import com.loopers.domain.product.ProductInfo;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
-import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxEventType;
+import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 
@@ -88,7 +88,7 @@ public class ProductFacade {
 
         String uuid = UUID.randomUUID().toString();
         CreateProductOutbox createProductOutbox = new CreateProductOutbox(productId, uuid,
-                                                                          ProductOutboxEventType.PRODUCT_LIKE_INCREMENT,
+                                                                          ProductEventType.PRODUCT_LIKE_INCREMENT,
                                                                           0L, ZonedDateTime.now());
 
         ProductEventOutbox productEventOutbox = productOutboxRegister.register(createProductOutbox);
@@ -102,7 +102,7 @@ public class ProductFacade {
 
         String uuid = UUID.randomUUID().toString();
         CreateProductOutbox createProductOutbox = new CreateProductOutbox(productId, uuid,
-                                                                          ProductOutboxEventType.PRODUCT_LIKE_INCREMENT,
+                                                                          ProductEventType.PRODUCT_LIKE_INCREMENT,
                                                                           0L, ZonedDateTime.now());
 
         ProductEventOutbox productEventOutbox = productOutboxRegister.register(createProductOutbox);

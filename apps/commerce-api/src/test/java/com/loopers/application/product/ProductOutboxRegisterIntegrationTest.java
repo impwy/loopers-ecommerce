@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.loopers.application.provided.ProductOutboxRegister;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
-import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxEventType;
+import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -37,7 +37,7 @@ public class ProductOutboxRegisterIntegrationTest {
     void create_product_event_outbox_test() {
         UUID uuid = UUID.randomUUID();
         String uuidString = uuid.toString();
-        CreateProductOutbox createProductOutbox = new CreateProductOutbox(1L, uuidString, ProductOutboxEventType.PRODUCT_LIKE_INCREMENT, 0L, ZonedDateTime.now());
+        CreateProductOutbox createProductOutbox = new CreateProductOutbox(1L, uuidString, ProductEventType.PRODUCT_LIKE_INCREMENT, 0L, ZonedDateTime.now());
 
         ProductEventOutbox expected = productOutboxRegister.register(createProductOutbox);
 

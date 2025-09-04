@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.loopers.application.required.ProductEventOutboxRepository;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
-import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxEventType;
+import com.loopers.domain.product.ProductPayload.ProductEventType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +25,7 @@ public class ProductEventOutboxRepositoryImpl implements ProductEventOutboxRepos
 
     @Override
     public Optional<ProductEventOutbox> findByProductIdAndEventIdAndEventType(Long productId, String eventId,
-                                                                              ProductOutboxEventType eventType) {
+                                                                              ProductEventType eventType) {
         return productOutboxRepository.findByProductIdAndEventIdAndEventType(productId, eventId, eventType);
     }
 

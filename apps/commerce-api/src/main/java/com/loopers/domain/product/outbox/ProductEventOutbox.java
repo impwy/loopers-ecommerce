@@ -3,6 +3,7 @@ package com.loopers.domain.product.outbox;
 import java.time.ZonedDateTime;
 
 import com.loopers.domain.BaseEntity;
+import com.loopers.domain.product.ProductPayload.ProductEventType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,7 +27,7 @@ public class ProductEventOutbox extends BaseEntity {
 
     @Column(name = "event_type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private ProductOutboxEventType eventType;
+    private ProductEventType eventType;
 
     @Column(name = "version", nullable = false)
     private Long version;
@@ -44,12 +45,7 @@ public class ProductEventOutbox extends BaseEntity {
         FAILED
     }
 
-    public enum ProductOutboxEventType {
-        PRODUCT_LIKE_INCREMENT,
-        PRODUCT_LIKE_DECREMENT
-    }
-
-    private ProductEventOutbox(Long productId, String eventId, ProductOutboxEventType eventType, Long version,
+    private ProductEventOutbox(Long productId, String eventId, ProductEventType eventType, Long version,
                                ZonedDateTime publishedAt) {
         this.productId = productId;
         this.eventId = eventId;
@@ -58,7 +54,7 @@ public class ProductEventOutbox extends BaseEntity {
         this.publishedAt = publishedAt;
     }
 
-    public static ProductEventOutbox create(Long productId, String eventId, ProductOutboxEventType eventType, Long version,
+    public static ProductEventOutbox create(Long productId, String eventId, ProductEventType eventType, Long version,
                                             ZonedDateTime publishedAt) {
         return new ProductEventOutbox(productId, eventId, eventType, version, publishedAt);
     }

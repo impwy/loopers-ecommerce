@@ -12,9 +12,9 @@ import com.loopers.application.provided.ProductOutboxRegister;
 import com.loopers.domain.product.LikeDecrease;
 import com.loopers.domain.product.LikeIncrease;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
-import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxEventType;
 import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxStatus;
-import com.loopers.domain.product.outbox.ProductPayload;
+import com.loopers.domain.product.ProductPayload;
+import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.infrastructure.kafka.ProductEventProducer;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class ProductEventHandler {
 
         Long productId = event.productId();
         ProductPayload payload = new ProductPayload(productId, productEventOutbox.getEventId(),
-                                                    ProductOutboxEventType.PRODUCT_LIKE_INCREMENT,
+                                                    ProductEventType.PRODUCT_LIKE_INCREMENT,
                                                     0L, ZonedDateTime.now());
 
         publishProductLikeEvent(payload, productEventOutbox, productId);
@@ -48,7 +48,7 @@ public class ProductEventHandler {
 
         Long productId = event.productId();
         ProductPayload payload = new ProductPayload(productId, productEventOutbox.getEventId(),
-                                                    ProductOutboxEventType.PRODUCT_LIKE_DECREMENT,
+                                                    ProductEventType.PRODUCT_LIKE_DECREMENT,
                                                     0L, ZonedDateTime.now());
 
         publishProductLikeEvent(payload, productEventOutbox, productId);
