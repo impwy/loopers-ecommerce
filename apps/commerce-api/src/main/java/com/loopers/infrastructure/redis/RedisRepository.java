@@ -8,12 +8,16 @@ import java.util.Optional;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class RedisRepository {
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
     public void save(String key, Object value) {
         redisTemplate.opsForValue().set(key, value);
@@ -23,12 +27,19 @@ public class RedisRepository {
         redisTemplate.opsForValue().set(key, value, ttl);
     }
 
-    public <T> Optional<T> get(String key, Class<T> type) {
+    public <T> Optional<T> get(String key, TypeReference<T> typeRef) {
         Object value = redisTemplate.opsForValue().get(key);
         if (value == null) {
             return Optional.empty();
         }
-        return Optional.of(type.cast(value));
+        if (value instanceof String str) {
+            try {
+                return Optional.of(objectMapper.readValue(str, typeRef));
+            } catch (Exception e) {
+                throw new RuntimeException("Redis deserialization failed", e);
+            }
+        }
+        return Optional.of((T) value);
     }
 
     public void delete(String key) {
