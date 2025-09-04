@@ -20,6 +20,8 @@ import com.loopers.application.required.CachedPage;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
+import com.loopers.domain.product.ProductBrandDomainService;
+import com.loopers.domain.product.ProductInfo;
 import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.infrastructure.redis.RedisRepository;
 import com.loopers.support.error.CoreException;
@@ -32,12 +34,32 @@ import lombok.RequiredArgsConstructor;
 public class ProductQueryService implements ProductFinder {
     private final ProductRepository productRepository;
     private final RedisRepository redisRepository;
+    private final ProductBrandDomainService productBrandDomainService;
 
     @Override
     public Product find(Long productId) {
         Product product = productRepository.find(productId)
                                            .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
         return product;
+    }
+
+    @Override
+    public ProductInfo findCachedProduct(Long productId) {
+        String redisKey = String.format("product:%d", productId);
+        Optional<ProductInfo> productInfoOpt = redisRepository.get(redisKey, new TypeReference<>() {});
+
+        if (productInfoOpt.isPresent()) {
+            return productInfoOpt.get();
+        }
+
+        Product product = productRepository.find(productId)
+                                           .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
+
+        ProductInfo productInfo = productBrandDomainService.findProductWithBrand(product, product.getBrand(),
+                                                                                      product.getLikeCount());
+        redisRepository.save(redisKey, productInfo, Duration.ofMinutes(5));
+
+        return productInfo;
     }
 
     @Override
@@ -102,9 +124,9 @@ public class ProductQueryService implements ProductFinder {
         Map<Long, Product> productMap = products.stream().collect(Collectors.toMap(Product::getId, Function.identity()));
 
         return productTotalAmountRequests.stream()
-                            .map(request -> productMap.get(request.productId())
-                                                      .getTotalPrice(BigDecimal.valueOf(request.quantity())))
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                                         .map(request -> productMap.get(request.productId())
+                                                                   .getTotalPrice(BigDecimal.valueOf(request.quantity())))
+                                         .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override
