@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopers.application.provided.ProductOutboxFinder;
 import com.loopers.application.provided.ProductOutboxRegister;
 import com.loopers.domain.product.LikeDecrease;
@@ -28,7 +27,6 @@ public class ProductEventHandler {
     private final ProductOutboxRegister productOutboxRegister;
     private final ProductOutboxFinder productOutboxFinder;
     private final ProductEventProducer productEventProducer;
-    private final ObjectMapper objectMapper;
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -58,8 +56,7 @@ public class ProductEventHandler {
 
     private void publishProductLikeEvent(ProductPayload payload, ProductEventOutbox productEventOutbox, Long productId) {
         try {
-            String payloadJson = objectMapper.writeValueAsString(payload);
-            productEventProducer.send("productLike", payloadJson);
+            productEventProducer.send("productLike", String.valueOf(productId), payload);
             productOutboxRegister.changeStatus(productEventOutbox.getId(), ProductOutboxStatus.COMPLETED);
         } catch (Exception e) {
             productOutboxRegister.changeStatus(productEventOutbox.getId(), ProductOutboxStatus.FAILED);
