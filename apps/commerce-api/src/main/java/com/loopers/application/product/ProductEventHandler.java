@@ -56,7 +56,7 @@ public class ProductEventHandler {
 
     private void publishProductLikeEvent(ProductPayload payload, ProductEventOutbox productEventOutbox, Long productId) {
         try {
-            productEventProducer.send("productLike", String.valueOf(productId), payload);
+            productEventProducer.send("product-event", String.valueOf(productId), payload);
             productOutboxRegister.changeStatus(productEventOutbox.getId(), ProductOutboxStatus.COMPLETED);
         } catch (Exception e) {
             productOutboxRegister.changeStatus(productEventOutbox.getId(), ProductOutboxStatus.FAILED);

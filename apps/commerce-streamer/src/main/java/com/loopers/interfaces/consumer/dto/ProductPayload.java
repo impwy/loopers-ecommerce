@@ -1,4 +1,4 @@
-package com.loopers.domain;
+package com.loopers.interfaces.consumer.dto;
 
 import java.time.ZonedDateTime;
 
