@@ -2,6 +2,7 @@ package com.loopers.application.product;
 
 import java.time.ZonedDateTime;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -27,6 +28,7 @@ public class ProductEventHandler {
     private final ProductOutboxFinder productOutboxFinder;
     private final ProductEventProducer productEventProducer;
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handler(LikeIncrease event) {
         ProductEventOutbox productEventOutbox = productOutboxFinder.find(event.outboxId());
@@ -39,6 +41,7 @@ public class ProductEventHandler {
         publishProductLikeEvent(payload, productEventOutbox, productId);
     }
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handler(LikeDecrease event) {
         ProductEventOutbox productEventOutbox = productOutboxFinder.find(event.outboxId());

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class ProductEventProducer {
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTemplate<Object, Object> kafkaTemplate;
 
     public void send(String topic, Object payload) {
         kafkaTemplate.send(topic, payload);
