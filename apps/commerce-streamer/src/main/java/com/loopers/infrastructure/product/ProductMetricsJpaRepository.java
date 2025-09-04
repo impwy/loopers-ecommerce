@@ -1,4 +1,4 @@
-package com.loopers.infrastructure;
+package com.loopers.infrastructure.product;
 
 import java.time.LocalDate;
 import java.util.Optional;
