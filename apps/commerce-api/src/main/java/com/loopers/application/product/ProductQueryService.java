@@ -14,11 +14,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.loopers.application.provided.ProductFinder;
+import com.loopers.infrastructure.redis.CachedPage;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
-import com.loopers.infrastructure.product.ProductWithBrand;
+import com.loopers.domain.product.ProductBrandDomainService;
+import com.loopers.domain.product.ProductInfo;
 import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.infrastructure.redis.RedisRepository;
 import com.loopers.support.error.CoreException;
@@ -31,12 +34,32 @@ import lombok.RequiredArgsConstructor;
 public class ProductQueryService implements ProductFinder {
     private final ProductRepository productRepository;
     private final RedisRepository redisRepository;
+    private final ProductBrandDomainService productBrandDomainService;
 
     @Override
     public Product find(Long productId) {
         Product product = productRepository.find(productId)
                                            .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
         return product;
+    }
+
+    @Override
+    public ProductInfo findCachedProduct(Long productId) {
+        String redisKey = String.format("product:%d", productId);
+        Optional<ProductInfo> productInfoOpt = redisRepository.get(redisKey, new TypeReference<>() {});
+
+        if (productInfoOpt.isPresent()) {
+            return productInfoOpt.get();
+        }
+
+        Product product = productRepository.find(productId)
+                                           .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
+
+        ProductInfo productInfo = productBrandDomainService.findProductWithBrand(product, product.getBrand(),
+                                                                                      product.getLikeCount());
+        redisRepository.save(redisKey, productInfo, Duration.ofMinutes(5));
+
+        return productInfo;
     }
 
     @Override
@@ -67,33 +90,31 @@ public class ProductQueryService implements ProductFinder {
     public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalizationWithRedis(String sortKey,
                                                                                       List<Long> brandIds,
                                                                                       Pageable pageable) {
+        String redisKey = String.format("product:brands:%s:sort:%s:page:%d",
+                                        String.join("-", brandIds.stream().map(String::valueOf).toList()),
+                                        sortKey, pageable.getPageNumber());
 
-        Page<ProductWithBrand> productWithBrands
-                = productRepository.findByBrandDenormalization(sortKey, brandIds, pageable);
+        Optional<CachedPage<ProductWithLikeCount>> cachedPageOpt =
+                redisRepository.get(redisKey, new TypeReference<>() {});
 
-        List<ProductWithLikeCount> content
-                = productWithBrands.stream()
-                                   .map(p -> {
-                                       String redisKey = "product:like:" + p.product().getId();
-                                       Optional<Integer> likeCountOpt = redisRepository.get(redisKey, Integer.class);
+        if (cachedPageOpt.isPresent()) {
+            return cachedPageOpt.get().toPage(pageable);
+        }
 
-                                       long likeCount;
-                                       if (likeCountOpt.isPresent()) {
-                                           likeCount = likeCountOpt.get().longValue();
-                                       } else {
-                                           Product product
-                                                   = productRepository.find(p.product().getId())
-                                                                      .orElseThrow(
-                                                                              () -> new CoreException(ErrorType.NOT_FOUND,
-                                                                                                      "존재하지 않는 상품입니다."));
-                                           likeCount = product.getLikeCount();
-                                           redisRepository.save(redisKey, likeCount, Duration.ofMinutes(1));
-                                       }
-                                       return new ProductWithLikeCount(p.product(), p.brand(), likeCount);
-                                   })
-                                   .toList();
+        Page<ProductWithLikeCount> productWithLikeCounts
+                = productRepository.findByBrandDenormalizationWithLike(sortKey, brandIds, pageable);
 
-        return new PageImpl<>(content, pageable, productWithBrands.getTotalElements());
+        List<ProductWithLikeCount> content = productWithLikeCounts.toList();
+
+        PageImpl<ProductWithLikeCount> pageResult = new PageImpl<>(content, pageable,
+                                                                   productWithLikeCounts.getTotalElements());
+
+        if (pageable.getPageNumber() <= 1) {
+            CachedPage<ProductWithLikeCount> cached = CachedPage.of(pageResult);
+            redisRepository.save(redisKey, cached, Duration.ofMinutes(5));
+        }
+
+        return pageResult;
     }
 
     @Override
@@ -103,9 +124,9 @@ public class ProductQueryService implements ProductFinder {
         Map<Long, Product> productMap = products.stream().collect(Collectors.toMap(Product::getId, Function.identity()));
 
         return productTotalAmountRequests.stream()
-                            .map(request -> productMap.get(request.productId())
-                                                      .getTotalPrice(BigDecimal.valueOf(request.quantity())))
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                                         .map(request -> productMap.get(request.productId())
+                                                                   .getTotalPrice(BigDecimal.valueOf(request.quantity())))
+                                         .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override

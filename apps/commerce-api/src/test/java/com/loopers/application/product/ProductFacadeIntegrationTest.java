@@ -68,7 +68,10 @@ class ProductFacadeIntegrationTest {
     @BeforeEach
     void setUp() {
         brand = brandRepository.create(BrandFixture.createBrand());
-        product = productRepository.save(ProductFixture.createProduct(brand));
+
+        Product product = ProductFixture.createProduct(brand);
+        product.increaseLikeCount();
+        this.product = productRepository.save(product);
     }
 
     @DisplayName("상품 정보는 브랜드 정보, 좋아요 수를 포함한다.")
@@ -91,9 +94,6 @@ class ProductFacadeIntegrationTest {
     @DisplayName("상품 정보는 브랜드 정보, 비정규화 좋아요 수를 포함한다.")
     @Test
     void productInfo_has_brandInfo_and_like_count_denormalization() {
-        product.increaseLikeCount();
-        productRepository.save(product);
-
         ProductInfoPageResponse productInfoPageResponse
                 = productFacade.findProductsInfoDenormalizationWithRedis("LIKE_COUNT_DESC",
                                                                          List.of(brand.getId()),
