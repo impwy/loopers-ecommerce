@@ -10,8 +10,6 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.loopers.application.provided.InventoryRegister;
 import com.loopers.application.provided.OrderFinder;
-import com.loopers.application.required.InventoryRepository;
-import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.inventory.InventoryRollback;
 import com.loopers.domain.inventory.ProductInventoryUsed;
 import com.loopers.domain.order.Order;
@@ -24,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 public class InventoryEventHandler {
     private final InventoryRegister inventoryRegister;
     private final OrderFinder orderFinder;
-    private final InventoryRepository inventoryRepository;
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(ProductInventoryUsed event) {
@@ -41,11 +38,6 @@ public class InventoryEventHandler {
 
         List<Long> productIds = order.getOrderItems().stream().map(OrderItem::getProductId).toList();
 
-        List<Inventory> inventories = inventoryRepository.findAllByProductIdIn(productIds);
-
-        inventories.forEach(inventory -> {
-            Long quantity = productQuantityMap.get(inventory.getProductId());
-            inventory.increase(quantity);
-        });
+        inventoryRegister.rollbackInventory(productIds, productQuantityMap);
     }
 }

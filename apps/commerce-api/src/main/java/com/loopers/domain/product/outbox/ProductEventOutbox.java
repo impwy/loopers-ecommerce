@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -38,6 +39,10 @@ public class ProductEventOutbox extends BaseEntity {
 
     @Column(name = "published_at")
     private ZonedDateTime publishedAt;
+
+    @Lob
+    @Column(name = "payload")
+    private String payload;
 
     public enum ProductOutboxStatus {
         PENDING,
@@ -69,6 +74,9 @@ public class ProductEventOutbox extends BaseEntity {
         );
     }
 
+    public void updatePayload(String payload) {
+        this.payload = payload;
+    }
 
     public void changeStatus(ProductOutboxStatus productOutboxStatus) {
         this.productOutboxStatus = productOutboxStatus;

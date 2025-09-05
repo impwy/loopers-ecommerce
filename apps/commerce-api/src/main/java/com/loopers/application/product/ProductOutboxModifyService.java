@@ -30,8 +30,9 @@ public class ProductOutboxModifyService implements ProductOutboxRegister {
         if (productEventOutboxOpt.isPresent()) {
             return productEventOutboxOpt.get();
         }
+        ProductEventOutbox productEventOutbox = ProductEventOutbox.create(createProductOutbox);
 
-        return productEventOutboxRepository.save(createProductOutbox);
+        return productEventOutboxRepository.save(productEventOutbox);
     }
 
     @Transactional
@@ -39,6 +40,14 @@ public class ProductOutboxModifyService implements ProductOutboxRegister {
     public ProductEventOutbox changeStatus(Long id, ProductOutboxStatus productOutboxStatus) {
         ProductEventOutbox productEventOutbox = productOutboxFinder.find(id);
         productEventOutbox.changeStatus(productOutboxStatus);
+        return productEventOutbox;
+    }
+
+    @Transactional
+    @Override
+    public ProductEventOutbox updatePayload(Long id, String payload) {
+        ProductEventOutbox productEventOutbox = productOutboxFinder.find(id);
+        productEventOutbox.updatePayload(payload);
         return productEventOutbox;
     }
 }
