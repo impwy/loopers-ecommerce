@@ -4,11 +4,12 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.loopers.application.provided.ProductMetricsRegister;
+import com.loopers.application.required.InMemoryRepository;
 import com.loopers.application.required.ProductMetricsRepository;
 import com.loopers.domain.product.CreateProductMetricsSpec;
 import com.loopers.domain.product.ProductMetrics;
@@ -20,16 +21,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductMetricsModifyService implements ProductMetricsRegister {
     private final ProductMetricsRepository metricsRepository;
-    private final RedisTemplate<String, List<String>> redisTemplate;
+    private final InMemoryRepository inMemoryRepository;
     private static final String REDIS_KEY = "product:eventIds";
 
     @Transactional
     @Override
     public void handleProductEvent(List<ProductPayload> productPayloads) {
-        List<String> processedEventIds = redisTemplate.opsForValue().get(REDIS_KEY);
-        if (processedEventIds == null) {
-            processedEventIds = new ArrayList<>();
-        }
+        List<String> processedEventIds = inMemoryRepository.get(REDIS_KEY, new TypeReference<List<String>>() {})
+                                                           .orElseGet(ArrayList::new);
 
         List<ProductMetrics> metricsToSave = new ArrayList<>();
         List<String> newProcessedEventIds = new ArrayList<>();
@@ -62,6 +61,6 @@ public class ProductMetricsModifyService implements ProductMetricsRegister {
         metricsRepository.saveAll(metricsToSave);
 
         processedEventIds.addAll(newProcessedEventIds);
-        redisTemplate.opsForValue().set(REDIS_KEY, processedEventIds, Duration.ofSeconds(3));
+        inMemoryRepository.save(REDIS_KEY, processedEventIds, Duration.ofSeconds(3));
     }
 }
