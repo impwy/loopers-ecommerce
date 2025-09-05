@@ -41,7 +41,8 @@ public class ProductMetricsModifyService implements ProductMetricsRegister {
             switch (event.eventType()) {
                 case PRODUCT_LIKE_INCREMENT -> metrics.increaseLikes();
                 case PRODUCT_LIKE_DECREMENT -> metrics.decreaseLikes();
-                case PRODUCT_SALE -> metrics.increaseSales();
+                case PRODUCT_SALE -> metrics.increaseSales(event.saleQuantity());
+                case PRODUCT_SALE_CANCEL -> metrics.decreaseSales(event.cancelQuantity());
                 case PRODUCT_VIEW -> metrics.increaseViews();
             }
         }

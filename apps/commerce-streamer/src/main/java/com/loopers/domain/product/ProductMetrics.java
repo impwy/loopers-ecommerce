@@ -52,8 +52,12 @@ public class ProductMetrics extends BaseEntity {
         this.likeCount -= 1L;
     }
 
-    public void increaseSales() {
-        this.purchaseCount += 1L;
+    public void increaseSales(Long saleQuantity) {
+        this.purchaseCount += saleQuantity;
+    }
+
+    public void decreaseSales(Long canceledQuantity) {
+        this.purchaseCount += canceledQuantity;
     }
 
     public void increaseViews() {
