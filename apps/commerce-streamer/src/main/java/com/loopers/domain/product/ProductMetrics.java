@@ -2,10 +2,9 @@ package com.loopers.domain.product;
 
 import java.time.LocalDate;
 
-import com.loopers.domain.BaseEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,9 +14,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "product_metrics")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProductMetrics extends BaseEntity {
+public class ProductMetrics {
 
-    @Column(name = "product_id")
+    @Id
+    @Column(name = "event_id", nullable = false)
+    private String eventId;
+
+    @Column(name = "product_id", nullable = false)
     private Long productId;
 
     @Column(name = "like_count")
@@ -29,16 +32,18 @@ public class ProductMetrics extends BaseEntity {
     @Column(name = "purchase_count")
     private Long purchaseCount;
 
-    @Column(name = "published_at")
+    @Column(name = "published_at", nullable = false)
     private LocalDate publishedAt;
 
-    private ProductMetrics(Long productId, LocalDate publishedAt) {
+    private ProductMetrics(String eventId, Long productId, LocalDate publishedAt) {
+        this.eventId = eventId;
         this.productId = productId;
         this.publishedAt = publishedAt;
     }
 
     public static ProductMetrics create(CreateProductMetricsSpec createProductMetricsSpec) {
         return new ProductMetrics(
+                createProductMetricsSpec.eventId(),
                 createProductMetricsSpec.productId(),
                 createProductMetricsSpec.date()
         );

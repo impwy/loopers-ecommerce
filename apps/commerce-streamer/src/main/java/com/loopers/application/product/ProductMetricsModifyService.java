@@ -1,18 +1,17 @@
 package com.loopers.application.product;
 
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.HashMap;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.application.provided.ProductMetricsRegister;
 import com.loopers.application.required.ProductMetricsRepository;
-import com.loopers.domain.product.ProductMetrics;
 import com.loopers.domain.product.CreateProductMetricsSpec;
+import com.loopers.domain.product.ProductMetrics;
 import com.loopers.interfaces.consumer.dto.ProductPayload;
 
 import lombok.RequiredArgsConstructor;
@@ -21,32 +20,48 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductMetricsModifyService implements ProductMetricsRegister {
     private final ProductMetricsRepository metricsRepository;
+    private final RedisTemplate<String, List<String>> redisTemplate;
+    private static final String REDIS_KEY = "product:eventIds";
 
     @Transactional
     @Override
-    public void dailyUpdates(List<ProductPayload> productPayloads) {
-        Map<String, ProductMetrics> dailyUpdates = new HashMap<>();
-
-        for (ProductPayload event : productPayloads) {
-            ZonedDateTime publishedAt = event.publishedAt();
-            LocalDate date = publishedAt.toLocalDate();
-
-            String key = event.productId() + "-" + date;
-            ProductMetrics metrics = dailyUpdates.computeIfAbsent(key, k ->
-                    metricsRepository.findByProductIdAndPublishedAt(event.productId(), date)
-                                     .orElse(ProductMetrics.create(new CreateProductMetricsSpec(
-                                             event.productId(), date)))
-            );
-
-            switch (event.eventType()) {
-                case PRODUCT_LIKE_INCREMENT -> metrics.increaseLikes();
-                case PRODUCT_LIKE_DECREMENT -> metrics.decreaseLikes();
-                case PRODUCT_SALE -> metrics.increaseSales(event.saleQuantity());
-                case PRODUCT_SALE_CANCEL -> metrics.decreaseSales(event.cancelQuantity());
-                case PRODUCT_VIEW -> metrics.increaseViews();
-            }
+    public void handleProductEvent(List<ProductPayload> productPayloads) {
+        List<String> processedEventIds = redisTemplate.opsForValue().get(REDIS_KEY);
+        if (processedEventIds == null) {
+            processedEventIds = new ArrayList<>();
         }
 
-        metricsRepository.saveAll(dailyUpdates.values());
+        List<ProductMetrics> metricsToSave = new ArrayList<>();
+        List<String> newProcessedEventIds = new ArrayList<>();
+
+        for (ProductPayload payload : productPayloads) {
+            if (processedEventIds.contains(payload.eventId())) {
+                continue;
+            }
+
+            ProductMetrics metrics = metricsRepository
+                    .findByProductIdAndPublishedAt(payload.productId(), payload.publishedAt().toLocalDate())
+                    .orElse(ProductMetrics.create(new CreateProductMetricsSpec(
+                            payload.eventId(),
+                            payload.productId(),
+                            payload.publishedAt().toLocalDate()
+                    )));
+
+            switch (payload.eventType()) {
+                case PRODUCT_LIKE_INCREMENT -> metrics.increaseLikes();
+                case PRODUCT_LIKE_DECREMENT -> metrics.decreaseLikes();
+                case PRODUCT_SALE -> metrics.increaseSales(payload.saleQuantity());
+                case PRODUCT_SALE_CANCEL -> metrics.decreaseSales(payload.cancelQuantity());
+                case PRODUCT_VIEW -> metrics.increaseViews();
+            }
+
+            metricsToSave.add(metrics);
+            newProcessedEventIds.add(payload.eventId());
+        }
+
+        metricsRepository.saveAll(metricsToSave);
+
+        processedEventIds.addAll(newProcessedEventIds);
+        redisTemplate.opsForValue().set(REDIS_KEY, processedEventIds, Duration.ofSeconds(3));
     }
 }

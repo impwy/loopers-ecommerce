@@ -24,9 +24,9 @@ public class ProductEventConsumer {
             groupId = "product-consumer",
             containerFactory = KafkaConfig.BATCH_LISTENER
     )
-    public void productLikeListener(List<ProductPayload> messages,
-                                    Acknowledgment acknowledgment) {
-        productMetricsRegister.dailyUpdates(messages);
+    public void productListener(List<ProductPayload> messages,
+                                Acknowledgment acknowledgment) {
+        productMetricsRegister.handleProductEvent(messages);
         acknowledgment.acknowledge();
     }
 }
