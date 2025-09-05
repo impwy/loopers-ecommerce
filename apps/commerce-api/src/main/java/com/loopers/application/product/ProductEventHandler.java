@@ -36,7 +36,7 @@ public class ProductEventHandler {
         Long productId = event.productId();
         ProductPayload payload = new ProductPayload(productId, productEventOutbox.getEventId(),
                                                     ProductEventType.PRODUCT_LIKE_INCREMENT,
-                                                    0L, ZonedDateTime.now());
+                                                    0L, ZonedDateTime.now(), null, null, null);
 
         publishProductLikeEvent(payload, productEventOutbox, productId);
     }
@@ -49,7 +49,7 @@ public class ProductEventHandler {
         Long productId = event.productId();
         ProductPayload payload = new ProductPayload(productId, productEventOutbox.getEventId(),
                                                     ProductEventType.PRODUCT_LIKE_DECREMENT,
-                                                    0L, ZonedDateTime.now());
+                                                    0L, ZonedDateTime.now(), null, null, null);
 
         publishProductLikeEvent(payload, productEventOutbox, productId);
     }
