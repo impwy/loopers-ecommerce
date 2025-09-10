@@ -1,4 +1,4 @@
 package com.loopers.domain.product;
 
-public record LikeDecrease(Long productId) {
+public record LikeDecrease(Long outboxId, Long productId) {
 }

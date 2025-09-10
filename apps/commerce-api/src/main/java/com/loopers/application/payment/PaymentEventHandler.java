@@ -15,12 +15,12 @@ import lombok.RequiredArgsConstructor;
 public class PaymentEventHandler {
     private final PaymentRegister paymentRegister;
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void failPayment(PaymentFail paymentFail) {
         paymentRegister.failPayment(paymentFail.orderId());
     }
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void successPayment(PaymentSuccess paymentSuccess) {
         paymentRegister.successPayment(paymentSuccess.orderId());
     }

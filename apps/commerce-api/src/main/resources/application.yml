@@ -10,6 +10,10 @@ server:
     keep-alive-timeout: 60s # 60s
   max-http-request-header-size: 8KB
 
+management:
+  server:
+    port: 8081
+
 spring:
   main:
     web-application-type: servlet
@@ -21,6 +25,7 @@ spring:
     import:
       - jpa.yml
       - redis.yml
+      - kafka.yml
       - logging.yml
       - monitoring.yml
 
