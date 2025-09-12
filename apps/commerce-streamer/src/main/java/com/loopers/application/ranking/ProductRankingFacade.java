@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductRankingFacade {
     private final ProductRankingRegister productRankingRegister;
 
-    public void rank(List<ProductPayload> messages) {
-        productRankingRegister.rank(messages);
+    public void aggregateRanking(List<ProductPayload> messages) {
+        productRankingRegister.aggregateRanking(messages);
     }
 }

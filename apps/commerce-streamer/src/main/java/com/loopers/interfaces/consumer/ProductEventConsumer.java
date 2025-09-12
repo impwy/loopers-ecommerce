@@ -29,7 +29,7 @@ public class ProductEventConsumer {
     public void productListener(List<ProductPayload> messages,
                                 Acknowledgment acknowledgment) {
         productMetricsRegister.handleProductEvent(messages);
-        productRankingFacade.rank(messages);
+        productRankingFacade.aggregateRanking(messages);
         acknowledgment.acknowledge();
     }
 }

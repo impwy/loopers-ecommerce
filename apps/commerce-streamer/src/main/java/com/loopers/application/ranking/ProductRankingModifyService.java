@@ -24,7 +24,7 @@ public class ProductRankingModifyService implements ProductRankingRegister {
     private final InMemoryRepository inMemoryRepository;
 
     @Override
-    public void rank(List<ProductPayload> productPayloads) {
+    public void aggregateRanking(List<ProductPayload> productPayloads) {
         LocalDate now = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String key = "ranking:all:" + now.format(formatter);
