@@ -1,10 +1,14 @@
 package com.loopers.infrastructure.redis;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import org.springframework.data.redis.connection.zset.Tuple;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -60,5 +64,16 @@ public class RedisRepositoryImpl implements InMemoryRepository {
         return objects
                 .stream().map(type::cast)
                 .toList();
+    }
+
+    @Override
+    public void zAdd(String key, Set<Tuple> tuples, Duration ttl) {
+        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            byte[] rawKey = key.getBytes(StandardCharsets.UTF_8);
+            connection.zAdd(rawKey, tuples);
+
+            connection.keyCommands().expire(rawKey, ttl.getSeconds());
+            return null;
+        });
     }
 }
