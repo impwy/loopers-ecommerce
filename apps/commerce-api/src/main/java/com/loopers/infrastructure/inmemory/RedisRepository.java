@@ -65,7 +65,7 @@ public class RedisRepository implements InMemoryRepository {
     }
 
     @Override
-    public Set<TypedTuple<Object>> zreverRange(String key,long start, long end) {
+    public Set<TypedTuple<Object>> zreverRange(String key, long start, long end) {
         Set<TypedTuple<Object>> typedTuples = redisTemplate.opsForZSet().reverseRangeWithScores(key, start, end);
         return typedTuples;
     }

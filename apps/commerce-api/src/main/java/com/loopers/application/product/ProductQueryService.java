@@ -39,7 +39,7 @@ public class ProductQueryService implements ProductFinder {
     private final InMemoryRepository inMemoryRepository;
     private final ProductBrandDomainService productBrandDomainService;
 
-    private static final Function<String, String> REDIS_KEY_GENERATOR = key -> "ranking:all:" + key;
+    private static final Function<String, String> PRODUCT_RANKING_KEY = key -> "ranking:all:" + key;
 
     @Override
     public Product find(Long productId) {
@@ -149,7 +149,7 @@ public class ProductQueryService implements ProductFinder {
 
     @Override
     public ProductInfoPageResponse findProductInfoWithRank(String date, Pageable pageable) {
-        String redisKey = REDIS_KEY_GENERATOR.apply(date);
+        String redisKey = PRODUCT_RANKING_KEY.apply(date);
         Set<TypedTuple<Object>> typedTuples = inMemoryRepository.zreverRange(redisKey, 0L, 100L);
         List<Long> productIds = typedTuples.stream().map(TypedTuple::getValue).map(Long.class::cast).toList();
 

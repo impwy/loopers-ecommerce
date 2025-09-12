@@ -60,7 +60,7 @@ public class ProductV1ApiController implements ProductV1ApiSpec {
     @GetMapping("/rankings")
     @Override
     public ApiResponse<ProductInfoPageResponse> getProductRanking(@RequestParam String date,
-                                                               Pageable pageable) {
+                                                                  Pageable pageable) {
         ProductInfoPageResponse productInfoWithRank = productFacade.findProductRanking(date, pageable);
         return ApiResponse.success(productInfoWithRank);
     }
