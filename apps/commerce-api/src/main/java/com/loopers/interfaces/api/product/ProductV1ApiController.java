@@ -52,7 +52,16 @@ public class ProductV1ApiController implements ProductV1ApiSpec {
     public ApiResponse<ProductInfoPageResponse> getProductsInfoDenormalizationWithRedis(@RequestParam String sort,
                                                                                         @RequestParam List<Long> brandIds,
                                                                                         Pageable pageable) {
-        ProductInfoPageResponse productsInfoResponse = productFacade.findProductsInfoDenormalizationWithRedis(sort, brandIds, pageable);
+        ProductInfoPageResponse productsInfoResponse =
+                productFacade.findProductsInfoDenormalizationWithRedis(sort, brandIds, pageable);
         return ApiResponse.success(productsInfoResponse);
+    }
+
+    @GetMapping("/rankings")
+    @Override
+    public ApiResponse<ProductInfoPageResponse> getProductRanking(@RequestParam String date,
+                                                               Pageable pageable) {
+        ProductInfoPageResponse productInfoWithRank = productFacade.findProductRanking(date, pageable);
+        return ApiResponse.success(productInfoWithRank);
     }
 }

@@ -4,8 +4,10 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -60,5 +62,11 @@ public class RedisRepository implements InMemoryRepository {
         return objects
                 .stream().map(type::cast)
                 .toList();
+    }
+
+    @Override
+    public Set<TypedTuple<Object>> zreverRange(String key,long start, long end) {
+        Set<TypedTuple<Object>> typedTuples = redisTemplate.opsForZSet().reverseRangeWithScores(key, start, end);
+        return typedTuples;
     }
 }
