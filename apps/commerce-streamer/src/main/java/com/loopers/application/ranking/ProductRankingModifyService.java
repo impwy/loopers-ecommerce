@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.data.redis.connection.zset.Tuple;
@@ -22,12 +23,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductRankingModifyService implements ProductRankingRegister {
     private final InMemoryRepository inMemoryRepository;
+    private static final Function<String, String> KEY_GENERATOR = key -> "ranking:all:" + key;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     @Override
     public void aggregateRanking(List<ProductPayload> productPayloads) {
         LocalDate now = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String key = "ranking:all:" + now.format(formatter);
+        String key = KEY_GENERATOR.apply(now.format(formatter));
         Map<Long, Double> scoreByProduct = productPayloads.stream()
                                                           .collect(Collectors.groupingBy(
                                                                   ProductPayload::productId,
