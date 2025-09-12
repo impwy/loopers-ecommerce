@@ -20,5 +20,7 @@ public interface InMemoryRepository {
 
     <T> List<T> multiGet(List<String> keys, Class<T> type);
 
-    Set<TypedTuple<Object>> zreverRange(String key, long start, long end);
+    Set<TypedTuple<Object>> zReverRange(String key, long start, long end);
+
+    Long getRank(String key, Object member);
 }

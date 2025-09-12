@@ -2,6 +2,8 @@ package com.loopers.application.product;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +26,7 @@ import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductBrandDomainService;
 import com.loopers.domain.product.ProductInfo;
+import com.loopers.domain.product.ProductInfoWithRank;
 import com.loopers.infrastructure.inmemory.CachedPage;
 import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
@@ -40,6 +43,7 @@ public class ProductQueryService implements ProductFinder {
     private final ProductBrandDomainService productBrandDomainService;
 
     private static final Function<String, String> PRODUCT_RANKING_KEY = key -> "ranking:all:" + key;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     @Override
     public Product find(Long productId) {
@@ -49,12 +53,13 @@ public class ProductQueryService implements ProductFinder {
     }
 
     @Override
-    public ProductInfo findCachedProduct(Long productId) {
+    public ProductInfoWithRank findCachedProduct(Long productId) {
         String redisKey = String.format("product:%d", productId);
         Optional<ProductInfo> productInfoOpt = inMemoryRepository.get(redisKey, new TypeReference<>() {});
+        Long rank = inMemoryRepository.getRank(PRODUCT_RANKING_KEY.apply(LocalDate.now().format(formatter)), productId);
 
         if (productInfoOpt.isPresent()) {
-            return productInfoOpt.get();
+            return ProductInfoWithRank.of(productInfoOpt.get(), rank);
         }
 
         Product product = productRepository.find(productId)
@@ -64,7 +69,7 @@ public class ProductQueryService implements ProductFinder {
                                                                                  product.getLikeCount());
         inMemoryRepository.save(redisKey, productInfo, Duration.ofMinutes(5));
 
-        return productInfo;
+        return ProductInfoWithRank.of(productInfo, rank);
     }
 
     @Override
@@ -150,7 +155,7 @@ public class ProductQueryService implements ProductFinder {
     @Override
     public ProductInfoPageResponse findProductInfoWithRank(String date, Pageable pageable) {
         String redisKey = PRODUCT_RANKING_KEY.apply(date);
-        Set<TypedTuple<Object>> typedTuples = inMemoryRepository.zreverRange(redisKey, 0L, 100L);
+        Set<TypedTuple<Object>> typedTuples = inMemoryRepository.zReverRange(redisKey, 0L, 100L);
         List<Long> productIds = typedTuples.stream().map(TypedTuple::getValue).map(Long.class::cast).toList();
 
         Page<Product> products = productRepository.findAllByIdIn(productIds, pageable);
