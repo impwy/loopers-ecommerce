@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.redis.connection.zset.Tuple;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -20,5 +21,7 @@ public interface InMemoryRepository {
 
     <T> List<T> multiGet(List<String> keys, Class<T> type);
 
-    void zAdd(String key, Set<Tuple> rankingTuples, Duration ttl);
+    void addProductRanks(String key, Set<Tuple> rankingTuples, Duration ttl);
+
+    Set<TypedTuple<Object>> getProductRanks(String key);
 }

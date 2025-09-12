@@ -10,6 +10,7 @@ import java.util.Set;
 import org.springframework.data.redis.connection.zset.Tuple;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -67,7 +68,7 @@ public class RedisRepositoryImpl implements InMemoryRepository {
     }
 
     @Override
-    public void zAdd(String key, Set<Tuple> tuples, Duration ttl) {
+    public void addProductRanks(String key, Set<Tuple> tuples, Duration ttl) {
         redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
             byte[] rawKey = key.getBytes(StandardCharsets.UTF_8);
             connection.zAdd(rawKey, tuples);
@@ -75,5 +76,10 @@ public class RedisRepositoryImpl implements InMemoryRepository {
             connection.keyCommands().expire(rawKey, ttl.getSeconds());
             return null;
         });
+    }
+
+    @Override
+    public Set<TypedTuple<Object>> getProductRanks(String key) {
+        return redisTemplate.opsForZSet().rangeWithScores(key, 0, -1);
     }
 }

@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.data.redis.connection.zset.Tuple;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.provided.ProductRankingRegister;
@@ -43,7 +44,23 @@ public class ProductRankingModifyService implements ProductRankingRegister {
                                                                 e.getValue()
                                                         ))
                                                         .collect(Collectors.toSet());
-        inMemoryRepository.zAdd(key, productRankingTuples, Duration.ofDays(2));
+        inMemoryRepository.addProductRanks(key, productRankingTuples, Duration.ofDays(2));
+    }
+
+    @Override
+    public void prepareNextDayProductRanking() {
+        LocalDate now = LocalDate.now();
+        String key = KEY_GENERATOR.apply(now.minusDays(1).format(formatter));
+        Set<TypedTuple<Object>> typedTuples = inMemoryRepository.getProductRanks(key);
+
+        Set<Tuple> nextDayTuples = typedTuples.stream()
+                                              .map(t -> Tuple.of(
+                                                      String.valueOf(t.getValue()).getBytes(StandardCharsets.UTF_8),
+                                                      t.getScore() * 0.1
+                                              ))
+                                              .collect(Collectors.toSet());
+
+        inMemoryRepository.addProductRanks(key, nextDayTuples, Duration.ofDays(2));
     }
 
     private double calculateScore(ProductPayload payload) {
