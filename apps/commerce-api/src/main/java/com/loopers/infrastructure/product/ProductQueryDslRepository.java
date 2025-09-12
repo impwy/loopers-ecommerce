@@ -5,10 +5,14 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.loopers.domain.product.Product;
+
 public interface ProductQueryDslRepository {
     Page<ProductWithLikeCount> findByBrandAndLikeCount(String sortKey, List<Long> brandIds, Pageable pageable);
 
     Page<ProductWithLikeCount> findByBrandDenormalizationWithLike(String sortKey, List<Long> brandIds, Pageable pageable);
 
     Page<ProductWithBrand> findByBrandDenormalization(String sortKey, List<Long> brandIds, Pageable pageable);
+
+    Page<Product> findAllByIdIn(List<Long> productIds, Pageable pageable);
 }

@@ -30,4 +30,6 @@ public interface ProductRepository {
     List<Product> findByIdIn(List<Long> productIds);
 
     Optional<Product> findByIdPessimisticLock(Long productId);
+
+    Page<Product> findAllByIdIn(List<Long> productIds, Pageable pageable);
 }

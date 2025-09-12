@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
-import com.loopers.domain.product.ProductInfo;
+import com.loopers.domain.product.ProductInfoWithRank;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 
@@ -21,7 +21,7 @@ public interface ProductV1ApiSpec {
             summary = "상품 단건 조회",
             description = "상품을 단건 조회합니다"
     )
-    ApiResponse<ProductInfo> getProductInfo(Long productId);
+    ApiResponse<ProductInfoWithRank> getProductInfo(Long productId);
 
     @Operation(
             summary = "상품 목록 조회",
@@ -46,4 +46,10 @@ public interface ProductV1ApiSpec {
     ApiResponse<ProductInfoPageResponse> getProductsInfoDenormalizationWithRedis(String sort,
                                                                                  List<Long> brandIds,
                                                                                  Pageable pageable);
+
+    @Operation(
+            summary = "상품 랭킹 조회",
+            description = "상품의 랭킹을 조회합니다"
+    )
+    ApiResponse<ProductInfoPageResponse> getProductRanking(String date, Pageable pageable);
 }

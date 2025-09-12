@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Component;
 
+import com.loopers.domain.product.Product;
 import com.loopers.domain.product.QProduct;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -112,6 +113,27 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
                 .select(product.id.countDistinct())
                 .from(product)
                 .where(product.brand.id.in(brandIds))
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(
+                content,
+                pageable,
+                () -> Optional.ofNullable(total).orElse(0L)
+        );
+    }
+
+    @Override
+    public Page<Product> findAllByIdIn(List<Long> productIds, Pageable pageable) {
+        List<Product> content = queryFactory.select(product)
+                                          .from(product)
+                                          .where(product.id.in(productIds))
+                                          .offset(pageable.getOffset())
+                                          .limit(pageable.getPageSize())
+                                          .fetch();
+        Long total = queryFactory
+                .select(product.id.countDistinct())
+                .from(product)
+                .where(product.id.in(productIds))
                 .fetchOne();
 
         return PageableExecutionUtils.getPage(

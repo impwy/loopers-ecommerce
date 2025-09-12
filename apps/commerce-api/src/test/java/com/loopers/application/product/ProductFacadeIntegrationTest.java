@@ -27,6 +27,7 @@ import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
 import com.loopers.domain.product.ProductInfo;
+import com.loopers.domain.product.ProductInfoWithRank;
 import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 import com.loopers.testcontainers.MySqlTestContainersConfig;
 import com.loopers.utils.DatabaseCleanUp;
@@ -80,7 +81,8 @@ class ProductFacadeIntegrationTest {
         Member member = memberRepository.save(MemberFixture.createMember());
         productLikeRepository.save(ProductLike.create(member, product));
 
-        ProductInfo productInfo = productFacade.findProductInfo(product.getId());
+        ProductInfoWithRank productInfoWithRank = productFacade.findProductInfo(product.getId());
+        ProductInfo productInfo = productInfoWithRank.productInfo();
 
         assertAll(
                 () -> assertThat(productInfo.productName()).isEqualTo(product.getName()),

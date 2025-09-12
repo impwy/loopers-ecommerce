@@ -18,9 +18,10 @@ import com.loopers.domain.product.LikeDecrease;
 import com.loopers.domain.product.LikeIncrease;
 import com.loopers.domain.product.ProductBrandDomainService;
 import com.loopers.domain.product.ProductInfo;
+import com.loopers.domain.product.ProductInfoWithRank;
+import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
-import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 
@@ -36,8 +37,8 @@ public class ProductFacade {
     private final ProductOutboxRegister productOutboxRegister;
 
     @Transactional
-    public ProductInfo findProductInfo(Long productId) {
-        ProductInfo cachedProduct = productFinder.findCachedProduct(productId);
+    public ProductInfoWithRank findProductInfo(Long productId) {
+        ProductInfoWithRank cachedProduct = productFinder.findCachedProduct(productId);
         return cachedProduct;
     }
 
@@ -108,5 +109,9 @@ public class ProductFacade {
         ProductEventOutbox productEventOutbox = productOutboxRegister.register(createProductOutbox);
 
         eventPublisher.publishEvent(new LikeDecrease(productEventOutbox.getId(), productId));
+    }
+
+    public ProductInfoPageResponse findProductRanking(String date, Pageable pageable) {
+        return productFinder.findProductInfoWithRank(date, pageable);
     }
 }

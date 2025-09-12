@@ -1,4 +1,4 @@
-package com.loopers.infrastructure.redis;
+package com.loopers.infrastructure.inmemory;
 
 import java.util.List;
 
