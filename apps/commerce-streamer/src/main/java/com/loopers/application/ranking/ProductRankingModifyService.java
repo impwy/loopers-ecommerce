@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.loopers.application.provided.ProductRankingRegister;
 import com.loopers.application.required.InMemoryRepository;
 import com.loopers.interfaces.consumer.dto.ProductPayload;
+import com.loopers.interfaces.consumer.dto.ProductPayload.ProductEventType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,12 +47,7 @@ public class ProductRankingModifyService implements ProductRankingRegister {
     }
 
     private double calculateScore(ProductPayload payload) {
-        return switch (payload.eventType()) {
-            case PRODUCT_LIKE_INCREMENT,
-                 PRODUCT_VIEW -> 1.0;
-            case PRODUCT_LIKE_DECREMENT -> -1.0;
-            case PRODUCT_SALE -> payload.saleQuantity();
-            case PRODUCT_SALE_CANCEL -> -payload.cancelQuantity();
-        };
+        return ProductEventType.valueOf(payload.eventType().name())
+                               .calculateScore(payload);
     }
 }
