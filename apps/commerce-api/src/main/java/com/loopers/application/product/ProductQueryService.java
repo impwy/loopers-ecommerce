@@ -16,14 +16,14 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.loopers.application.provided.ProductFinder;
-import com.loopers.infrastructure.redis.CachedPage;
+import com.loopers.application.required.InMemoryRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductBrandDomainService;
 import com.loopers.domain.product.ProductInfo;
+import com.loopers.infrastructure.inmemory.CachedPage;
 import com.loopers.infrastructure.product.ProductWithLikeCount;
-import com.loopers.infrastructure.redis.RedisRepository;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 
@@ -33,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductQueryService implements ProductFinder {
     private final ProductRepository productRepository;
-    private final RedisRepository redisRepository;
+    private final InMemoryRepository inMemoryRepository;
     private final ProductBrandDomainService productBrandDomainService;
 
     @Override
@@ -46,7 +46,7 @@ public class ProductQueryService implements ProductFinder {
     @Override
     public ProductInfo findCachedProduct(Long productId) {
         String redisKey = String.format("product:%d", productId);
-        Optional<ProductInfo> productInfoOpt = redisRepository.get(redisKey, new TypeReference<>() {});
+        Optional<ProductInfo> productInfoOpt = inMemoryRepository.get(redisKey, new TypeReference<>() {});
 
         if (productInfoOpt.isPresent()) {
             return productInfoOpt.get();
@@ -56,8 +56,8 @@ public class ProductQueryService implements ProductFinder {
                                            .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
 
         ProductInfo productInfo = productBrandDomainService.findProductWithBrand(product, product.getBrand(),
-                                                                                      product.getLikeCount());
-        redisRepository.save(redisKey, productInfo, Duration.ofMinutes(5));
+                                                                                 product.getLikeCount());
+        inMemoryRepository.save(redisKey, productInfo, Duration.ofMinutes(5));
 
         return productInfo;
     }
@@ -95,7 +95,7 @@ public class ProductQueryService implements ProductFinder {
                                         sortKey, pageable.getPageNumber());
 
         Optional<CachedPage<ProductWithLikeCount>> cachedPageOpt =
-                redisRepository.get(redisKey, new TypeReference<>() {});
+                inMemoryRepository.get(redisKey, new TypeReference<>() {});
 
         if (cachedPageOpt.isPresent()) {
             return cachedPageOpt.get().toPage(pageable);
@@ -111,7 +111,7 @@ public class ProductQueryService implements ProductFinder {
 
         if (pageable.getPageNumber() <= 1) {
             CachedPage<ProductWithLikeCount> cached = CachedPage.of(pageResult);
-            redisRepository.save(redisKey, cached, Duration.ofMinutes(5));
+            inMemoryRepository.save(redisKey, cached, Duration.ofMinutes(5));
         }
 
         return pageResult;

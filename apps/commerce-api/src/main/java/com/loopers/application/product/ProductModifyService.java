@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service;
 
 import com.loopers.application.provided.ProductFinder;
 import com.loopers.application.provided.ProductRegister;
+import com.loopers.application.required.InMemoryRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.product.CreateProductSpec;
 import com.loopers.domain.product.Product;
-import com.loopers.infrastructure.redis.RedisRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductModifyService implements ProductRegister {
     private final ProductRepository productRepository;
     private final ProductFinder productFinder;
-    private final RedisRepository redisRepository;
+    private final InMemoryRepository inMemoryRepository;
 
     @Override
     public Product register(CreateProductSpec createProductSpec) {
@@ -31,7 +31,7 @@ public class ProductModifyService implements ProductRegister {
         Product savedProduct = productRepository.save(product);
 
         String key = "product:like:" + product.getId();
-        redisRepository.save(key, product.getLikeCount());
+        inMemoryRepository.save(key, product.getLikeCount());
         return savedProduct;
     }
 
