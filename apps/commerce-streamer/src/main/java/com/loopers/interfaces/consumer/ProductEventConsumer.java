@@ -7,6 +7,7 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.provided.ProductMetricsRegister;
+import com.loopers.application.ranking.ProductRankingFacade;
 import com.loopers.confg.kafka.KafkaConfig;
 import com.loopers.interfaces.consumer.dto.ProductPayload;
 
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ProductEventConsumer {
     private final ProductMetricsRegister productMetricsRegister;
+    private final ProductRankingFacade productRankingFacade;
 
     @KafkaListener(
             topics = "product-event",
@@ -27,6 +29,7 @@ public class ProductEventConsumer {
     public void productListener(List<ProductPayload> messages,
                                 Acknowledgment acknowledgment) {
         productMetricsRegister.handleProductEvent(messages);
+        productRankingFacade.aggregateRanking(messages);
         acknowledgment.acknowledge();
     }
 }
