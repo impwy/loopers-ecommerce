@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 @EnableBatchProcessing
-public class WeeklyProductRankJob {
+public class WeeklyProductRankJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
 
@@ -49,7 +49,7 @@ public class WeeklyProductRankJob {
 
         JpaPagingItemReader<MvProductRankDaily> itemReader = reader.getPagingItemReader(startDate, endDate);
 
-        return new StepBuilder("weeklyRankStep", jobRepository)
+        return new StepBuilder("weeklyProductRankStep", jobRepository)
                 .<MvProductRankDaily, MvProductRankWeekly>chunk(1000, transactionManager)
                 .reader(itemReader)
                 .processor(processor.processWeekly(startDate, endDate))

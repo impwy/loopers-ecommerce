@@ -19,4 +19,9 @@ public class MvProductRankWeeklyRepositoryImpl implements MvProductRankWeeklyRep
     public List<MvProductRankWeekly> findByStartDateAndEndDate(LocalDate startDate, LocalDate endDate) {
         return mvProductRankWeeklyJpaRepository.findByStartDateAndEndDate(startDate, endDate);
     }
+
+    @Override
+    public List<MvProductRankWeekly> findAll() {
+        return mvProductRankWeeklyJpaRepository.findAll();
+    }
 }

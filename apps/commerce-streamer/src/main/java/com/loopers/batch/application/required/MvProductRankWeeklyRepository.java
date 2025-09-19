@@ -7,4 +7,6 @@ import com.loopers.batch.domain.MvProductRankWeekly;
 
 public interface MvProductRankWeeklyRepository {
     List<MvProductRankWeekly> findByStartDateAndEndDate(LocalDate startDate, LocalDate endDate);
+
+    List<MvProductRankWeekly> findAll();
 }

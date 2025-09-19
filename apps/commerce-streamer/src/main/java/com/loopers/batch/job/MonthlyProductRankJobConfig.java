@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 @EnableBatchProcessing
-public class MonthlyProductRankJob {
+public class MonthlyProductRankJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
 
@@ -35,7 +35,7 @@ public class MonthlyProductRankJob {
 
     @Bean
     public Job monthlyProductRankJob() {
-        return new JobBuilder("monthlyRankJob", jobRepository)
+        return new JobBuilder("monthlyProductRankJob", jobRepository)
                 .start(monthlyRankStep())
                 .build();
     }
