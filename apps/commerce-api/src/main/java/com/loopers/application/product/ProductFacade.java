@@ -110,8 +110,4 @@ public class ProductFacade {
 
         eventPublisher.publishEvent(new LikeDecrease(productEventOutbox.getId(), productId));
     }
-
-    public ProductInfoPageResponse findProductRanking(String date, Pageable pageable) {
-        return productFinder.findProductInfoWithRank(date, pageable);
-    }
 }

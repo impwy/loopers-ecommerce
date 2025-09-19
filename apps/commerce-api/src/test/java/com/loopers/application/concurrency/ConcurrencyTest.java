@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import com.loopers.application.inventory.DecreaseInventoryRequest;
 import com.loopers.application.provided.CouponRegister;
 import com.loopers.application.provided.InventoryRegister;
 import com.loopers.application.provided.MemberFinder;
@@ -32,7 +33,6 @@ import com.loopers.domain.coupon.CouponType;
 import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.coupon.DiscountPolicy;
 import com.loopers.domain.inventory.CreateInventorySpec;
-import com.loopers.application.inventory.DecreaseInventoryRequest;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
@@ -89,9 +89,7 @@ class ConcurrencyTest {
             ExecutorService executorService = Executors.newFixedThreadPool(100);
 
             // count를 늘려가며 지정한 count가 되면 thread 전부 시작.
-            CountDownLatch readyLatch = new CountDownLatch(100);
-            CountDownLatch startLatch = new CountDownLatch(1);
-            CountDownLatch doneLatch = new CountDownLatch(100);
+            CountDownLatch latch = new CountDownLatch(threadCount);
 
             Brand brand = brandRepository.create(BrandFixture.createBrand());
             Product product = productRepository.save(ProductFixture.createProduct(brand));
@@ -102,20 +100,14 @@ class ConcurrencyTest {
             for (int i = 0; i < threadCount; i++) {
                 executorService.execute(() -> {
                     try {
-                        readyLatch.countDown();
-                        startLatch.await();
                         inventoryRegister.decreaseProducts(List.of(createOrderRequest));
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
                     } finally {
-                        doneLatch.countDown();
+                        latch.countDown();
                     }
                 });
             }
 
-            readyLatch.await();
-            startLatch.countDown();
-            doneLatch.await();
+            latch.await();
 
             Inventory updatedInventory = inventoryRepository.find(inventory.getId()).orElseThrow();
             assertThat(updatedInventory.getQuantity()).isEqualTo(0);
@@ -132,9 +124,7 @@ class ConcurrencyTest {
             int threadCount = 10;
             ExecutorService executorService = Executors.newFixedThreadPool(100);
 
-            CountDownLatch readyLatch = new CountDownLatch(threadCount);
-            CountDownLatch startLatch = new CountDownLatch(1);
-            CountDownLatch doneLatch = new CountDownLatch(threadCount);
+            CountDownLatch latch = new CountDownLatch(threadCount);
 
             Member member = MemberFixture.createMember();
             member.charge(BigDecimal.valueOf(10000000));
@@ -143,20 +133,14 @@ class ConcurrencyTest {
             for (int i = 0; i < threadCount; i++) {
                 executorService.execute(() -> {
                     try {
-                        readyLatch.countDown();
-                        startLatch.await();
                         memberRegister.usePoint(member.getMemberId(), BigDecimal.valueOf(1000000));
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
                     } finally {
-                        doneLatch.countDown();
+                        latch.countDown();
                     }
                 });
             }
 
-            readyLatch.await();
-            startLatch.countDown();
-            doneLatch.await();
+            latch.await();
 
             Member updatedMember = memberFinder.findByMemberId(savedMember.getMemberId());
             assertThat(updatedMember.getPoint().getAmount().compareTo(BigDecimal.valueOf(0))).isZero();
@@ -173,9 +157,7 @@ class ConcurrencyTest {
             int threadCount = 10;
             ExecutorService executorService = Executors.newFixedThreadPool(100);
 
-            CountDownLatch readyLatch = new CountDownLatch(threadCount);
-            CountDownLatch startLatch = new CountDownLatch(1);
-            CountDownLatch doneLatch = new CountDownLatch(threadCount);
+            CountDownLatch latch = new CountDownLatch(threadCount);
 
             Member member = MemberFixture.createMember();
             Member savedMember = memberRepository.save(member);
@@ -188,20 +170,14 @@ class ConcurrencyTest {
             for (int i = 0; i < threadCount; i++) {
                 executorService.execute(() -> {
                     try {
-                        readyLatch.countDown();
-                        startLatch.await();
                         couponRegister.useMemberCoupon(coupon.getId(), savedMember);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
                     } finally {
-                        doneLatch.countDown();
+                        latch.countDown();
                     }
                 });
             }
 
-            readyLatch.await();
-            startLatch.countDown();
-            doneLatch.await();
+            latch.await();
 
             Coupon updatedCoupon = couponRepository.find(coupon.getId()).orElseThrow();
             assertThat(updatedCoupon.getQuantity()).isEqualTo(99L);
