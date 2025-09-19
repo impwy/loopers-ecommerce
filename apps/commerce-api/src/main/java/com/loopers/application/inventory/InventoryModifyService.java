@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.application.provided.InventoryFinder;
 import com.loopers.application.provided.InventoryRegister;
@@ -58,6 +59,7 @@ public class InventoryModifyService implements InventoryRegister {
         return inventory;
     }
 
+    @Transactional
     @Override
     public List<Inventory> decreaseProducts(List<DecreaseInventoryRequest> decreaseInventoryRequests) {
         List<Long> productIds = decreaseInventoryRequests.stream().map(DecreaseInventoryRequest::productId).toList();
