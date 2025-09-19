@@ -70,4 +70,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Page<Product> findAllByIdIn(List<Long> productIds, Pageable pageable) {
         return productJpaRepository.findAllByIdIn(productIds, pageable);
     }
+
+    @Override
+    public Page<Product> findAllOrderByLikeCountDesc(Pageable pageable) {
+        return productJpaRepository.findAllByOrderByLikeCountDesc(pageable);
+    }
 }
