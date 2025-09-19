@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MvProductRankWeekly {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -36,4 +39,16 @@ public class MvProductRankWeekly {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDate createdAt = LocalDate.now();
+
+    private MvProductRankWeekly(Long productId, Double score, Integer rank, LocalDate startDate, LocalDate endDate) {
+        this.productId = productId;
+        this.score = score;
+        this.rank = rank;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public static MvProductRankWeekly create(Long productId, double score, int rank, LocalDate startDate, LocalDate endDate) {
+        return new MvProductRankWeekly(productId, score, rank, startDate, endDate);
+    }
 }

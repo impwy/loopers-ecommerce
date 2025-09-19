@@ -1,5 +1,6 @@
 package com.loopers.infrastructure.rank;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -17,5 +18,9 @@ public class MvProductRankDailyRepositoryImpl implements MvProductRankDailyRepos
     @Override
     public List<MvProductRankDaily> saveAll(List<MvProductRankDaily> rankings) {
         return mvProductRankDailyJpaRepository.saveAll(rankings);
+    }
+
+    public List<MvProductRankDaily> findAllByBetweenDate(LocalDate startDate, LocalDate endDate) {
+        return mvProductRankDailyJpaRepository.findAllByIssuedDateBetween(startDate, endDate);
     }
 }
