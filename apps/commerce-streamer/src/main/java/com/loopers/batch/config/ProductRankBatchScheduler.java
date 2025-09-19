@@ -17,6 +17,7 @@ public class ProductRankBatchScheduler {
 
     private final JobLauncher jobLauncher;
     private final Job weeklyProductRankJob;
+    private final Job monthlyProductRankJob;
 
     @Scheduled(cron = "0 0 1 ? * MON")
     public void runWeeklyProductRankJob() throws Exception {
@@ -25,5 +26,14 @@ public class ProductRankBatchScheduler {
                 .toJobParameters();
 
         jobLauncher.run(weeklyProductRankJob, jobParameters);
+    }
+
+    @Scheduled(cron = "0 0 1 1 * ?")
+    public void runMonthlyProductRankJob() throws Exception {
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("time", System.currentTimeMillis())
+                .toJobParameters();
+
+        jobLauncher.run(monthlyProductRankJob, jobParameters);
     }
 }
