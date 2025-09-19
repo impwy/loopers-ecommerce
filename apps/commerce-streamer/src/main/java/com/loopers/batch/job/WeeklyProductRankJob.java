@@ -32,11 +32,13 @@ public class WeeklyProductRankJob {
     private final ProductRankDailyReader reader;
     private final ProductRankProcessor processor;
     private final ProductRankWriter writer;
+    private final WeeklyInMemoryTaskLet weeklyInMemoryTaskLet;
 
     @Bean
     public Job weeklyProductRankJob() {
         return new JobBuilder("weeklyRankJob", jobRepository)
                 .start(weeklyRankStep())
+                .next(weeklyRankInMemoryStep())
                 .build();
     }
 
@@ -52,6 +54,13 @@ public class WeeklyProductRankJob {
                 .reader(itemReader)
                 .processor(processor.processWeekly(startDate, endDate))
                 .writer(writer.writeWeekly())
+                .build();
+    }
+
+    @Bean
+    public Step weeklyRankInMemoryStep() {
+        return new StepBuilder("weeklyRankInMemoryStep", jobRepository)
+                .tasklet(weeklyInMemoryTaskLet, transactionManager)
                 .build();
     }
 }

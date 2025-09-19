@@ -31,6 +31,7 @@ public class MonthlyProductRankJob {
     private final ProductRankDailyReader reader;
     private final ProductRankProcessor processor;
     private final ProductRankWriter writer;
+    private final MonthlyInMemoryTaskLet monthlyInMemoryTaskLet;
 
     @Bean
     public Job monthlyProductRankJob() {
@@ -51,6 +52,13 @@ public class MonthlyProductRankJob {
                 .reader(itemReader)
                 .processor(processor.processMonthly(startDate, endDate))
                 .writer(writer.writeMonthly())
+                .build();
+    }
+
+    @Bean
+    public Step monthlyRankInMemoryStep() {
+        return new StepBuilder("monthlyInMemoryStep", jobRepository)
+                .tasklet(monthlyInMemoryTaskLet, transactionManager)
                 .build();
     }
 }
