@@ -1,4 +1,4 @@
-package com.loopers.batch.config;
+package com.loopers.batch.scheduler;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
