@@ -20,6 +20,7 @@ public class MvProductRankDailyRepositoryImpl implements MvProductRankDailyRepos
         return mvProductRankDailyJpaRepository.saveAll(rankings);
     }
 
+    @Override
     public List<MvProductRankDaily> findAllByBetweenDate(LocalDate startDate, LocalDate endDate) {
         return mvProductRankDailyJpaRepository.findAllByIssuedDateBetween(startDate, endDate);
     }

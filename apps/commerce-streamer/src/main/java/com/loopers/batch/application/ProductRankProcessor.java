@@ -1,38 +1,39 @@
 package com.loopers.batch.application;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
-import com.loopers.domain.ranking.MvProductRankDaily;
 import com.loopers.batch.domain.MvProductRankMonthly;
 import com.loopers.batch.domain.MvProductRankWeekly;
+import com.loopers.domain.ranking.MvProductRankDaily;
 
 @Component
 public class ProductRankProcessor {
-    public List<MvProductRankWeekly> processWeekly(List<MvProductRankDaily> dailyRankings,
-                                                   LocalDate startDate, LocalDate endDate) {
+    public ItemProcessor<MvProductRankDaily, MvProductRankWeekly> processWeekly(LocalDate startDate, LocalDate endDate) {
+        Map<Long, Double> scoreMap = new HashMap<>();
         AtomicInteger rankCounter = new AtomicInteger(1);
 
-        return dailyRankings.stream()
-                            .collect(Collectors.groupingBy(MvProductRankDaily::getProductId,
-                                                           Collectors.summingDouble(MvProductRankDaily::getScore)))
-                            .entrySet().stream()
-                            .sorted(Map.Entry.<Long, Double>comparingByValue().reversed())
-                         .map(e -> MvProductRankWeekly.create(
-                                 e.getKey(),
-                                 e.getValue(),
-                                 rankCounter.getAndIncrement(),
-                                 startDate,
-                                 endDate
-                         )).toList();
+        return daily -> {
+            scoreMap.merge(daily.getProductId(), daily.getScore(), Double::sum);
+            return MvProductRankWeekly.create(
+                    daily.getProductId(),
+                    scoreMap.get(daily.getProductId()),
+                    rankCounter.getAndIncrement(),
+                    startDate,
+                    endDate
+            );
+        };
     }
 
-    public List<MvProductRankMonthly> processMonthly(List<MvProductRankDaily> dailyRanks, LocalDate startDate, LocalDate endDate) {
+    public List<MvProductRankMonthly> processMonthly(List<MvProductRankDaily> dailyRanks, LocalDate startDate,
+                                                     LocalDate endDate) {
         AtomicInteger rankCounter = new AtomicInteger(1);
 
         return dailyRanks.stream()
@@ -40,7 +41,7 @@ public class ProductRankProcessor {
                                                         Collectors.summingDouble(MvProductRankDaily::getScore)))
                          .entrySet().stream()
                          .sorted(Map.Entry.<Long, Double>comparingByValue().reversed())
-                         .map(e ->MvProductRankMonthly.create(
+                         .map(e -> MvProductRankMonthly.create(
                                  e.getKey(),
                                  e.getValue(),
                                  rankCounter.getAndIncrement(),
