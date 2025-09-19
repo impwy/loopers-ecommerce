@@ -5,7 +5,6 @@ import java.time.LocalDate;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -24,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableBatchProcessing
 public class WeeklyProductRankJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;

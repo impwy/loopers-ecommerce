@@ -19,23 +19,28 @@ import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.loopers.application.required.MvProductRankDailyRepository;
 import com.loopers.batch.application.required.MvProductRankWeeklyRepository;
 import com.loopers.batch.domain.MvProductRankWeekly;
 import com.loopers.domain.ranking.MvProductRankDaily;
+import com.loopers.testcontainers.MySqlTestContainersConfig;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
 @SpringBatchTest
 @Import({
         WeeklyProductRankJobConfig.class,
-        MonthlyProductRankJobConfig.class
+        MonthlyProductRankJobConfig.class,
+        MySqlTestContainersConfig.class
 })
 @TestPropertySource(properties = {
         "spring.batch.job.enabled=false",
-        "spring.jpa.hibernate.ddl-auto=create-drop"
+        "spring.jpa.hibernate.ddl-auto=create-drop",
+        "spring.batch.jdbc.initialize-schema=always"
 })
 class WeeklyProductRankJobConfigTest {
 
@@ -54,6 +59,12 @@ class WeeklyProductRankJobConfigTest {
     @Autowired
     private MvProductRankDailyRepository dailyRepository;
 
+    @MockitoBean
+    private WeeklyInMemoryTaskLet weeklyInMemoryTaskLet;
+
+    @MockitoBean
+    private RedisTemplate<String, String> redisTemplate;
+
     @Autowired
     private DatabaseCleanUp databaseCleanUp;
 
@@ -64,8 +75,6 @@ class WeeklyProductRankJobConfigTest {
 
     @BeforeEach
     void setUp() {
-        jobLauncherTestUtils.setJob(weeklyProductRankJob);
-
         LocalDate now = LocalDate.now().minusWeeks(1).with(DayOfWeek.MONDAY);
 
         MvProductRankDaily d1 = MvProductRankDaily.create(1L, now, 100.0, 1);

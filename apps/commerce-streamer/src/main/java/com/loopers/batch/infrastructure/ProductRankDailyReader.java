@@ -21,6 +21,7 @@ public class ProductRankDailyReader {
         String query =
                 "SELECT r FROM MvProductRankDaily r WHERE r.issuedDate BETWEEN :startDate AND :endDate ORDER BY r.productId";
         return new JpaPagingItemReaderBuilder<MvProductRankDaily>()
+                .name("mvProductRankDailyReader")
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(1000)
                 .queryString(query)
