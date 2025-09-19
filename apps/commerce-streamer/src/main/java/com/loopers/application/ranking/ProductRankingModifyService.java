@@ -67,7 +67,7 @@ public class ProductRankingModifyService implements ProductRankingRegister {
     @Override
     public void prepareNextDayProductRanking() {
         LocalDate now = LocalDate.now();
-        String key = KEY_GENERATOR.apply(now.minusDays(1).format(formatter));
+        String key = KEY_GENERATOR.apply(now.plusDays(1).format(formatter));
         Set<TypedTuple<Object>> typedTuples = inMemoryRepository.getProductRanks(key);
 
         Set<Tuple> nextDayTuples = typedTuples.stream()
