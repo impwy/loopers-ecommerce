@@ -1,4 +1,4 @@
-package com.loopers.batch;
+package com.loopers.batch.application;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.loopers.domain.ranking.MvProductRankDaily;
-import com.loopers.domain.ranking.MvProductRankMonthly;
-import com.loopers.domain.ranking.MvProductRankWeekly;
+import com.loopers.batch.domain.MvProductRankMonthly;
+import com.loopers.batch.domain.MvProductRankWeekly;
 
 @Component
 public class ProductRankProcessor {

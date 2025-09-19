@@ -1,8 +1,8 @@
-package com.loopers.infrastructure.rank;
+package com.loopers.batch.infrastructure;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.loopers.domain.ranking.MvProductRankWeekly;
+import com.loopers.batch.domain.MvProductRankWeekly;
 
 public interface MvProductRankWeeklyJpaRepository extends JpaRepository<MvProductRankWeekly, Long> {
 }

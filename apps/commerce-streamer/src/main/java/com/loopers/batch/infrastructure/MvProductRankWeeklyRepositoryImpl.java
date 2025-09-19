@@ -1,11 +1,11 @@
-package com.loopers.infrastructure.rank;
+package com.loopers.batch.infrastructure;
 
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.loopers.application.required.MvProductRankWeeklyRepository;
-import com.loopers.domain.ranking.MvProductRankWeekly;
+import com.loopers.batch.application.required.MvProductRankWeeklyRepository;
+import com.loopers.batch.domain.MvProductRankWeekly;
 
 import lombok.RequiredArgsConstructor;
 

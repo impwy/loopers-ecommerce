@@ -1,4 +1,4 @@
-package com.loopers.domain.ranking;
+package com.loopers.batch.domain;
 
 import java.time.LocalDate;
 
@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "mv_product_rank_monthly")
+@Table(name = "mv_product_rank_weekly")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MvProductRankMonthly {
+public class MvProductRankWeekly {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -40,7 +40,7 @@ public class MvProductRankMonthly {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDate createdAt = LocalDate.now();
 
-    private MvProductRankMonthly(Long productId, Double score, Integer rank, LocalDate startDate, LocalDate endDate) {
+    private MvProductRankWeekly(Long productId, Double score, Integer rank, LocalDate startDate, LocalDate endDate) {
         this.productId = productId;
         this.score = score;
         this.rank = rank;
@@ -48,7 +48,7 @@ public class MvProductRankMonthly {
         this.endDate = endDate;
     }
 
-    public static MvProductRankMonthly create(Long productId, double score, int rank, LocalDate startDate, LocalDate endDate) {
-        return new MvProductRankMonthly(productId, score, rank, startDate, endDate);
+    public static MvProductRankWeekly create(Long productId, double score, int rank, LocalDate startDate, LocalDate endDate) {
+        return new MvProductRankWeekly(productId, score, rank, startDate, endDate);
     }
 }
