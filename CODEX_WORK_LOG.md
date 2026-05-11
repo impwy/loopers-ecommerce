@@ -32,3 +32,31 @@
 
 - 좋아요 증감은 단순 카운터 변경이 아니라 outbox, async event handler, Kafka producer, streamer 메트릭까지 연결됩니다.
 - 이후 추가 확인 대상으로는 좋아요 취소 API가 상품 like count 감소까지 호출하는지, Redis 캐시와 DB 카운트가 함께 갱신되는지 확인할 필요가 있습니다.
+
+## Chapter 2. 상품 목록 브랜드 필터와 페이지 메타데이터
+
+### 확인한 문제
+
+- `ProductQueryDslRepositoryImpl.findByBrandAndLikeCount()`의 content 쿼리는 브랜드 필터를 적용하지만, total count 쿼리는 브랜드 필터를 적용하지 않았습니다.
+- API 응답의 `totalElements`가 선택한 브랜드의 상품 수가 아니라 전체 상품 수로 계산될 수 있었습니다.
+- 이 문제는 페이지 수, 다음 페이지 여부, 클라이언트 목록 UI에 직접 영향을 줍니다.
+
+### 수정한 내용
+
+- `findByBrandAndLikeCount()` count 쿼리에 `product.brand.id.in(brandIds)` 조건을 추가했습니다.
+- `ProductFinderIntegrationTest`에 브랜드 필터가 content와 total count에 함께 반영되는 통합 테스트를 추가했습니다.
+
+### 필요한 테스트
+
+- 여러 브랜드의 상품이 함께 있을 때 특정 브랜드로 조회하면 content와 `totalElements`가 모두 필터된 결과만 반영되는지 확인하는 테스트가 필요합니다.
+
+### 검증 결과
+
+- `mise exec java@21.0.2 -- ./gradlew :apps:commerce-api:compileTestJava` 성공.
+- `ProductFinderIntegrationTest` 실행은 Testcontainers가 Docker Desktop에 Docker API 1.32로 접근하면서 현재 Docker의 최소 API 1.40 요구와 충돌해 실패했습니다.
+- `DOCKER_API_VERSION=1.40`, `TESTCONTAINERS_RYUK_DISABLED=true`, `DOCKER_HOST=unix:///Users/yong/.docker/run/docker.sock` 조합을 각각 확인했지만 로컬 Testcontainers Docker 환경 탐색 문제는 해소되지 않았습니다.
+
+### 추가로 얻은 지식과 확인할 점
+
+- 이 프로젝트에는 정규화 조회와 비정규화 조회가 공존합니다. 비정규화 조회 쿼리는 이미 total count에 브랜드 필터를 적용하고 있었고, 정규화 조회 경로만 누락되어 있었습니다.
+- 향후 상품 목록 필터가 추가되면 content 쿼리와 count 쿼리에 같은 조건이 적용되는지 반드시 함께 확인해야 합니다.
