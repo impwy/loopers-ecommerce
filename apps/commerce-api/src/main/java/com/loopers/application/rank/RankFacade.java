@@ -2,6 +2,7 @@ package com.loopers.application.rank;
 
 import java.time.LocalDate;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -22,10 +23,9 @@ public class RankFacade {
         LocalDate date = rankingCriteria.date();
         Integer page = rankingCriteria.page();
         Integer size = rankingCriteria.size();
-        Pageable pageable = Pageable.ofSize(size);
-        pageable.withPage(page);
+        Pageable pageable = PageRequest.of(page, size);
         switch (period) {
-            case DAILY -> {return rankFinder.getDailyRanking(pageable);}
+            case DAILY -> {return rankFinder.getDailyRanking(date, pageable);}
             case WEEKLY -> {return rankFinder.getWeeklyRanking(date, pageable);}
             case MONTHLY -> {return rankFinder.getMonthlyRanking(date, pageable);}
             default -> {return rankFinder.getDefaultRank(pageable);}

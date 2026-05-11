@@ -60,3 +60,37 @@
 
 - 이 프로젝트에는 정규화 조회와 비정규화 조회가 공존합니다. 비정규화 조회 쿼리는 이미 total count에 브랜드 필터를 적용하고 있었고, 정규화 조회 경로만 누락되어 있었습니다.
 - 향후 상품 목록 필터가 추가되면 content 쿼리와 count 쿼리에 같은 조건이 적용되는지 반드시 함께 확인해야 합니다.
+
+## Chapter 3. 랭킹 API 날짜, 페이지, Redis 값 타입
+
+### 확인한 문제
+
+- `RankFacade`가 `pageable.withPage(page)`의 반환값을 사용하지 않아 요청한 `page`가 무시되고 항상 0페이지로 조회될 수 있었습니다.
+- 일간 랭킹 조회는 API 요청의 `date`를 받지만 `RankFinder.getDailyRanking()` 시그니처에 날짜가 없어 실제 조회에 사용할 수 없었습니다.
+- 일간 랭킹 Redis key가 streamer에서 저장하는 `ranking:all:yyyyMMdd`와 API 조회의 `ranking:daily:yyyyMMdd`로 불일치했습니다.
+- 주간 랭킹은 `date.now()`를 사용해 요청 날짜가 아니라 현재 날짜 기준 주간 key를 조회했습니다.
+- streamer는 Redis ZSET productId 값을 문자열로 저장하는데, API는 `Long.class::cast`로 변환해 `ClassCastException`이 발생할 수 있었습니다.
+
+### 수정한 내용
+
+- `RankFacade`에서 `PageRequest.of(page, size)`를 사용하도록 수정했습니다.
+- `RankFinder.getDailyRanking()`에 `LocalDate date`를 추가하고 facade에서 요청 날짜를 넘기도록 수정했습니다.
+- `RankQueryService` 일간 key를 `ranking:all:yyyyMMdd`로 통일했습니다.
+- 주간 key 계산을 요청 날짜 기준으로 수정했습니다.
+- Redis ZSET 값이 `Number` 또는 `String`이어도 Long productId로 변환되도록 파싱 로직을 추가했습니다.
+- Redis 조회 결과가 `null`이어도 빈 랭킹으로 처리하도록 보강했습니다.
+
+### 필요한 테스트
+
+- `RankFacadeTest`: 요청 page/size가 `Pageable`에 반영되는지 확인.
+- `RankQueryServiceTest`: 일간 랭킹이 요청 날짜 key를 조회하고 문자열 productId를 변환하는지 확인.
+- `RankQueryServiceTest`: 주간 랭킹이 현재 날짜가 아니라 요청 날짜가 속한 주의 key를 조회하는지 확인.
+
+### 검증 결과
+
+- `mise exec java@21.0.2 -- ./gradlew :apps:commerce-api:test --tests com.loopers.application.rank.RankFacadeTest --tests com.loopers.application.rank.RankQueryServiceTest` 성공.
+
+### 추가로 얻은 지식과 확인할 점
+
+- API와 streamer가 Redis key 규칙을 공유하지 않으면 기능이 정상 동작해도 조회 결과가 비어 보일 수 있습니다.
+- 랭킹 결과 순서는 Redis ZSET 순서가 기준이므로, DB `IN` 조회 후 순서 보존 여부는 별도 테스트와 개선이 필요합니다.

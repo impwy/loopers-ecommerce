@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 
 public interface RankFinder {
-    ProductInfoPageResponse getDailyRanking(Pageable pageable);
+    ProductInfoPageResponse getDailyRanking(LocalDate date, Pageable pageable);
 
     ProductInfoPageResponse getWeeklyRanking(LocalDate date, Pageable pageable);
 
