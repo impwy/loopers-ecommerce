@@ -94,3 +94,30 @@
 
 - API와 streamer가 Redis key 규칙을 공유하지 않으면 기능이 정상 동작해도 조회 결과가 비어 보일 수 있습니다.
 - 랭킹 결과 순서는 Redis ZSET 순서가 기준이므로, DB `IN` 조회 후 순서 보존 여부는 별도 테스트와 개선이 필요합니다.
+
+## Chapter 4. 월간 랭킹 배치의 Redis 적재 Step 연결
+
+### 확인한 문제
+
+- `MonthlyInMemoryTaskLet`과 `monthlyRankInMemoryStep()`은 구현되어 있었지만 `monthlyProductRankJob()`이 해당 step을 실행하지 않았습니다.
+- 결과적으로 월간 랭킹 배치는 DB 집계만 수행하고, API가 조회하는 Redis 월간 랭킹 key는 갱신되지 않을 수 있었습니다.
+- 주간 배치 job은 DB 집계 step 뒤에 in-memory step을 연결하고 있어 월간 배치만 패턴이 어긋나 있었습니다.
+
+### 수정한 내용
+
+- `monthlyProductRankJob()`에 `.next(monthlyRankInMemoryStep())`를 추가했습니다.
+- Spring context와 Testcontainers 없이 job 구성만 확인하는 `MonthlyProductRankJobConfigTest`를 추가했습니다.
+
+### 필요한 테스트
+
+- 월간 랭킹 job이 `monthlyRankStep` 다음 `monthlyInMemoryStep`을 포함하는지 확인하는 구성 테스트가 필요합니다.
+- 별도 환경에서는 실제 배치 실행 후 Redis `ranking:monthly:{year}_{month}` key가 생성되는 통합 테스트도 추가할 수 있습니다.
+
+### 검증 결과
+
+- `mise exec java@21.0.2 -- ./gradlew :apps:commerce-streamer:test --tests com.loopers.batch.job.MonthlyProductRankJobConfigTest` 성공.
+
+### 추가로 얻은 지식과 확인할 점
+
+- 배치 job은 step 메서드가 존재하는 것만으로 실행되지 않으며, `JobBuilder` 흐름에 명시적으로 연결되어야 합니다.
+- 주간/월간 배치는 날짜 계산, DB 저장, Redis 적재가 같은 패턴이어야 하므로 한쪽만 수정할 때 다른 쪽도 함께 비교해야 합니다.

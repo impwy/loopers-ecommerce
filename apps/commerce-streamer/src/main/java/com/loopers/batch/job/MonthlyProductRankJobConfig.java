@@ -35,6 +35,7 @@ public class MonthlyProductRankJobConfig {
     public Job monthlyProductRankJob() {
         return new JobBuilder("monthlyProductRankJob", jobRepository)
                 .start(monthlyRankStep())
+                .next(monthlyRankInMemoryStep())
                 .build();
     }
 
