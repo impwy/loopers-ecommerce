@@ -24,4 +24,6 @@ public interface InMemoryRepository {
     void addProductRanks(String key, Set<Tuple> rankingTuples, Duration ttl);
 
     Set<TypedTuple<Object>> getProductRanks(String key);
+
+    void saveZset(String key, String value, Double score, Duration ttl);
 }

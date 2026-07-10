@@ -83,6 +83,10 @@ class PaymentApplicationService(
     fun notifyTransactionResult(transactionKey: String) {
         val payment = paymentRepository.findByTransactionKey(transactionKey)
             ?: throw CoreException(ErrorType.NOT_FOUND, "(transactionKey: $transactionKey) 결제건이 존재하지 않습니다.")
-        paymentRelay.notify(callbackUrl = payment.callbackUrl, transactionInfo = TransactionInfo.from(payment))
+        paymentRelay.notify(
+            userId = payment.userId,
+            callbackUrl = payment.callbackUrl,
+            transactionInfo = TransactionInfo.from(payment),
+        )
     }
 }

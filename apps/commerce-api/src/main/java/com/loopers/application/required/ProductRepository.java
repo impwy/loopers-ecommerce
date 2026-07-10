@@ -32,4 +32,6 @@ public interface ProductRepository {
     Optional<Product> findByIdPessimisticLock(Long productId);
 
     Page<Product> findAllByIdIn(List<Long> productIds, Pageable pageable);
+
+    Page<Product> findAllOrderByLikeCountDesc(Pageable pageable);
 }

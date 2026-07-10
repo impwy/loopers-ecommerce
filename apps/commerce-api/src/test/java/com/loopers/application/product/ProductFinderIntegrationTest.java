@@ -13,6 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
@@ -26,6 +28,7 @@ import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
+import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -127,5 +130,23 @@ class ProductFinderIntegrationTest {
                                  firstProduct.getName(),
                                  secondProduct.getName(),
                                  thirdProduct.getName());
+    }
+
+    @DisplayName("브랜드 필터 상품 조회 시 전체 개수는 필터 조건을 반영한다")
+    @Test
+    void find_with_like_count_total_count_applies_brand_filter() {
+        Brand otherBrand = brandRepository.create(Brand.create("다른 브랜드", "다른 브랜드입니다."));
+        productRepository.save(Product.create("다른 브랜드 상품", "다른 브랜드 상품입니다.", BigDecimal.valueOf(700),
+                                              otherBrand, ZonedDateTime.now()));
+
+        Page<ProductWithLikeCount> products =
+                productFinder.findWithLikeCount("latestAt", List.of(brand.getId()), PageRequest.of(0, 10));
+
+        assertAll(
+                () -> assertThat(products.getContent())
+                        .extracting(productWithLikeCount -> productWithLikeCount.product().getId())
+                        .containsExactly(product.getId()),
+                () -> assertThat(products.getTotalElements()).isEqualTo(1)
+        );
     }
 }

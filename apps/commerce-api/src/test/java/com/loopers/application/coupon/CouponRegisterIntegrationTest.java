@@ -3,6 +3,8 @@ package com.loopers.application.coupon;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.AfterEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,12 +19,21 @@ import com.loopers.domain.coupon.DiscountPolicy;
 import com.loopers.interfaces.api.coupon.dto.CouponV1Dto.Request.CreateCouponRequest;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
+import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
 class CouponRegisterIntegrationTest {
 
     @MockitoSpyBean
     private CouponRegister couponRegister;
+
+    @Autowired
+    private DatabaseCleanUp databaseCleanUp;
+
+    @AfterEach
+    void tearDown() {
+        databaseCleanUp.truncateAllTables();
+    }
 
     @DisplayName("code가 null일 때 쿠폰생성 실패")
     @Test

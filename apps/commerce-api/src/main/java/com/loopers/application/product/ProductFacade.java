@@ -103,15 +103,11 @@ public class ProductFacade {
 
         String uuid = UUID.randomUUID().toString();
         CreateProductOutbox createProductOutbox = new CreateProductOutbox(productId, uuid,
-                                                                          ProductEventType.PRODUCT_LIKE_INCREMENT,
+                                                                          ProductEventType.PRODUCT_LIKE_DECREMENT,
                                                                           0L, ZonedDateTime.now());
 
         ProductEventOutbox productEventOutbox = productOutboxRegister.register(createProductOutbox);
 
         eventPublisher.publishEvent(new LikeDecrease(productEventOutbox.getId(), productId));
-    }
-
-    public ProductInfoPageResponse findProductRanking(String date, Pageable pageable) {
-        return productFinder.findProductInfoWithRank(date, pageable);
     }
 }

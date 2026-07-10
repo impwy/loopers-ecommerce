@@ -1,6 +1,7 @@
 package com.loopers.application.point;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 
@@ -12,9 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.loopers.application.provided.MemberFinder;
+import com.loopers.application.provided.PointFinder;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
+import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.MemberNotFoundException;
+import com.loopers.domain.member.point.Point;
 import com.loopers.infrastructure.member.MemberJpaRepository;
 import com.loopers.utils.DatabaseCleanUp;
 
@@ -25,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class PointFinderIntegrationTest {
 
     @Autowired
-    MemberFinder memberFinder;
+    PointFinder pointFinder;
 
     @MockitoSpyBean
     MemberJpaRepository memberJpaRepository;
@@ -44,20 +48,17 @@ public class PointFinderIntegrationTest {
     void returnPoint_whenMemberIdIsExist() {
         Member member = memberJpaRepository.save(MemberFixture.createMember());
 
-        Member result = memberFinder.findByMemberId(member.getMemberId());
+        Point result = pointFinder.find(member.getMemberId());
 
-        assertThat(result.getPoint().getAmount()).isNotNull();
-        assertThat(result.getPoint().getAmount()).isEqualTo(BigDecimal.ZERO);
+        assertThat(result.getAmount()).isNotNull();
+        assertThat(result.getAmount()).isEqualTo(BigDecimal.ZERO);
     }
 
     @Transactional
-    @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
+    @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, 예외가 발생한다.")
     @Test
-    void throwNull_whenMemberIdIsNotExist() {
-        Long invalidId = 999L;
-
-        Member member = memberJpaRepository.findById(invalidId).orElse(null);
-
-        assertThat(member).isNull();
+    void throwException_whenMemberIdIsNotExist() {
+        assertThatThrownBy(() -> pointFinder.find(new MemberId("missing1")))
+                .isInstanceOf(MemberNotFoundException.class);
     }
 }

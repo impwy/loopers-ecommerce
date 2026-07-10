@@ -28,7 +28,7 @@ Content-Type: application/json
   "cardType": "SAMSUNG",
   "cardNo": "1234-5678-9814-1451",
   "amount" : "5000",
-  "callbackUrl": "http://localhost:8080/api/v1/examples/callback"
+  "callbackUrl": "http://localhost:8080/api/v1/payments/pg-callback"
 }
 
 ### 결제 정보 확인

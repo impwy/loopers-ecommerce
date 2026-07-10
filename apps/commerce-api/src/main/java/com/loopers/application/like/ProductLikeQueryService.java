@@ -1,5 +1,7 @@
 package com.loopers.application.like;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.loopers.application.provided.ProductLikeFinder;
@@ -22,15 +24,19 @@ public class ProductLikeQueryService implements ProductLikeFinder {
     }
 
     @Override
-    public void throwConflictExceptionHasLike(Long memberId, Long productId) {
-        productLikeRepository.findByMemberIdAndProductId(memberId, productId)
-                             .ifPresent(productLike -> {
-                                 if (productLike.isNotDeleted(productLike)) {
-                                     throw new CoreException(ErrorType.CONFLICT, "좋아요가 중복 되었습니다.");
-                                 } else {
-                                     productLike.restore();
-                                 }
-                             });
+    public Optional<ProductLike> restoreDeletedOrThrowConflict(Long memberId, Long productId) {
+        Optional<ProductLike> productLikeOpt = productLikeRepository.findByMemberIdAndProductId(memberId, productId);
+        if (productLikeOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        ProductLike productLike = productLikeOpt.get();
+        if (productLike.isNotDeleted(productLike)) {
+            throw new CoreException(ErrorType.CONFLICT, "좋아요가 중복 되었습니다.");
+        }
+
+        productLike.restore();
+        return Optional.of(productLike);
     }
 
     @Override

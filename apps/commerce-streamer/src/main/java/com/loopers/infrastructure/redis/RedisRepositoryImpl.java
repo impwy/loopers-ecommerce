@@ -82,4 +82,10 @@ public class RedisRepositoryImpl implements InMemoryRepository {
     public Set<TypedTuple<Object>> getProductRanks(String key) {
         return redisTemplate.opsForZSet().rangeWithScores(key, 0, -1);
     }
+
+    @Override
+    public void saveZset(String key, String value, Double score, Duration ttl) {
+        redisTemplate.opsForZSet().add(key, value, score);
+        redisTemplate.expire(key, ttl);
+    }
 }

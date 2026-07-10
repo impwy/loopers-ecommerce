@@ -51,7 +51,7 @@ public class ProductQueryDslRepositoryImpl implements ProductQueryDslRepository 
                 () -> Optional.ofNullable(queryFactory
                                                   .select(product.id.countDistinct())
                                                   .from(product)
-                                                  .leftJoin(productLike).on(productLike.product.eq(product))
+                                                  .where(product.brand.id.in(brandIds))
                                                   .fetchOne()
                 ).orElse(0L)
         );

@@ -23,7 +23,10 @@ public class ProductLikeFacade {
 
     @Transactional
     public ProductLike create(Long memberId, Long productId) {
-        productLikeFinder.throwConflictExceptionHasLike(memberId, productId);
+        var restoredProductLike = productLikeFinder.restoreDeletedOrThrowConflict(memberId, productId);
+        if (restoredProductLike.isPresent()) {
+            return restoredProductLike.get();
+        }
 
         Member member = memberFinder.find(memberId);
         Product product = productFinder.find(productId);

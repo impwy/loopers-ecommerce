@@ -1,4 +1,3 @@
-version: '3'
 services:
   mysql:
     image: mysql:8.0
@@ -13,6 +12,34 @@ services:
       - MYSQL_COLLATE=utf8mb4_general_ci
     volumes:
       - mysql-8-data:/var/lib/mysql
+      - mysql-socket:/var/run/mysqld
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
+
+  mysql-init:
+    image: mysql:8.0
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      MYSQL_PWD: root
+    volumes:
+      - mysql-socket:/var/run/mysqld
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        mysql --protocol=socket --socket=/var/run/mysqld/mysqld.sock -uroot -e "
+          CREATE DATABASE IF NOT EXISTS paymentgateway CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+          CREATE USER IF NOT EXISTS 'application'@'%' IDENTIFIED BY 'application';
+          GRANT ALL PRIVILEGES ON loopers.* TO 'application'@'%';
+          GRANT ALL PRIVILEGES ON paymentgateway.* TO 'application'@'%';
+          FLUSH PRIVILEGES;
+        "
+    restart: "no"
 
   redis-master:
     image: redis:7.0
@@ -88,20 +115,42 @@ services:
       timeout: 5s
       retries: 10
 
+  kafka-init:
+    image: bitnami/kafka:3.5.1
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "-ec"]
+    command:
+      - |
+        for topic in product-event user-event demo.internal.topic-v1; do
+          kafka-topics.sh \
+            --bootstrap-server kafka:9092 \
+            --create \
+            --if-not-exists \
+            --topic "$$topic" \
+            --partitions 3 \
+            --replication-factor 1
+        done
+    restart: "no"
+
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     depends_on:
       kafka:
         condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
     ports:
-      - "9090:8080"
+      - "9091:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: local  # kafka-ui 에서 보이는 클러스터명
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092 # kafka-ui 가 연겷할 브로커 주소
 
 volumes:
   mysql-8-data:
+  mysql-socket:
   redis_master_data:
   redis_readonly_data:
   kafka-data:

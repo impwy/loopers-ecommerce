@@ -3,18 +3,60 @@ Loopers 에서 제공하는 스프링 자바 템플릿 프로젝트입니다.
 
 ## Getting Started
 현재 프로젝트 안정성 및 유지보수성 등을 위해 아래와 같은 장치를 운용하고 있습니다. 이에 아래 명령어를 통해 프로젝트의 기반을 설치해주세요.
+
+### Prerequisites
+
+- Java 21
+- Docker Desktop
+
+Gradle daemon은 저장소의 `gradle/gradle-daemon-jvm.properties`에 따라 Java 21을 사용합니다.
+
+```shell
+./gradlew --version
+```
+
 ### Environment
 `local` 프로필로 동작할 수 있도록, 필요 인프라를 `docker-compose` 로 제공합니다.
 ```shell
-docker-compose -f ./docker/infra-compose.yml up
+docker compose -f ./docker/infra-compose.yml up -d
+docker compose -f ./docker/infra-compose.yml ps -a
 ```
+
+MySQL의 `loopers`, `paymentgateway` 데이터베이스와 Kafka의 기본 토픽은 초기화 서비스가 멱등하게 준비합니다.
+
+### Applications
+
+아래 애플리케이션은 각각 별도 터미널에서 실행합니다.
+
+```shell
+./gradlew :apps:pg-simulator:bootRun
+./gradlew :apps:commerce-api:bootRun
+./gradlew :apps:commerce-streamer:bootRun
+```
+
+| Application | API | Actuator |
+| --- | --- | --- |
+| commerce-api | http://localhost:8080 | http://localhost:8081 |
+| pg-simulator | http://localhost:8082 | http://localhost:8083 |
+| commerce-streamer | http://localhost:8084 | http://localhost:8085 |
+
+```shell
+curl -fsS http://localhost:8081/actuator/health
+curl -fsS http://localhost:8083/actuator/health
+curl -fsS http://localhost:8085/actuator/health
+```
+
 ### Monitoring
 `local` 환경에서 모니터링을 할 수 있도록, `docker-compose` 를 통해 `prometheus` 와 `grafana` 를 제공합니다.
 
 애플리케이션 실행 이후, **http://localhost:3000** 로 접속해, admin/admin 계정으로 로그인하여 확인하실 수 있습니다.
 ```shell
-docker-compose -f ./docker/monitoring-compose.yml up
+docker compose -f ./docker/monitoring-compose.yml up -d
 ```
+
+- Kafka UI: http://localhost:9091
+- Prometheus: http://localhost:9090
+- Grafana: http://localhost:3000
 
 ## About Multi-Module Project
 본 프로젝트는 멀티 모듈 프로젝트로 구성되어 있습니다. 각 모듈의 위계 및 역할을 분명히 하고, 아래와 같은 규칙을 적용합니다.
