@@ -1,0 +1,75 @@
+name: Work item
+description: Feature, bug, refactor, test, documentation, operations, or performance work
+title: "[Work]: "
+body:
+  - type: dropdown
+    id: work_type
+    attributes:
+      label: Work type
+      options:
+        - Feature
+        - Bug
+        - Refactor
+        - Test
+        - Documentation
+        - Operations
+        - Performance
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Background and problem
+      description: Explain the current behavior, evidence, and why the change is needed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: List what is included and explicitly excluded.
+      placeholder: |
+        Included:
+        - ...
+
+        Excluded:
+        - ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: Write observable and testable completion conditions.
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: test_plan
+    attributes:
+      label: Test plan
+      description: List automated tests, manual checks, and required infrastructure.
+    validations:
+      required: true
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks and compatibility
+      description: Note API, DB, Kafka, Redis, security, rollout, or rollback impact. Write None when not applicable.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Ready to implement
+      options:
+        - label: I checked for an existing issue and kept this work item to one reviewable goal.
+          required: true
