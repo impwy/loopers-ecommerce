@@ -9,15 +9,18 @@ server:
     accept-count: 100 # 대기 큐 크기 (default : 100)
     keep-alive-timeout: 60s # 60s
   max-http-request-header-size: 8KB
-  port: 8082
+  port: 8084
 management:
   server:
-    port: 8083
+    port: 8085
 spring:
   main:
     web-application-type: servlet
   application:
-    name: commerce-api
+    name: commerce-streamer
+  batch:
+    job:
+      enabled: false
   profiles:
     active: local
   config:
@@ -37,6 +40,25 @@ spring:
   config:
     activate:
       on-profile: local, test
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  batch:
+    jdbc:
+      initialize-schema: always
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+management:
+  server:
+    port: 0
 
 ---
 spring:

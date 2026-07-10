@@ -3,6 +3,8 @@ package com.loopers.application.inventory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import com.loopers.application.required.BrandRepository;
 import com.loopers.application.required.InventoryRepository;
 import com.loopers.application.required.ProductRepository;
+import com.loopers.application.provided.InventoryRegister;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.inventory.Inventory;
@@ -32,6 +35,9 @@ class InventoryFacadeIntegrationTest {
 
     @Autowired
     private InventoryFacade inventoryFacade;
+
+    @Autowired
+    private InventoryRegister inventoryRegister;
 
     @MockitoSpyBean
     private InventoryRepository inventoryRepository;
@@ -50,11 +56,12 @@ class InventoryFacadeIntegrationTest {
         databaseCleanUp.truncateAllTables();
     }
 
+    Brand brand;
     Product product;
 
     @BeforeEach
     void setUp() {
-        Brand brand = brandRepository.create(BrandFixture.createBrand());
+        brand = brandRepository.create(BrandFixture.createBrand());
         product = ProductFixture.createProduct(brand);
     }
 
@@ -147,5 +154,20 @@ class InventoryFacadeIntegrationTest {
         assertThat(expected.getProductId()).isEqualTo(savedProduct.getId());
         assertThat(expected.getQuantity()).isEqualTo(0L);
         assertThat(expected.getInventoryStatus()).isEqualTo(InventoryStatus.SOLD_OUT);
+    }
+
+    @DisplayName("상품 ID와 재고 ID가 달라도 일괄 재고 차감에 성공한다")
+    @Test
+    void decrease_products_when_product_id_differs_from_inventory_id() {
+        productRepository.save(product);
+        Product savedProduct = productRepository.save(ProductFixture.createProduct(brand));
+        Inventory inventory = inventoryRepository.save(Inventory.create(savedProduct.getId(), 100L));
+
+        assertThat(inventory.getId()).isNotEqualTo(savedProduct.getId());
+
+        inventoryRegister.decreaseProducts(List.of(new DecreaseInventoryRequest(savedProduct.getId(), 10L)));
+
+        Inventory expected = inventoryRepository.findByProductId(savedProduct.getId()).orElseThrow();
+        assertThat(expected.getQuantity()).isEqualTo(90L);
     }
 }

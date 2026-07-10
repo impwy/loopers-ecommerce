@@ -25,7 +25,7 @@ public class MvProductRankDaily extends BaseEntity {
     @Column(name = "score")
     private Double score;
 
-    @Column(name = "rank")
+    @Column(name = "`rank`")
     private Integer rank;
 
     private MvProductRankDaily(Long productId, LocalDate issuedDate, Double score, Integer rank) {

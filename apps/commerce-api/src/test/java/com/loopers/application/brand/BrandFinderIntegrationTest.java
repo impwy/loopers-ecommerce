@@ -3,6 +3,7 @@ package com.loopers.application.brand;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import com.loopers.application.provided.BrandFinder;
 import com.loopers.application.required.BrandRepository;
 import com.loopers.domain.brand.Brand;
+import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
 class BrandFinderIntegrationTest {
@@ -21,6 +23,14 @@ class BrandFinderIntegrationTest {
 
     @Autowired
     private BrandFinder brandFinder;
+
+    @Autowired
+    private DatabaseCleanUp databaseCleanUp;
+
+    @AfterEach
+    void tearDown() {
+        databaseCleanUp.truncateAllTables();
+    }
 
     @DisplayName("브랜드 조회 통합테스트")
     @Test

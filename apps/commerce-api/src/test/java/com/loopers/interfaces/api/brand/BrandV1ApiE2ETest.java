@@ -113,7 +113,7 @@ class BrandV1ApiE2ETest {
             assertAll(
                     () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
                     () -> assertThat(response.getBody().meta().result()).isEqualTo(ApiResponse.Metadata.Result.SUCCESS),
-                    () -> expected.productInfos().forEach(productInfo -> {
+                    () -> assertThat(expected.productInfos()).singleElement().satisfies(productInfo -> {
                         assertThat(productInfo.brandId()).isEqualTo(brand.getId());
                         assertThat(productInfo.brandName()).isEqualTo(brand.getName());
                         assertThat(productInfo.brandDescription()).isEqualTo(brand.getDescription());

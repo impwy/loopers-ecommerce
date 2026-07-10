@@ -28,7 +28,7 @@ public class MvProductRankMonthly {
     @Column(name = "score", nullable = false)
     private Double score;
 
-    @Column(name = "rank", nullable = false)
+    @Column(name = "`rank`", nullable = false)
     private Integer rank;
 
     @Column(name = "start_date", nullable = false)

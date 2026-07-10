@@ -111,12 +111,16 @@ class ProductLikeFacadeIntegrationTest {
     void canceled_productlike_then_create_test() {
         Member member = memberRepository.save(MemberFixture.createMember());
 
-        productLikeRepository.save(ProductLike.create(member, product));
+        ProductLike savedProductLike = productLikeRepository.save(ProductLike.create(member, product));
 
         ProductLike productLike = productLikeFacade.delete(member.getId(), product.getId());
         assertThat(productLike.getDeletedAt()).isNotNull();
 
-        productLike.restore();
-        assertThat(productLike.getDeletedAt()).isNull();
+        ProductLike recreatedProductLike = productLikeFacade.create(member.getId(), product.getId());
+
+        assertAll(
+                () -> assertThat(recreatedProductLike.getId()).isEqualTo(savedProductLike.getId()),
+                () -> assertThat(recreatedProductLike.getDeletedAt()).isNull()
+        );
     }
 }

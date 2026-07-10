@@ -57,7 +57,7 @@ public class ProductRegisterIntegrationTest {
 
         assertAll(
                 () -> assertThat(expected.getName()).isEqualTo(createProductSpec.name()),
-                () -> assertThat(expected.getPrice().abs()).isEqualTo(createProductSpec.price().abs()),
+                () -> assertThat(expected.getPrice()).isEqualByComparingTo(createProductSpec.price()),
                 () -> assertThat(expected.getDescription()).isEqualTo(createProductSpec.description())
         );
     }

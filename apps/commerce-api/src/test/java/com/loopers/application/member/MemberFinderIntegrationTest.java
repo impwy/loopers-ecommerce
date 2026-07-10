@@ -1,6 +1,7 @@
 package com.loopers.application.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.AfterEach;
@@ -15,6 +16,7 @@ import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.MemberNotFoundException;
 import com.loopers.utils.DatabaseCleanUp;
 
 import jakarta.transaction.Transactional;
@@ -52,9 +54,11 @@ class MemberFinderIntegrationTest {
         );
     }
 
-    @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
+    @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, 예외가 발생한다.")
     @Test
     void find_member_fail() {
-        assertThat(memberRepository.findByMemberId(new MemberId("success0")).orElse(null)).isNull();
+        assertThatThrownBy(() -> memberFinder.findByMemberId(new MemberId("success0")))
+                .isInstanceOf(MemberNotFoundException.class)
+                .hasMessageContaining("회원을 찾을 수 없습니다");
     }
 }

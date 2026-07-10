@@ -122,10 +122,12 @@ public class PaymentE2ETest {
         doReturn(ApiResponse.success(transactionDetail))
                 .when(pgFeignClient).getPaymentStatus(anyString(), anyString());
 
-        testRestTemplate.exchange("/api/v1/payments/pay", HttpMethod.POST, httpEntity, Void.class);
+        var paymentResponse = testRestTemplate.exchange("/api/v1/payments/pay", HttpMethod.POST, httpEntity, Void.class);
+        assertThat(paymentResponse.getStatusCode().is2xxSuccessful()).isTrue();
 
         HttpEntity<PaymentV1Dto.Response.TransactionResponse> callbackHttpEntity = new HttpEntity<>(new PaymentV1Dto.Response.TransactionResponse(transactionKey, PaymentStatus.SUCCESS, null), headers);
-        testRestTemplate.exchange("/api/v1/payments/pg-callback", HttpMethod.POST, callbackHttpEntity, Void.class);
+        var callbackResponse = testRestTemplate.exchange("/api/v1/payments/pg-callback", HttpMethod.POST, callbackHttpEntity, Void.class);
+        assertThat(callbackResponse.getStatusCode().is2xxSuccessful()).isTrue();
 
         await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
             Order finishedOrder = orderRepository.find(order.getId()).get();

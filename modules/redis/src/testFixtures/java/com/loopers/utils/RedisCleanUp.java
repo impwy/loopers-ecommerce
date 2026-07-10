@@ -15,8 +15,6 @@ public class RedisCleanUp {
     public void truncateAll(){
         try (RedisConnection connection = redisConnectionFactory.getConnection()) {
             connection.serverCommands().flushAll();
-        } catch (Exception ignored) {
-            // Ignore cleanup errors when Redis is not available in test environments
         }
     }
 }

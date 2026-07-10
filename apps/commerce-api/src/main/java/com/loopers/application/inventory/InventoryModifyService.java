@@ -64,7 +64,7 @@ public class InventoryModifyService implements InventoryRegister {
     public List<Inventory> decreaseProducts(List<DecreaseInventoryRequest> decreaseInventoryRequests) {
         List<Long> productIds = decreaseInventoryRequests.stream().map(DecreaseInventoryRequest::productId).toList();
         List<Inventory> inventorys = inventoryRepository.findByProductIdWithPessimisticLock(productIds);
-        Map<Long, Inventory> inventoryMap = inventorys.stream().collect(Collectors.toMap(Inventory::getId, Function.identity()));
+        Map<Long, Inventory> inventoryMap = inventorys.stream().collect(Collectors.toMap(Inventory::getProductId, Function.identity()));
 
         try {
             decreaseInventoryRequests.forEach(orderRequest -> {

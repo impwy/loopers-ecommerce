@@ -70,6 +70,7 @@ public class KafkaConfig {
         factory.setBatchMessageConverter(new BatchMessagingMessageConverter(converter));
         factory.setConcurrency(3);
         factory.setBatchListener(true);
+        factory.setAutoStartup(kafkaProperties.getListener().isAutoStartup());
         return factory;
     }
 }

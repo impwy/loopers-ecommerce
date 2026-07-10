@@ -1,12 +1,19 @@
 package com.loopers.application.concurrency;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,10 +45,14 @@ import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
+import com.loopers.support.error.CoreException;
+import com.loopers.support.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
 class ConcurrencyTest {
+
+    private static final long CONCURRENCY_TIMEOUT_SECONDS = 60L;
 
     @MockitoSpyBean
     private ProductRepository productRepository;
@@ -78,18 +89,67 @@ class ConcurrencyTest {
         databaseCleanUp.truncateAllTables();
     }
 
+    private void runConcurrently(int threadCount, Runnable operation) throws Exception {
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch startBarrier = new CountDownLatch(threadCount);
+        List<Future<?>> futures = new ArrayList<>();
+
+        try {
+            for (int i = 0; i < threadCount; i++) {
+                futures.add(executorService.submit(() -> {
+                    startBarrier.countDown();
+                    if (!startBarrier.await(CONCURRENCY_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+                        throw new IllegalStateException("동시성 테스트 시작 신호를 기다리다 시간 초과되었습니다.");
+                    }
+                    operation.run();
+                    return null;
+                }));
+            }
+
+            for (Future<?> future : futures) {
+                future.get(CONCURRENCY_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            }
+        } finally {
+            executorService.shutdownNow();
+            executorService.awaitTermination(CONCURRENCY_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        }
+    }
+
+    @DisplayName("동시 실행 도우미 테스트")
+    @Nested
+    class ConcurrentRunnerTest {
+
+        @Test
+        void executes_operation_for_every_thread() throws Exception {
+            int threadCount = 10;
+            AtomicInteger executionCount = new AtomicInteger();
+
+            runConcurrently(threadCount, executionCount::incrementAndGet);
+
+            assertThat(executionCount).hasValue(threadCount);
+        }
+
+        @Test
+        void propagates_worker_exception_to_test_thread() {
+            AtomicBoolean firstExecution = new AtomicBoolean(true);
+
+            assertThatThrownBy(() -> runConcurrently(5, () -> {
+                if (firstExecution.compareAndSet(true, false)) {
+                    throw new IllegalStateException("worker failure");
+                }
+            }))
+                    .isInstanceOf(ExecutionException.class)
+                    .hasRootCauseInstanceOf(IllegalStateException.class)
+                    .hasRootCauseMessage("worker failure");
+        }
+    }
+
     @DisplayName("재고 차감 동시성 테스트")
     @Nested
     class InventoryConcurrencyTest {
         @Test
-        void inventory_concurrency_test() throws InterruptedException {
+        void inventory_concurrency_test() throws Exception {
             int threadCount = 100;
-            // thread 수가 많을 수록 테스트 속도 증가.
-            // threadCount가 증가할 수록 테스트 시간 증가
-            ExecutorService executorService = Executors.newFixedThreadPool(100);
-
-            // count를 늘려가며 지정한 count가 되면 thread 전부 시작.
-            CountDownLatch latch = new CountDownLatch(threadCount);
 
             Brand brand = brandRepository.create(BrandFixture.createBrand());
             Product product = productRepository.save(ProductFixture.createProduct(brand));
@@ -97,22 +157,38 @@ class ConcurrencyTest {
 
             DecreaseInventoryRequest createOrderRequest = new DecreaseInventoryRequest(product.getId(), 10L);
 
-            for (int i = 0; i < threadCount; i++) {
-                executorService.execute(() -> {
-                    try {
-                        inventoryRegister.decreaseProducts(List.of(createOrderRequest));
-                    } finally {
-                        latch.countDown();
-                    }
-                });
-            }
-
-            latch.await();
+            runConcurrently(threadCount,
+                            () -> inventoryRegister.decreaseProducts(List.of(createOrderRequest)));
 
             Inventory updatedInventory = inventoryRepository.find(inventory.getId()).orElseThrow();
             assertThat(updatedInventory.getQuantity()).isEqualTo(0);
+        }
 
-            executorService.shutdown();
+        @Test
+        void inventory_does_not_go_below_zero_when_requests_exceed_stock() throws Exception {
+            int threadCount = 10;
+
+            Brand brand = brandRepository.create(BrandFixture.createBrand());
+            Product product = productRepository.save(ProductFixture.createProduct(brand));
+            Inventory inventory = inventoryRepository.save(Inventory.of(CreateInventorySpec.of(product.getId(), 50L)));
+            DecreaseInventoryRequest request = new DecreaseInventoryRequest(product.getId(), 10L);
+            AtomicInteger successCount = new AtomicInteger();
+            AtomicInteger failureCount = new AtomicInteger();
+
+            runConcurrently(threadCount, () -> {
+                try {
+                    inventoryRegister.decreaseProducts(List.of(request));
+                    successCount.incrementAndGet();
+                } catch (CoreException e) {
+                    assertThat(e.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
+                    failureCount.incrementAndGet();
+                }
+            });
+
+            Inventory updatedInventory = inventoryRepository.find(inventory.getId()).orElseThrow();
+            assertThat(updatedInventory.getQuantity()).isZero();
+            assertThat(successCount).hasValue(5);
+            assertThat(failureCount).hasValue(threadCount - 5);
         }
     }
 
@@ -120,32 +196,44 @@ class ConcurrencyTest {
     @Nested
     class PointConcurrencyTest {
         @Test
-        void point_concurrency_test() throws InterruptedException {
+        void point_concurrency_test() throws Exception {
             int threadCount = 10;
-            ExecutorService executorService = Executors.newFixedThreadPool(100);
-
-            CountDownLatch latch = new CountDownLatch(threadCount);
 
             Member member = MemberFixture.createMember();
             member.charge(BigDecimal.valueOf(10000000));
             Member savedMember = memberRepository.save(member);
 
-            for (int i = 0; i < threadCount; i++) {
-                executorService.execute(() -> {
-                    try {
-                        memberRegister.usePoint(member.getMemberId(), BigDecimal.valueOf(1000000));
-                    } finally {
-                        latch.countDown();
-                    }
-                });
-            }
-
-            latch.await();
+            runConcurrently(threadCount,
+                            () -> memberRegister.usePoint(member.getMemberId(), BigDecimal.valueOf(1000000)));
 
             Member updatedMember = memberFinder.findByMemberId(savedMember.getMemberId());
             assertThat(updatedMember.getPoint().getAmount().compareTo(BigDecimal.valueOf(0))).isZero();
+        }
 
-            executorService.shutdown();
+        @Test
+        void point_does_not_go_below_zero_when_requests_exceed_balance() throws Exception {
+            int threadCount = 10;
+
+            Member member = MemberFixture.createMember();
+            member.charge(BigDecimal.valueOf(5_000_000));
+            Member savedMember = memberRepository.save(member);
+            AtomicInteger successCount = new AtomicInteger();
+            AtomicInteger failureCount = new AtomicInteger();
+
+            runConcurrently(threadCount, () -> {
+                try {
+                    memberRegister.usePoint(member.getMemberId(), BigDecimal.valueOf(1_000_000));
+                    successCount.incrementAndGet();
+                } catch (CoreException e) {
+                    assertThat(e.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
+                    failureCount.incrementAndGet();
+                }
+            });
+
+            Member updatedMember = memberFinder.findByMemberId(savedMember.getMemberId());
+            assertThat(updatedMember.getPoint().getAmount()).isZero();
+            assertThat(successCount).hasValue(5);
+            assertThat(failureCount).hasValue(threadCount - 5);
         }
     }
 
@@ -153,11 +241,8 @@ class ConcurrencyTest {
     @Nested
     class CouponConcurrencyTest {
         @Test
-        void coupon_concurrency_test() throws InterruptedException {
+        void coupon_concurrency_test() throws Exception {
             int threadCount = 10;
-            ExecutorService executorService = Executors.newFixedThreadPool(100);
-
-            CountDownLatch latch = new CountDownLatch(threadCount);
 
             Member member = MemberFixture.createMember();
             Member savedMember = memberRepository.save(member);
@@ -167,22 +252,23 @@ class ConcurrencyTest {
                                                                                           DiscountPolicy.AMOUNT,
                                                                                           CouponType.MEMBER)));
 
-            for (int i = 0; i < threadCount; i++) {
-                executorService.execute(() -> {
-                    try {
-                        couponRegister.useMemberCoupon(coupon.getId(), savedMember);
-                    } finally {
-                        latch.countDown();
-                    }
-                });
-            }
+            AtomicInteger successCount = new AtomicInteger();
+            AtomicInteger conflictCount = new AtomicInteger();
 
-            latch.await();
+            runConcurrently(threadCount, () -> {
+                try {
+                    couponRegister.useMemberCoupon(coupon.getId(), savedMember);
+                    successCount.incrementAndGet();
+                } catch (CoreException e) {
+                    assertThat(e.getErrorType()).isEqualTo(ErrorType.CONFLICT);
+                    conflictCount.incrementAndGet();
+                }
+            });
 
             Coupon updatedCoupon = couponRepository.find(coupon.getId()).orElseThrow();
             assertThat(updatedCoupon.getQuantity()).isEqualTo(99L);
-
-            executorService.shutdown();
+            assertThat(successCount).hasValue(1);
+            assertThat(conflictCount).hasValue(threadCount - 1);
         }
     }
 }
