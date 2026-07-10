@@ -1,44 +1,34 @@
-## Related issue
+## 📌 Summary
+<!--
+    어떤 기능/이슈를 해결했는지 요약해주세요.
+-->
 
-Refs #
+## 💬 Review Points
+<!--
+    리뷰어가 더 효과적인 리뷰를 할 수 있도록 도와주는 부분입니다.
+    (1) 리뷰어가 중점적으로 봐줬으면 하는 부분
+    (2) 고민했던 설계 포인트나 로직
+    (3) 리뷰어가 확인해줬으면 하는 테스트 케이스나 예외 상황
+    (4) 기타 리뷰어가 참고해야 할 사항
+-->
 
-<!-- default branch 대상이고 merge 시 Issue를 닫을 때만 Closes #N을 사용하세요. -->
+## ✅ Checklist
+<!--
+    해당 작업이 완료되었는지 확인하기 위한 체크리스트입니다.
+    리뷰어가 확인해야 할 사항을 포함합니다.
+    계획중이나 아직 완료되지 않은 작업 또한 `TODO -` 로 작성해주세요.  
 
-## Summary
+    ex.
+    - [ ] 테스트 코드 포함
+    - [ ] 불필요한 코드 제거
+    - [ ] README or 주석 보강 (필요 시)
+-->
 
-<!-- 무엇을 왜 변경했는지 적어주세요. -->
-
-## Hexagonal architecture impact
-
-<!-- 변경한 input port, use case, domain, output port, adapter와 의존성 방향을 적어주세요. -->
-
-- Inbound adapter / input port:
-- Application / domain:
-- Output port / outbound adapter:
-- Existing boundary debt left unchanged:
-
-## Compatibility and operations
-
-<!-- 해당 없음은 None으로 적어주세요. -->
-
-- API:
-- DB / migration:
-- Kafka / Redis:
-- Security / rollout / rollback:
-
-## Validation
-
-<!-- 실행한 명령과 결과를 적어주세요. -->
-
-```text
-command -> result
-```
-
-## Checklist
-
-- [ ] Issue의 Acceptance Criteria를 충족했다.
-- [ ] 새 의존성이 헥사고날 경계 안쪽을 향한다.
-- [ ] 필요한 테스트를 추가하거나 갱신했다.
-- [ ] 관련 테스트와 전체 빌드를 실행했다.
-- [ ] 비밀정보와 로컬 산출물이 포함되지 않았다.
-- [ ] 문서와 운영 설정을 필요한 범위에서 갱신했다.
+## 📎 References
+<!--
+  (Optional: 참고 자료가 없는 작업 - 단순 버그 픽스 등 의 경우엔 해당 란을 제거해주세요 !)
+  리뷰어가 참고할 수 있는 추가적인 정보나 문서, 링크 등을 작성해주세요.
+  예시:
+  - 관련 문서 링크
+  - 관련 정책 링크
+-->
