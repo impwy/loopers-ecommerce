@@ -2,18 +2,32 @@ name: loopers-monitoring
 
 services:
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v3.5.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=7d
+      - --web.enable-remote-write-receiver
     ports:
       - "9090:9090"
     volumes:
-      - ./grafana/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./grafana/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
 
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:12.1.0
+    depends_on:
+      - prometheus
     ports:
       - "3000:3000"
     volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
+
+volumes:
+  prometheus-data:
+  grafana-data:
