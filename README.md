@@ -58,6 +58,8 @@ docker compose -f ./docker/monitoring-compose.yml up -d
 - Prometheus: http://localhost:9090
 - Grafana: http://localhost:3000
 
+Grafana에는 `Loopers Performance Lab` 대시보드가 자동으로 등록됩니다. k6의 p95·p99와 Spring 서버의 HTTP 지연시간, JVM, Tomcat, HikariCP 지표를 함께 보는 실행 방법은 [성능 실험 가이드](docs/performance/README.md)를 참고하세요.
+
 ## About Multi-Module Project
 본 프로젝트는 멀티 모듈 프로젝트로 구성되어 있습니다. 각 모듈의 위계 및 역할을 분명히 하고, 아래와 같은 규칙을 적용합니다.
 

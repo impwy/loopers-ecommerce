@@ -1,4 +1,4 @@
--- 50만건의 product와 500건의 brand 일때
+-- data_setting.sql 기준 30만 건의 product와 500건의 brand일 때
 
 CREATE INDEX idx_like_count_brand ON product (like_count, brand_id);
 DROP INDEX idx_like_count_brand ON product;
