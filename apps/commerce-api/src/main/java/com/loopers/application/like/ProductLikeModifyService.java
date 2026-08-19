@@ -2,7 +2,7 @@ package com.loopers.application.like;
 
 import org.springframework.stereotype.Service;
 
-import com.loopers.application.provided.ProductLikeRegister;
+import com.loopers.application.product.provided.ProductLikeRegister;
 import com.loopers.application.required.ProductLikeRepository;
 import com.loopers.domain.like.ProductLike;
 

@@ -2,9 +2,9 @@ package com.loopers.application.payment;
 
 import org.springframework.stereotype.Component;
 
-import com.loopers.application.provided.MemberFinder;
-import com.loopers.application.provided.OrderFinder;
-import com.loopers.application.provided.PaymentRegister;
+import com.loopers.application.member.provided.MemberFinder;
+import com.loopers.application.order.provided.OrderFinder;
+import com.loopers.application.payment.provided.PaymentRegister;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.order.Order;

@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import com.loopers.application.provided.RankFinder;
+import com.loopers.application.rank.provided.RankFinder;
 import com.loopers.domain.rank.PeriodType;
 import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 import com.loopers.interfaces.api.rank.dto.RankingCriteria;

@@ -24,10 +24,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.inventory.DecreaseInventoryRequest;
-import com.loopers.application.provided.CouponRegister;
-import com.loopers.application.provided.InventoryRegister;
-import com.loopers.application.provided.MemberFinder;
-import com.loopers.application.provided.MemberRegister;
+import com.loopers.application.coupon.provided.CouponRegister;
+import com.loopers.application.inventory.provided.InventoryRegister;
+import com.loopers.application.member.provided.MemberFinder;
+import com.loopers.application.member.provided.MemberRegister;
 import com.loopers.application.required.BrandRepository;
 import com.loopers.application.required.CouponRepository;
 import com.loopers.application.required.InventoryRepository;

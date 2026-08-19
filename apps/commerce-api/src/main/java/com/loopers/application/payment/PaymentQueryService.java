@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.loopers.application.provided.PaymentFinder;
+import com.loopers.application.payment.provided.PaymentFinder;
 import com.loopers.application.required.PaymentRepository;
 import com.loopers.domain.payment.Payments;
 

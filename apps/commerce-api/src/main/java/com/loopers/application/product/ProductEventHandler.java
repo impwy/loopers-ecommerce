@@ -9,8 +9,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loopers.application.provided.ProductOutboxFinder;
-import com.loopers.application.provided.ProductOutboxRegister;
+import com.loopers.application.product.provided.ProductOutboxFinder;
+import com.loopers.application.product.provided.ProductOutboxRegister;
 import com.loopers.domain.product.LikeDecrease;
 import com.loopers.domain.product.LikeIncrease;
 import com.loopers.domain.product.outbox.ProductEventOutbox;

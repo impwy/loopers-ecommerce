@@ -3,8 +3,8 @@ package com.loopers.application.inventory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.loopers.application.provided.InventoryRegister;
-import com.loopers.application.provided.ProductFinder;
+import com.loopers.application.inventory.provided.InventoryRegister;
+import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.domain.inventory.CreateInventorySpec;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.product.Product;

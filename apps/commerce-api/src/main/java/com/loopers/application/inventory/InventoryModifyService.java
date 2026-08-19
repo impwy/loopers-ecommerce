@@ -11,9 +11,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.loopers.application.provided.InventoryFinder;
-import com.loopers.application.provided.InventoryRegister;
-import com.loopers.application.provided.ProductOutboxRegister;
+import com.loopers.application.inventory.provided.InventoryFinder;
+import com.loopers.application.inventory.provided.InventoryRegister;
+import com.loopers.application.product.provided.ProductOutboxRegister;
 import com.loopers.application.required.InventoryRepository;
 import com.loopers.domain.inventory.CreateInventorySpec;
 import com.loopers.domain.inventory.Inventory;

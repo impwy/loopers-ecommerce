@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.loopers.application.provided.OrderFinder;
-import com.loopers.application.provided.OrderRegister;
+import com.loopers.application.order.provided.OrderFinder;
+import com.loopers.application.order.provided.OrderRegister;
 import com.loopers.application.required.OrderRepository;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;

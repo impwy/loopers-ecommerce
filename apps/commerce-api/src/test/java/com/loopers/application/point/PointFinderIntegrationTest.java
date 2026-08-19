@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.loopers.application.provided.PointFinder;
+import com.loopers.application.point.provided.PointFinder;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.member.MemberId;

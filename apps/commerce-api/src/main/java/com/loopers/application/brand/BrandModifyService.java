@@ -2,7 +2,7 @@ package com.loopers.application.brand;
 
 import org.springframework.stereotype.Service;
 
-import com.loopers.application.provided.BrandRegister;
+import com.loopers.application.brand.provided.BrandRegister;
 import com.loopers.application.required.BrandRepository;
 import com.loopers.domain.brand.Brand;
 

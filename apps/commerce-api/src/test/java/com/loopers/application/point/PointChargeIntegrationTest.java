@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.provided.MemberRegister;
+import com.loopers.application.member.provided.MemberRegister;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;

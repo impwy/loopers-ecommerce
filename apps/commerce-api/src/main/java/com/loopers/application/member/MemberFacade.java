@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 import org.springframework.stereotype.Component;
 
-import com.loopers.application.provided.MemberFinder;
-import com.loopers.application.provided.MemberRegister;
+import com.loopers.application.member.provided.MemberFinder;
+import com.loopers.application.member.provided.MemberRegister;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 import com.loopers.interfaces.api.member.dto.MemberV1Dto.Request.MemberRegisterRequest;

@@ -2,7 +2,7 @@ package com.loopers.application.inventory;
 
 import org.springframework.stereotype.Service;
 
-import com.loopers.application.provided.InventoryFinder;
+import com.loopers.application.inventory.provided.InventoryFinder;
 import com.loopers.application.required.InventoryRepository;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.support.error.CoreException;

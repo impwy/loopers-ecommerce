@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 
 import com.loopers.application.inventory.DecreaseInventoryRequest;
 import com.loopers.application.product.ProductTotalAmountRequest;
-import com.loopers.application.provided.MemberFinder;
-import com.loopers.application.provided.OrderRegister;
-import com.loopers.application.provided.ProductFinder;
+import com.loopers.application.member.provided.MemberFinder;
+import com.loopers.application.order.provided.OrderRegister;
+import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.domain.coupon.CouponUsed;
 import com.loopers.domain.inventory.ProductInventoryUsed;
 import com.loopers.domain.member.Member;

@@ -2,8 +2,8 @@ package com.loopers.application.product;
 
 import org.springframework.stereotype.Service;
 
-import com.loopers.application.provided.ProductFinder;
-import com.loopers.application.provided.ProductRegister;
+import com.loopers.application.product.provided.ProductFinder;
+import com.loopers.application.product.provided.ProductRegister;
 import com.loopers.application.required.InMemoryRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.product.CreateProductSpec;

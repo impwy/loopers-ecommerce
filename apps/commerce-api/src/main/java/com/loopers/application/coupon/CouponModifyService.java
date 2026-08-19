@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 import org.springframework.stereotype.Service;
 
-import com.loopers.application.provided.CouponFinder;
-import com.loopers.application.provided.CouponRegister;
+import com.loopers.application.coupon.provided.CouponFinder;
+import com.loopers.application.coupon.provided.CouponRegister;
 import com.loopers.application.required.CouponRepository;
 import com.loopers.application.required.MemberCouponRepository;
 import com.loopers.domain.coupon.Coupon;

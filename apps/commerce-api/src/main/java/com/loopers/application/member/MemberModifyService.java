@@ -7,8 +7,8 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.validation.annotation.Validated;
 
-import com.loopers.application.provided.MemberFinder;
-import com.loopers.application.provided.MemberRegister;
+import com.loopers.application.member.provided.MemberFinder;
+import com.loopers.application.member.provided.MemberRegister;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.domain.member.DuplicateMemberIdException;

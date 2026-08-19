@@ -1,10 +1,8 @@
 package com.loopers.application.member;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
-import com.loopers.application.provided.MemberFinder;
+import com.loopers.application.member.provided.MemberFinder;
 import com.loopers.application.required.MemberRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;

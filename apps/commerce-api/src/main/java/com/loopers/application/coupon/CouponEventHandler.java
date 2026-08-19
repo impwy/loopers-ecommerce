@@ -4,9 +4,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.loopers.application.provided.CouponRegister;
-import com.loopers.application.provided.MemberFinder;
-import com.loopers.application.provided.OrderFinder;
+import com.loopers.application.coupon.provided.CouponRegister;
+import com.loopers.application.member.provided.MemberFinder;
+import com.loopers.application.order.provided.OrderFinder;
 import com.loopers.domain.coupon.CouponRollback;
 import com.loopers.domain.coupon.CouponUsed;
 import com.loopers.domain.member.Member;

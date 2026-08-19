@@ -3,10 +3,10 @@ package com.loopers.application.like;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.loopers.application.provided.MemberFinder;
-import com.loopers.application.provided.ProductFinder;
-import com.loopers.application.provided.ProductLikeFinder;
-import com.loopers.application.provided.ProductLikeRegister;
+import com.loopers.application.member.provided.MemberFinder;
+import com.loopers.application.product.provided.ProductFinder;
+import com.loopers.application.product.provided.ProductLikeFinder;
+import com.loopers.application.product.provided.ProductLikeRegister;
 import com.loopers.domain.like.ProductLike;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.product.Product;

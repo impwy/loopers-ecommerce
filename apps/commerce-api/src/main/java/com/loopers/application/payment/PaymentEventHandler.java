@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.loopers.application.provided.PaymentRegister;
+import com.loopers.application.payment.provided.PaymentRegister;
 import com.loopers.domain.payment.PaymentFail;
 import com.loopers.domain.payment.PaymentSuccess;
 

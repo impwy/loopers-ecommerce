@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Component;
 
-import com.loopers.application.provided.RankFinder;
+import com.loopers.application.rank.provided.RankFinder;
 import com.loopers.application.required.InMemoryRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.product.Product;

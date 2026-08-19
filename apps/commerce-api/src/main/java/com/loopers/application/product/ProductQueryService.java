@@ -19,7 +19,7 @@ import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.loopers.application.provided.ProductFinder;
+import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.application.required.InMemoryRepository;
 import com.loopers.application.required.ProductRepository;
 import com.loopers.domain.brand.Brand;

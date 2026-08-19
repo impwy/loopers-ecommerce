@@ -11,9 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.loopers.application.provided.ProductFinder;
-import com.loopers.application.provided.ProductOutboxRegister;
-import com.loopers.application.provided.ProductRegister;
+import com.loopers.application.product.provided.ProductFinder;
+import com.loopers.application.product.provided.ProductOutboxRegister;
+import com.loopers.application.product.provided.ProductRegister;
 import com.loopers.domain.product.LikeDecrease;
 import com.loopers.domain.product.LikeIncrease;
 import com.loopers.domain.product.ProductBrandDomainService;
