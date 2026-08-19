@@ -22,7 +22,6 @@ import com.loopers.domain.product.ProductInfoWithRank;
 import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
-import com.loopers.infrastructure.product.ProductWithLikeCount;
 import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 
 import lombok.RequiredArgsConstructor;

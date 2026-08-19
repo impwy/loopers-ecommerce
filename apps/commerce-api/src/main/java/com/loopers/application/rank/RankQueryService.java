@@ -14,7 +14,7 @@ import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.rank.provided.RankFinder;
-import com.loopers.adapter.integration.InMemoryRepository;
+import com.loopers.adapter.integration.inmemory.InMemoryRepository;
 import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductBrandDomainService;
@@ -94,7 +94,7 @@ public class RankQueryService implements RankFinder {
 
     @Override
     public ProductInfoPageResponse getDefaultRank(Pageable pageable) {
-        Page<Product> products = productRepository.findAllOrderByLikeCountDesc(pageable);
+        Page<Product> products = productRepository.findAllByOrderByLikeCountDesc(pageable);
         List<ProductInfo> list = products.stream()
                                          .map(product -> productBrandDomainService.findProductWithBrand(product,
                                                                                                         product.getBrand(),

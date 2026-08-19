@@ -51,7 +51,7 @@ import com.loopers.domain.payment.PaymentStatus;
 import com.loopers.domain.payment.PaymentType;
 import com.loopers.domain.payment.Payments;
 import com.loopers.domain.product.Product;
-import com.loopers.infrastructure.payment.feign.PgFeignClient;
+import com.loopers.adapter.integration.feign.PgFeignClient;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto;
 import com.loopers.utils.DatabaseCleanUp;
@@ -92,7 +92,7 @@ public class PaymentE2ETest {
         Brand brand = brandRepository.save(Brand.create("Test Brand", "Brand Description"));
         product = productRepository.save(Product.create("Test Product", "Product Description", BigDecimal.valueOf(10000), brand, ZonedDateTime.now()));
         inventoryRepository.save(Inventory.create(product.getId(), 100L));
-        coupon = couponRepository.create(Coupon.create(CreateCouponSpec.create("AMOUNT_1000", 100L, DiscountPolicy.AMOUNT, CouponType.ORDER)));
+        coupon = couponRepository.save(Coupon.create(CreateCouponSpec.create("AMOUNT_1000", 100L, DiscountPolicy.AMOUNT, CouponType.ORDER)));
         coupon.addMemberCoupon(MemberCoupon.create(member, coupon));
         Order newOrder = Order.create(CreateOrderSpec.of(member.getId()));
         newOrder.createOrderItems(List.of(CreateOrderItemSpec.of(product.getId(), 2L, coupon.getId())));
@@ -130,17 +130,17 @@ public class PaymentE2ETest {
         assertThat(callbackResponse.getStatusCode().is2xxSuccessful()).isTrue();
 
         await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
-            Order finishedOrder = orderRepository.find(order.getId()).get();
+            Order finishedOrder = orderRepository.findById(order.getId()).get();
             assertThat(finishedOrder.getOrderStatus()).isEqualTo(OrderStatus.PAYMENT_COMPLETED);
 
-            List<Payments> payments = paymentRepository.findALlByOrderId(order.getOrderNo().value());
+            List<Payments> payments = paymentRepository.findAllByOrderId(order.getOrderNo().value());
             assertThat(payments).hasSize(1);
             assertThat(payments.get(0).getPaymentStatus()).isEqualTo(PaymentStatus.SUCCESS);
 
             Inventory inventory = inventoryRepository.findByProductId(product.getId()).get();
             assertThat(inventory.getQuantity()).isEqualTo(100L);
 
-            Coupon updatedCoupon = couponRepository.find(coupon.getId()).get();
+            Coupon updatedCoupon = couponRepository.findById(coupon.getId()).get();
             assertThat(updatedCoupon.getQuantity()).isEqualTo(100L);
         });
     }

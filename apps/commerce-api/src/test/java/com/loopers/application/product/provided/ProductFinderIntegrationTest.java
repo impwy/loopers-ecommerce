@@ -21,13 +21,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.application.member.required.MemberRepository;
-import com.loopers.application.product.required.ProductLikeRepository;
+import com.loopers.application.like.required.ProductLikeRepository;
 import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
-import com.loopers.infrastructure.product.ProductWithLikeCount;
+import com.loopers.application.product.ProductWithLikeCount;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest

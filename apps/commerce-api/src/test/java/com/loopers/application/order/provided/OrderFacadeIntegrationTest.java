@@ -86,7 +86,7 @@ class OrderFacadeIntegrationTest {
         savedInventory = inventoryRepository.save(inventory);
 
         Coupon coupon = CouponFixture.createCoupon();
-        savedCoupon = couponRepository.create(coupon);
+        savedCoupon = couponRepository.save(coupon);
     }
 
     @DisplayName("주문 실패 테스트 : 존재하지 않는 상품")

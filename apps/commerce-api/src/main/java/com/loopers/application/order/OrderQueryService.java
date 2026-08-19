@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.loopers.application.order.provided.OrderFinder;
 import com.loopers.application.order.required.OrderRepository;
 import com.loopers.domain.order.Order;
+import com.loopers.domain.order.OrderNo;
 import com.loopers.share.error.CoreException;
 import com.loopers.share.error.ErrorType;
 
@@ -19,7 +20,7 @@ public class OrderQueryService implements OrderFinder {
 
     @Override
     public Order find(Long orderId) {
-        return orderRepository.find(orderId)
+        return orderRepository.findById(orderId)
                               .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND,
                                                                    "주문을 찾을 수 없습니다. orderId:" + orderId));
     }
@@ -38,7 +39,7 @@ public class OrderQueryService implements OrderFinder {
 
     @Override
     public Order findByOrderNo(String orderNo) {
-        return orderRepository.findByOrderNo(orderNo)
+        return orderRepository.findByOrderNo(new OrderNo(orderNo))
                 .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND,
                                                      "주문을 찾을 수 없습니다. orderNo:" + orderNo));
     }

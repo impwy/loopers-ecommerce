@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.loopers.application.product.provided.ProductLikeFinder;
-import com.loopers.application.product.required.ProductLikeRepository;
+import com.loopers.application.like.provided.ProductLikeFinder;
+import com.loopers.application.like.required.ProductLikeRepository;
 import com.loopers.domain.like.ProductLike;
 import com.loopers.share.error.CoreException;
 import com.loopers.share.error.ErrorType;

@@ -22,7 +22,6 @@ import com.loopers.domain.member.Gender;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.infrastructure.member.MemberJpaRepository;
 import com.loopers.utils.DatabaseCleanUp;
 
 import jakarta.transaction.Transactional;
@@ -37,7 +36,7 @@ class MemberRegisterIntegrationTest {
     DatabaseCleanUp databaseCleanUp;
 
     @MockitoSpyBean
-    MemberJpaRepository memberJpaRepository;
+    MemberRepository memberRepository;
 
     @AfterEach
     void tearDown() {
@@ -57,9 +56,9 @@ class MemberRegisterIntegrationTest {
     @Test
     void createWithSpy() {
         Member member = Member.create(new CreateMemberSpec("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.now()));
-        memberJpaRepository.save(member);
+        memberRepository.save(member);
 
-        verify(memberJpaRepository, times(1)).save(member);
+        verify(memberRepository, times(1)).save(member);
     }
 
     @DisplayName("회원 가입시 User 저장이 수행된다. ( mock )")

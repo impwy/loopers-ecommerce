@@ -20,15 +20,14 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.loopers.application.product.provided.ProductFinder;
-import com.loopers.adapter.integration.InMemoryRepository;
+import com.loopers.adapter.integration.inmemory.InMemoryRepository;
 import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductBrandDomainService;
 import com.loopers.domain.product.ProductInfo;
 import com.loopers.domain.product.ProductInfoWithRank;
-import com.loopers.infrastructure.inmemory.CachedPage;
-import com.loopers.infrastructure.product.ProductWithLikeCount;
+import com.loopers.adapter.integration.inmemory.CachedPage;
 import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 import com.loopers.share.error.CoreException;
 import com.loopers.share.error.ErrorType;
@@ -47,7 +46,7 @@ public class ProductQueryService implements ProductFinder {
 
     @Override
     public Product find(Long productId) {
-        Product product = productRepository.find(productId)
+        Product product = productRepository.findById(productId)
                                            .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
         return product;
     }
@@ -62,7 +61,7 @@ public class ProductQueryService implements ProductFinder {
             return ProductInfoWithRank.of(productInfoOpt.get(), rank);
         }
 
-        Product product = productRepository.find(productId)
+        Product product = productRepository.findById(productId)
                                            .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
 
         ProductInfo productInfo = productBrandDomainService.findProductWithBrand(product, product.getBrand(),
@@ -74,7 +73,7 @@ public class ProductQueryService implements ProductFinder {
 
     @Override
     public List<Product> findByConditions(Sort sort) {
-        return productRepository.findByConditions(sort);
+        return productRepository.findAll(sort);
     }
 
     @Override

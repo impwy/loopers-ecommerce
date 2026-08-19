@@ -16,7 +16,7 @@ import com.loopers.domain.product.ProductPayload;
 import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxStatus;
-import com.loopers.infrastructure.kafka.ProductEventProducer;
+import com.loopers.adapter.integration.messaging.ProductEventProducer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

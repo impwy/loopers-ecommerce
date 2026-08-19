@@ -13,13 +13,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.loopers.application.member.required.MemberRepository;
 import com.loopers.application.point.provided.PointFinder;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.member.MemberNotFoundException;
 import com.loopers.domain.member.point.Point;
-import com.loopers.infrastructure.member.MemberJpaRepository;
 import com.loopers.utils.DatabaseCleanUp;
 
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class PointFinderIntegrationTest {
     PointFinder pointFinder;
 
     @MockitoSpyBean
-    MemberJpaRepository memberJpaRepository;
+    MemberRepository memberRepository;
 
     @Autowired
     DatabaseCleanUp databaseCleanUp;
@@ -46,7 +46,7 @@ public class PointFinderIntegrationTest {
     @DisplayName("해당 ID 의 회원이 존재할 경우, 보유 포인트가 반환된다.")
     @Test
     void returnPoint_whenMemberIdIsExist() {
-        Member member = memberJpaRepository.save(MemberFixture.createMember());
+        Member member = memberRepository.save(MemberFixture.createMember());
 
         Point result = pointFinder.find(member.getMemberId());
 

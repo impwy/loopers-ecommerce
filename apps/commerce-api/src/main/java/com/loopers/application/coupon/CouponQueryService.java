@@ -17,7 +17,7 @@ public class CouponQueryService implements CouponFinder {
 
     @Override
     public Coupon find(Long couponId) {
-        return couponRepository.find(couponId)
+        return couponRepository.findById(couponId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 쿠폰 번호입니다." + couponId));
     }
 

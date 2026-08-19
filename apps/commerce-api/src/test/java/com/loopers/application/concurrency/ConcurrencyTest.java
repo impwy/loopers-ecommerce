@@ -160,7 +160,7 @@ class ConcurrencyTest {
             runConcurrently(threadCount,
                             () -> inventoryRegister.decreaseProducts(List.of(createOrderRequest)));
 
-            Inventory updatedInventory = inventoryRepository.find(inventory.getId()).orElseThrow();
+            Inventory updatedInventory = inventoryRepository.findById(inventory.getId()).orElseThrow();
             assertThat(updatedInventory.getQuantity()).isEqualTo(0);
         }
 
@@ -185,7 +185,7 @@ class ConcurrencyTest {
                 }
             });
 
-            Inventory updatedInventory = inventoryRepository.find(inventory.getId()).orElseThrow();
+            Inventory updatedInventory = inventoryRepository.findById(inventory.getId()).orElseThrow();
             assertThat(updatedInventory.getQuantity()).isZero();
             assertThat(successCount).hasValue(5);
             assertThat(failureCount).hasValue(threadCount - 5);
@@ -247,10 +247,10 @@ class ConcurrencyTest {
             Member member = MemberFixture.createMember();
             Member savedMember = memberRepository.save(member);
 
-            Coupon coupon = couponRepository.create(Coupon.create(CreateCouponSpec.create("testCoupon",
-                                                                                          100L,
-                                                                                          DiscountPolicy.AMOUNT,
-                                                                                          CouponType.MEMBER)));
+            Coupon coupon = couponRepository.save(Coupon.create(CreateCouponSpec.create("testCoupon",
+                                                                                        100L,
+                                                                                        DiscountPolicy.AMOUNT,
+                                                                                        CouponType.MEMBER)));
 
             AtomicInteger successCount = new AtomicInteger();
             AtomicInteger conflictCount = new AtomicInteger();
@@ -265,7 +265,7 @@ class ConcurrencyTest {
                 }
             });
 
-            Coupon updatedCoupon = couponRepository.find(coupon.getId()).orElseThrow();
+            Coupon updatedCoupon = couponRepository.findById(coupon.getId()).orElseThrow();
             assertThat(updatedCoupon.getQuantity()).isEqualTo(99L);
             assertThat(successCount).hasValue(1);
             assertThat(conflictCount).hasValue(threadCount - 1);

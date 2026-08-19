@@ -31,7 +31,9 @@ dependencies {
     testImplementation(testFixtures(project(":modules:redis")))
     testImplementation(testFixtures(project(":modules:kafka")))
     testImplementation("org.awaitility:awaitility:4.2.0")
-    testImplementation("org.springframework.kafka:spring-kafka-test")
-    testImplementation("org.testcontainers:kafka")
     testImplementation("org.springframework.batch:spring-batch-test")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:testcontainers")
+    testImplementation("org.projectlombok:lombok")
+    testAnnotationProcessor ("org.projectlombok:lombok")
 }

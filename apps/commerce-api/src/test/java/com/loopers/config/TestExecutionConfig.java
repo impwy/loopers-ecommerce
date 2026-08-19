@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.task.SyncTaskExecutor;
 
-import com.loopers.infrastructure.kafka.ProductEventProducer;
+import com.loopers.adapter.integration.messaging.ProductEventProducer;
 
 @Configuration
 public class TestExecutionConfig {

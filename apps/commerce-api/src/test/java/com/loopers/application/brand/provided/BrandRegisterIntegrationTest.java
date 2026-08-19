@@ -14,6 +14,9 @@ import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.utils.DatabaseCleanUp;
 
+import jakarta.transaction.Transactional;
+
+@Transactional
 @SpringBootTest
 class BrandRegisterIntegrationTest {
 

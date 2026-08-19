@@ -2,8 +2,8 @@ package com.loopers.application.like;
 
 import org.springframework.stereotype.Service;
 
-import com.loopers.application.product.provided.ProductLikeRegister;
-import com.loopers.application.product.required.ProductLikeRepository;
+import com.loopers.application.like.provided.ProductLikeRegister;
+import com.loopers.application.like.required.ProductLikeRepository;
 import com.loopers.domain.like.ProductLike;
 
 import lombok.RequiredArgsConstructor;

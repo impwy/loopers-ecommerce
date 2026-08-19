@@ -26,7 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 import com.loopers.application.rank.RankQueryService;
-import com.loopers.adapter.integration.InMemoryRepository;
+import com.loopers.adapter.integration.inmemory.InMemoryRepository;
 import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;

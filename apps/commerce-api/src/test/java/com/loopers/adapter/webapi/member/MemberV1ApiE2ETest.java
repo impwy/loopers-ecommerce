@@ -22,9 +22,9 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.infrastructure.member.MemberJpaRepository;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
 import com.loopers.adapter.webapi.member.dto.MemberV1Dto;
@@ -35,19 +35,19 @@ class MemberV1ApiE2ETest {
     private final TestRestTemplate testRestTemplate;
     private final DatabaseCleanUp databaseCleanUp;
     private final ObjectMapper objectMapper;
-    private final MemberJpaRepository memberJpaRepository;
+    private final MemberRepository memberRepository;
 
     @Autowired
     MemberV1ApiE2ETest(
             TestRestTemplate testRestTemplate,
             ObjectMapper objectMapper,
             DatabaseCleanUp databaseCleanUp,
-            MemberJpaRepository memberJpaRepository
+            MemberRepository memberRepository
     ) {
         this.testRestTemplate = testRestTemplate;
         this.objectMapper = objectMapper;
         this.databaseCleanUp = databaseCleanUp;
-        this.memberJpaRepository = memberJpaRepository;
+        this.memberRepository = memberRepository;
     }
 
     @AfterEach
@@ -117,7 +117,7 @@ class MemberV1ApiE2ETest {
         @DisplayName("내 정보 조회에 성공할 경우, 해당하는 유저 정보를 응답으로 반환한다.")
         @Test
         void get_memberInfo() {
-            Member member = memberJpaRepository.saveAndFlush(MemberFixture.createMember());
+            Member member = memberRepository.save(MemberFixture.createMember());
 
             ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberInfoResponse>> responseType =
                     new ParameterizedTypeReference<>() {};

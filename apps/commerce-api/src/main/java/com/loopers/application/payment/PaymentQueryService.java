@@ -17,6 +17,6 @@ public class PaymentQueryService implements PaymentFinder {
 
     @Override
     public List<Payments> getPayments(String orderId) {
-        return paymentRepository.findALlByOrderId(orderId);
+        return paymentRepository.findAllByOrderId(orderId);
     }
 }

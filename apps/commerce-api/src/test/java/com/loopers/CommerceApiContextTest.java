@@ -2,8 +2,12 @@ package com.loopers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+
+import com.loopers.testcontainers.MySqlTestContainersConfig;
 
 @SpringBootTest
+@Import(MySqlTestContainersConfig.class)
 class CommerceApiContextTest {
 
     @Test

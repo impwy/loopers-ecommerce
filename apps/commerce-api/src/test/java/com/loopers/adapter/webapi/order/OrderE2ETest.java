@@ -16,6 +16,7 @@ import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.domain.member.Gender;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.order.Order;
+import com.loopers.domain.order.OrderNo;
 import com.loopers.domain.order.OrderStatus;
 import com.loopers.domain.product.Product;
 import com.loopers.adapter.webapi.ApiResponse;
@@ -70,7 +71,7 @@ public class OrderE2ETest {
         Brand brand = brandRepository.save(Brand.create("Test Brand", "Brand Description"));
         Product product = productRepository.save(Product.create("Test Product", "Product Description", BigDecimal.valueOf(10000), brand, ZonedDateTime.now()));
         inventoryRepository.save(Inventory.create(product.getId(), 100L));
-        Coupon coupon = couponRepository.create(Coupon.create(CreateCouponSpec.create("AMOUNT_1000", 100L, DiscountPolicy.AMOUNT, CouponType.ORDER)));
+        Coupon coupon = couponRepository.save(Coupon.create(CreateCouponSpec.create("AMOUNT_1000", 100L, DiscountPolicy.AMOUNT, CouponType.ORDER)));
 
         OrderV1Dto.Request.CreateOrderRequest orderRequest = new OrderV1Dto.Request.CreateOrderRequest(product.getId(), 2L);
         OrderV1Dto.Request.CreateOrderWithCouponRequest request = new OrderV1Dto.Request.CreateOrderWithCouponRequest(List.of(orderRequest), coupon.getId());
@@ -91,7 +92,7 @@ public class OrderE2ETest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         String orderNo = response.getBody().data().get(0).orderNo();
-        Order order = orderRepository.findByOrderNoWithItems(orderNo).get();
+        Order order = orderRepository.findByOrderNoWithItems(new OrderNo(orderNo)).get();
 
         assertThat(order.getMemberId()).isEqualTo(member.getId());
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.PENDING);

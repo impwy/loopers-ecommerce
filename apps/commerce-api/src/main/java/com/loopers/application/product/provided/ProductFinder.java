@@ -12,7 +12,7 @@ import com.loopers.application.product.ProductTotalAmountRequest;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductInfoWithRank;
-import com.loopers.infrastructure.product.ProductWithLikeCount;
+import com.loopers.application.product.ProductWithLikeCount;
 import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 
 public interface ProductFinder {

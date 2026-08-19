@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.loopers.application.brand.provided.BrandFinder;
 import com.loopers.application.product.provided.ProductFinder;
-import com.loopers.application.product.provided.ProductLikeFinder;
+import com.loopers.application.like.provided.ProductLikeFinder;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductBrandDomainService;

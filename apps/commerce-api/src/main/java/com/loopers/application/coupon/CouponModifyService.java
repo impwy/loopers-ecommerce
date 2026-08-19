@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.loopers.application.coupon.provided.CouponFinder;
 import com.loopers.application.coupon.provided.CouponRegister;
 import com.loopers.application.coupon.required.CouponRepository;
-import com.loopers.application.member.required.MemberCouponRepository;
+import com.loopers.application.coupon.required.MemberCouponRepository;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.coupon.discount.Calculator;
@@ -33,7 +33,7 @@ public class CouponModifyService implements CouponRegister {
     @Override
     public Coupon create(CreateCouponSpec createCouponSpec) {
         Coupon coupon = Coupon.create(createCouponSpec);
-        return couponRepository.create(coupon);
+        return couponRepository.save(coupon);
     }
 
     @Transactional
@@ -42,7 +42,7 @@ public class CouponModifyService implements CouponRegister {
         Coupon coupon = couponFinder.findWithPessimisticLock(couponId);
         coupon.useCoupon();
 
-        if (memberCouponRepository.hasMemberCoupon(member, coupon)) {
+        if (memberCouponRepository.existsByMemberAndCoupon(member, coupon)) {
             throw new CoreException(ErrorType.CONFLICT, "이미 발급 된 쿠폰입니다.");
         }
         MemberCoupon memberCoupon = MemberCoupon.create(member, coupon);
@@ -53,7 +53,7 @@ public class CouponModifyService implements CouponRegister {
 
         coupon.addMemberCoupon(memberCoupon);
 
-        couponRepository.create(coupon);
+        couponRepository.save(coupon);
 
         memberCoupon.useCoupon();
         return coupon;

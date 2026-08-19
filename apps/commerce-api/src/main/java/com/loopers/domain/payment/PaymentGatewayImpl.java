@@ -3,7 +3,7 @@ package com.loopers.domain.payment;
 import org.springframework.stereotype.Component;
 
 import com.loopers.domain.member.MemberId;
-import com.loopers.infrastructure.payment.feign.PgFeignClient;
+import com.loopers.adapter.integration.feign.PgFeignClient;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;

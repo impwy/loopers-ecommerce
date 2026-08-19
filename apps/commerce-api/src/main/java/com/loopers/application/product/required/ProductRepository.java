@@ -6,32 +6,32 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
-import com.loopers.infrastructure.product.ProductWithBrand;
-import com.loopers.infrastructure.product.ProductWithLikeCount;
 
-public interface ProductRepository {
+import jakarta.persistence.LockModeType;
+
+@NoRepositoryBean
+public interface ProductRepository extends Repository<Product, Long>, ProductQueryRepository {
     Product save(Product product);
 
-    Optional<Product> find(Long productId);
+    Optional<Product> findById(Long productId);
 
-    List<Product> findByConditions(Sort sort);
+    List<Product> findAll(Sort sort);
 
     List<Product> findByBrand(Brand brand);
 
-    Page<ProductWithLikeCount> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable);
-
-    Page<ProductWithLikeCount> findByBrandDenormalizationWithLike(String sortKey, List<Long> brandIds, Pageable pageable);
-
-    Page<ProductWithBrand> findByBrandDenormalization(String sortKey, List<Long> brandIds, Pageable pageable);
-
     List<Product> findByIdIn(List<Long> productIds);
-
-    Optional<Product> findByIdPessimisticLock(Long productId);
 
     Page<Product> findAllByIdIn(List<Long> productIds, Pageable pageable);
 
-    Page<Product> findAllOrderByLikeCountDesc(Pageable pageable);
+    Page<Product> findAllByOrderByLikeCountDesc(Pageable pageable);
+
+    Optional<Product> findByIdPessimisticLock(Long productId);
 }

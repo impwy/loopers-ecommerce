@@ -3,18 +3,25 @@ package com.loopers.application.order.required;
 import java.util.List;
 import java.util.Optional;
 
-import com.loopers.domain.order.Order;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 
-public interface OrderRepository {
+import com.loopers.domain.order.Order;
+import com.loopers.domain.order.OrderNo;
+
+public interface OrderRepository extends Repository<Order, Long> {
     Order save(Order order);
 
-    Optional<Order> find(Long orderId);
+    Optional<Order> findById(Long orderId);
 
     Optional<Order> findByMemberId(Long memberId);
 
-    List<Order> findWithOrderItem(Long memberId);
+    @Query("SELECT o FROM Order o JOIN FETCH o.orderItems where o.memberId =:memberId")
+    List<Order> findWithOrderItem(@Param("memberId") Long memberId);
 
-    Optional<Order> findByOrderNo(String orderNo);
+    Optional<Order> findByOrderNo(OrderNo orderNo);
 
-    Optional<Order> findByOrderNoWithItems(String orderNo);
+    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.orderItems WHERE o.orderNo = :orderNo")
+    Optional<Order> findByOrderNoWithItems(@Param("orderNo") OrderNo orderNo);
 }

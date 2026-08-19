@@ -22,9 +22,9 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.infrastructure.member.MemberJpaRepository;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.point.dto.PointV1Dto;
 import com.loopers.utils.DatabaseCleanUp;
@@ -33,13 +33,13 @@ import com.loopers.utils.DatabaseCleanUp;
 public class PointV1ApiE2ETest {
     private final TestRestTemplate restTemplate;
     private final DatabaseCleanUp databaseCleanUp;
-    private final MemberJpaRepository memberJpaRepository;
+    private final MemberRepository memberJpaRepository;
 
     @Autowired
-    public PointV1ApiE2ETest(TestRestTemplate restTemplate, DatabaseCleanUp databaseCleanUp, MemberJpaRepository memberJpaRepository) {
+    public PointV1ApiE2ETest(TestRestTemplate restTemplate, DatabaseCleanUp databaseCleanUp, MemberRepository memberRepository) {
         this.restTemplate = restTemplate;
         this.databaseCleanUp = databaseCleanUp;
-        this.memberJpaRepository = memberJpaRepository;
+        this.memberJpaRepository = memberRepository;
     }
 
     @AfterEach
@@ -55,7 +55,7 @@ public class PointV1ApiE2ETest {
         @DisplayName("포인트 조회에 성공할 경우, 보유 포인트를 응답으로 반환한다.")
         @Test
         void returnPoint_whenGetPointSuccess() {
-            Member member = memberJpaRepository.saveAndFlush(MemberFixture.createMember());
+            Member member = memberJpaRepository.save(MemberFixture.createMember());
 
             ParameterizedTypeReference<ApiResponse<PointV1Dto.Response.PointAmountResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
