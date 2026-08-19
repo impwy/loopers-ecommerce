@@ -3,7 +3,7 @@ package com.loopers.application.member;
 import org.springframework.stereotype.Service;
 
 import com.loopers.application.member.provided.MemberFinder;
-import com.loopers.application.required.MemberRepository;
+import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.member.MemberNotFoundException;

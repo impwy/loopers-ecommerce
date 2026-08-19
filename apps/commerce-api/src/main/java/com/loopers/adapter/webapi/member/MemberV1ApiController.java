@@ -1,0 +1,40 @@
+package com.loopers.adapter.webapi.member;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.loopers.application.member.MemberFacade;
+import com.loopers.domain.member.Member;
+import com.loopers.domain.member.MemberId;
+import com.loopers.adapter.webapi.ApiResponse;
+import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
+import com.loopers.adapter.webapi.member.dto.MemberV1Dto;
+import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Response.MemberInfoResponse;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/members")
+public class MemberV1ApiController implements MemberV1ApiSpec {
+    private final MemberFacade memberFacade;
+
+    @PostMapping
+    @Override
+    public ApiResponse<MemberV1Dto.Response.MemberRegisterResponse> register(@RequestBody @Valid MemberRegisterRequest registerRequest) {
+        Member member = memberFacade.register(registerRequest);
+
+        MemberV1Dto.Response.MemberRegisterResponse memberRegisterResponse = MemberV1Dto.Response.MemberRegisterResponse.of(member);
+        return ApiResponse.success(memberRegisterResponse);
+    }
+
+    @GetMapping("/me")
+    @Override
+    public ApiResponse<MemberV1Dto.Response.MemberInfoResponse> find(MemberId memberId) {
+        return ApiResponse.success(MemberInfoResponse.of(memberFacade.find(memberId)));
+    }
+}

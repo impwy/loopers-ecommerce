@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.loopers.application.order.provided.OrderFinder;
-import com.loopers.application.required.OrderRepository;
+import com.loopers.application.order.required.OrderRepository;
 import com.loopers.domain.order.Order;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.share.error.CoreException;
+import com.loopers.share.error.ErrorType;
 
 import lombok.RequiredArgsConstructor;
 

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 import com.loopers.application.rank.provided.RankFinder;
 import com.loopers.domain.rank.PeriodType;
-import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
-import com.loopers.interfaces.api.rank.dto.RankingCriteria;
+import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.adapter.webapi.rank.dto.RankingCriteria;
 
 import lombok.RequiredArgsConstructor;
 

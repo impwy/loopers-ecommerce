@@ -9,15 +9,15 @@ import org.springframework.validation.annotation.Validated;
 
 import com.loopers.application.member.provided.MemberFinder;
 import com.loopers.application.member.provided.MemberRegister;
-import com.loopers.application.required.MemberRepository;
+import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.member.point.PointUsageRequest;
-import com.loopers.interfaces.api.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
+import com.loopers.share.error.CoreException;
+import com.loopers.share.error.ErrorType;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

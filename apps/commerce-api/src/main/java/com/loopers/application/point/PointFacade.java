@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.domain.member.MemberId;
-import com.loopers.interfaces.api.point.dto.PointV1Dto.Response.PointAmountResponse;
+import com.loopers.adapter.webapi.point.dto.PointV1Dto.Response.PointAmountResponse;
 
 import lombok.RequiredArgsConstructor;
 

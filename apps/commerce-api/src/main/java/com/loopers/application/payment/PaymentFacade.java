@@ -11,9 +11,9 @@ import com.loopers.domain.order.Order;
 import com.loopers.domain.payment.PaymentStatus;
 import com.loopers.application.payment.paymentrule.PaymentProcessor;
 import com.loopers.application.payment.paymentrule.PaymentService;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PaymentRequest;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionResponse;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionResponse;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

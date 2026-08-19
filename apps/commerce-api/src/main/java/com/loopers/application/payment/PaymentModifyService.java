@@ -7,15 +7,15 @@ import org.springframework.stereotype.Component;
 import com.loopers.application.order.provided.OrderFinder;
 import com.loopers.application.payment.provided.PaymentFinder;
 import com.loopers.application.payment.provided.PaymentRegister;
-import com.loopers.application.required.PaymentRepository;
+import com.loopers.application.payment.required.PaymentRepository;
 import com.loopers.domain.member.MemberId;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.payment.CreatePaymentSpec;
 import com.loopers.domain.payment.PaymentGateway;
 import com.loopers.domain.payment.Payments;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PaymentRequest;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionResponse;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionResponse;
 
 import lombok.RequiredArgsConstructor;
 

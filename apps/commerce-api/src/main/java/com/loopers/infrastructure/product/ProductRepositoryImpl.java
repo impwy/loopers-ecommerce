@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
-import com.loopers.application.required.ProductRepository;
+import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 

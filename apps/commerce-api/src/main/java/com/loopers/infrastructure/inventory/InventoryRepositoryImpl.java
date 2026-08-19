@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.loopers.application.required.InventoryRepository;
+import com.loopers.application.inventory.required.InventoryRepository;
 import com.loopers.domain.inventory.Inventory;
 
 import lombok.RequiredArgsConstructor;

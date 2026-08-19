@@ -14,13 +14,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.coupon.provided.CouponRegister;
-import com.loopers.application.required.OrderRepository;
+import com.loopers.application.order.required.OrderRepository;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CouponFixture;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.share.error.CoreException;
+import com.loopers.share.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest

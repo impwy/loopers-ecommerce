@@ -3,7 +3,7 @@ package com.loopers.application.product;
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.product.provided.ProductOutboxFinder;
-import com.loopers.application.required.ProductEventOutboxRepository;
+import com.loopers.application.product.required.ProductEventOutboxRepository;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
 import com.loopers.domain.product.ProductPayload.ProductEventType;
 

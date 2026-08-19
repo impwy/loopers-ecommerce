@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loopers.application.required.InMemoryRepository;
+import com.loopers.adapter.integration.InMemoryRepository;
 
 import lombok.RequiredArgsConstructor;
 

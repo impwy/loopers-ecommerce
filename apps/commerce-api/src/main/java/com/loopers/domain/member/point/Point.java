@@ -3,8 +3,6 @@ package com.loopers.domain.member.point;
 import java.math.BigDecimal;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

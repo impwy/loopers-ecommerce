@@ -28,11 +28,11 @@ import com.loopers.application.coupon.provided.CouponRegister;
 import com.loopers.application.inventory.provided.InventoryRegister;
 import com.loopers.application.member.provided.MemberFinder;
 import com.loopers.application.member.provided.MemberRegister;
-import com.loopers.application.required.BrandRepository;
-import com.loopers.application.required.CouponRepository;
-import com.loopers.application.required.InventoryRepository;
-import com.loopers.application.required.MemberRepository;
-import com.loopers.application.required.ProductRepository;
+import com.loopers.application.brand.required.BrandRepository;
+import com.loopers.application.coupon.required.CouponRepository;
+import com.loopers.application.inventory.required.InventoryRepository;
+import com.loopers.application.member.required.MemberRepository;
+import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.coupon.Coupon;
@@ -45,8 +45,8 @@ import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.share.error.CoreException;
+import com.loopers.share.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -151,7 +151,7 @@ class ConcurrencyTest {
         void inventory_concurrency_test() throws Exception {
             int threadCount = 100;
 
-            Brand brand = brandRepository.create(BrandFixture.createBrand());
+            Brand brand = brandRepository.save(BrandFixture.createBrand());
             Product product = productRepository.save(ProductFixture.createProduct(brand));
             Inventory inventory = inventoryRepository.save(Inventory.of(CreateInventorySpec.of(product.getId(), 1000L)));
 
@@ -168,7 +168,7 @@ class ConcurrencyTest {
         void inventory_does_not_go_below_zero_when_requests_exceed_stock() throws Exception {
             int threadCount = 10;
 
-            Brand brand = brandRepository.create(BrandFixture.createBrand());
+            Brand brand = brandRepository.save(BrandFixture.createBrand());
             Product product = productRepository.save(ProductFixture.createProduct(brand));
             Inventory inventory = inventoryRepository.save(Inventory.of(CreateInventorySpec.of(product.getId(), 50L)));
             DecreaseInventoryRequest request = new DecreaseInventoryRequest(product.getId(), 10L);

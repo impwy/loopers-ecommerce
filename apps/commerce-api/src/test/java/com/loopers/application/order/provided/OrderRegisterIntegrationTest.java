@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.required.MemberRepository;
-import com.loopers.application.required.ProductRepository;
+import com.loopers.application.member.required.MemberRepository;
+import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
-import com.loopers.support.error.CoreException;
+import com.loopers.share.error.CoreException;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest

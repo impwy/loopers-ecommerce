@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.required.BrandRepository;
+import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.utils.DatabaseCleanUp;
 
@@ -34,7 +34,7 @@ class BrandFinderIntegrationTest {
     @DisplayName("브랜드 조회 통합테스트")
     @Test
     void find_brand() {
-        Brand brand = brandRepository.create(Brand.create("브랜드", "브랜드입니다."));
+        Brand brand = brandRepository.save(Brand.create("브랜드", "브랜드입니다."));
 
         Brand expected = brandFinder.find(brand.getId());
 

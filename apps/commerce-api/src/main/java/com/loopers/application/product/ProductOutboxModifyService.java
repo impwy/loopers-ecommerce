@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.application.product.provided.ProductOutboxFinder;
 import com.loopers.application.product.provided.ProductOutboxRegister;
-import com.loopers.application.required.ProductEventOutboxRepository;
+import com.loopers.application.product.required.ProductEventOutboxRepository;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxStatus;

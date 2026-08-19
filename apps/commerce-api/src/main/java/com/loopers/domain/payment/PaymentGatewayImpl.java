@@ -4,11 +4,11 @@ import org.springframework.stereotype.Component;
 
 import com.loopers.domain.member.MemberId;
 import com.loopers.infrastructure.payment.feign.PgFeignClient;
-import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.adapter.webapi.ApiResponse;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
+import com.loopers.share.error.CoreException;
+import com.loopers.share.error.ErrorType;
 
 import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;

@@ -2,7 +2,7 @@ package com.loopers.infrastructure.coupon.membercoupon;
 
 import org.springframework.stereotype.Component;
 
-import com.loopers.application.required.MemberCouponRepository;
+import com.loopers.application.member.required.MemberCouponRepository;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.member.Member;
 

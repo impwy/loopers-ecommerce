@@ -19,10 +19,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.required.BrandRepository;
-import com.loopers.application.required.MemberRepository;
-import com.loopers.application.required.ProductLikeRepository;
-import com.loopers.application.required.ProductRepository;
+import com.loopers.application.brand.required.BrandRepository;
+import com.loopers.application.member.required.MemberRepository;
+import com.loopers.application.product.required.ProductLikeRepository;
+import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.product.Product;
@@ -55,7 +55,7 @@ class ProductFinderIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        brand = brandRepository.create(BrandFixture.createBrand());
+        brand = brandRepository.save(BrandFixture.createBrand());
         product = productRepository.save(ProductFixture.createProduct(brand));
 
     }
@@ -134,7 +134,7 @@ class ProductFinderIntegrationTest {
     @DisplayName("브랜드 필터 상품 조회 시 전체 개수는 필터 조건을 반영한다")
     @Test
     void find_with_like_count_total_count_applies_brand_filter() {
-        Brand otherBrand = brandRepository.create(Brand.create("다른 브랜드", "다른 브랜드입니다."));
+        Brand otherBrand = brandRepository.save(Brand.create("다른 브랜드", "다른 브랜드입니다."));
         productRepository.save(Product.create("다른 브랜드 상품", "다른 브랜드 상품입니다.", BigDecimal.valueOf(700),
                                               otherBrand, ZonedDateTime.now()));
 

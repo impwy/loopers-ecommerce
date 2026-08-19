@@ -11,7 +11,7 @@ import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductBrandDomainService;
 import com.loopers.domain.product.ProductInfo;
-import com.loopers.interfaces.api.brand.dto.BrandV1Dto.Response.BrandInfoResponse;
+import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.Response.BrandInfoResponse;
 
 import lombok.RequiredArgsConstructor;
 

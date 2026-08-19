@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.loopers.application.required.MemberRepository;
+import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
 

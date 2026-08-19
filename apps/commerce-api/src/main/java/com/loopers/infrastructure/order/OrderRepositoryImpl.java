@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.loopers.application.required.OrderRepository;
+import com.loopers.application.order.required.OrderRepository;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.OrderNo;
 

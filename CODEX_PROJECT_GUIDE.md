@@ -175,7 +175,7 @@ OrderFacade, InventoryFacade, PaymentFacade 흐름을 추적하고,
 
 ```shell
 ./gradlew :apps:commerce-api:test --tests com.loopers.application.product.provided.ProductFacadeIntegrationTest
-./gradlew :apps:commerce-api:test --tests com.loopers.interfaces.api.order.OrderE2ETest
+./gradlew :apps:commerce-api:test --tests com.loopers.adapter.webapi.order.OrderE2ETest
 ./gradlew :apps:commerce-streamer:test --tests com.loopers.batch.job.WeeklyProductRankJobConfigTest
 ```
 

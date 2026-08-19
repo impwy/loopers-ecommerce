@@ -15,9 +15,9 @@ import com.loopers.domain.coupon.CouponFixture;
 import com.loopers.domain.coupon.CouponType;
 import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.coupon.DiscountPolicy;
-import com.loopers.interfaces.api.coupon.dto.CouponV1Dto.Request.CreateCouponRequest;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.adapter.webapi.coupon.dto.CouponV1Dto.Request.CreateCouponRequest;
+import com.loopers.share.error.CoreException;
+import com.loopers.share.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest

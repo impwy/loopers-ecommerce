@@ -14,12 +14,12 @@ import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Component;
 
 import com.loopers.application.rank.provided.RankFinder;
-import com.loopers.application.required.InMemoryRepository;
-import com.loopers.application.required.ProductRepository;
+import com.loopers.adapter.integration.InMemoryRepository;
+import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductBrandDomainService;
 import com.loopers.domain.product.ProductInfo;
-import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 
 import lombok.RequiredArgsConstructor;
 

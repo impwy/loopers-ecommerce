@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.loopers.application.required.PaymentRepository;
+import com.loopers.application.payment.required.PaymentRepository;
 import com.loopers.domain.payment.Payments;
 
 import lombok.RequiredArgsConstructor;

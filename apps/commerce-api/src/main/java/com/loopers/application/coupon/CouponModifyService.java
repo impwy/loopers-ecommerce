@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.loopers.application.coupon.provided.CouponFinder;
 import com.loopers.application.coupon.provided.CouponRegister;
-import com.loopers.application.required.CouponRepository;
-import com.loopers.application.required.MemberCouponRepository;
+import com.loopers.application.coupon.required.CouponRepository;
+import com.loopers.application.member.required.MemberCouponRepository;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.coupon.discount.Calculator;
@@ -16,8 +16,8 @@ import com.loopers.domain.coupon.membercoupon.CouponStatus;
 import com.loopers.domain.coupon.membercoupon.MemberCoupon;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberId;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.share.error.CoreException;
+import com.loopers.share.error.ErrorType;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

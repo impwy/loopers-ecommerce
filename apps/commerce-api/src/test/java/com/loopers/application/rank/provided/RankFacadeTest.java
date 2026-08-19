@@ -20,8 +20,8 @@ import org.springframework.data.domain.Pageable;
 
 import com.loopers.application.rank.RankFacade;
 import com.loopers.domain.rank.PeriodType;
-import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
-import com.loopers.interfaces.api.rank.dto.RankingCriteria;
+import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.adapter.webapi.rank.dto.RankingCriteria;
 
 @ExtendWith(MockitoExtension.class)
 class RankFacadeTest {

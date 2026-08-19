@@ -17,11 +17,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.application.order.OrderFacade;
-import com.loopers.application.required.BrandRepository;
-import com.loopers.application.required.CouponRepository;
-import com.loopers.application.required.InventoryRepository;
-import com.loopers.application.required.MemberRepository;
-import com.loopers.application.required.ProductRepository;
+import com.loopers.application.brand.required.BrandRepository;
+import com.loopers.application.coupon.required.CouponRepository;
+import com.loopers.application.inventory.required.InventoryRepository;
+import com.loopers.application.member.required.MemberRepository;
+import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.coupon.Coupon;
@@ -31,11 +31,11 @@ import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Response.OrderInfo;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Request.CreateOrderRequest;
+import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
+import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Response.OrderInfo;
+import com.loopers.share.error.CoreException;
+import com.loopers.share.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -74,7 +74,7 @@ class OrderFacadeIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        Brand brand = brandRepository.create(BrandFixture.createBrand());
+        Brand brand = brandRepository.save(BrandFixture.createBrand());
 
         Member member = MemberFixture.createMember();
         savedMember = memberRepository.save(member);

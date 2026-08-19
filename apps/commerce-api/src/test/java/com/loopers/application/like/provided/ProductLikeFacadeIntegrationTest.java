@@ -15,10 +15,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.application.like.ProductLikeFacade;
-import com.loopers.application.required.BrandRepository;
-import com.loopers.application.required.MemberRepository;
-import com.loopers.application.required.ProductLikeRepository;
-import com.loopers.application.required.ProductRepository;
+import com.loopers.application.brand.required.BrandRepository;
+import com.loopers.application.member.required.MemberRepository;
+import com.loopers.application.product.required.ProductLikeRepository;
+import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
 
@@ -27,8 +27,8 @@ import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.share.error.CoreException;
+import com.loopers.share.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -56,7 +56,7 @@ class ProductLikeFacadeIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        Brand brand = brandRepository.create(BrandFixture.createBrand());
+        Brand brand = brandRepository.save(BrandFixture.createBrand());
         product = productRepository.save(ProductFixture.createProduct(brand));
     }
 

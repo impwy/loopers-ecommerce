@@ -17,18 +17,18 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.inventory.DecreaseInventoryRequest;
 import com.loopers.application.inventory.InventoryFacade;
-import com.loopers.application.required.BrandRepository;
-import com.loopers.application.required.InventoryRepository;
-import com.loopers.application.required.ProductRepository;
+import com.loopers.application.brand.required.BrandRepository;
+import com.loopers.application.inventory.required.InventoryRepository;
+import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.inventory.InventoryStatus;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
-import com.loopers.interfaces.api.inventory.dto.InventoryV1Dto.Request.CreateInventoryRequest;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.adapter.webapi.inventory.dto.InventoryV1Dto.Request.CreateInventoryRequest;
+import com.loopers.share.error.CoreException;
+import com.loopers.share.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -62,7 +62,7 @@ class InventoryFacadeIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        brand = brandRepository.create(BrandFixture.createBrand());
+        brand = brandRepository.save(BrandFixture.createBrand());
         product = ProductFixture.createProduct(brand);
     }
 

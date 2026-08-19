@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.loopers.application.required.CouponRepository;
+import com.loopers.application.coupon.required.CouponRepository;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.membercoupon.MemberCoupon;
 import com.loopers.domain.member.MemberId;

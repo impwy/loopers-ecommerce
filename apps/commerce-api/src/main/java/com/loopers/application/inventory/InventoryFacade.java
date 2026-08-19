@@ -8,7 +8,7 @@ import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.domain.inventory.CreateInventorySpec;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.product.Product;
-import com.loopers.interfaces.api.inventory.dto.InventoryV1Dto.Request.CreateInventoryRequest;
+import com.loopers.adapter.webapi.inventory.dto.InventoryV1Dto.Request.CreateInventoryRequest;
 
 import lombok.RequiredArgsConstructor;
 

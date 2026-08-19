@@ -18,8 +18,8 @@ import com.loopers.domain.member.MemberId;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
+import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Request.CreateOrderRequest;
+import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

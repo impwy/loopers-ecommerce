@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.loopers.application.required.ProductLikeRepository;
+import com.loopers.application.product.required.ProductLikeRepository;
 import com.loopers.domain.like.ProductLike;
 
 import lombok.RequiredArgsConstructor;

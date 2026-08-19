@@ -14,15 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.loopers.application.inventory.provided.InventoryFinder;
 import com.loopers.application.inventory.provided.InventoryRegister;
 import com.loopers.application.product.provided.ProductOutboxRegister;
-import com.loopers.application.required.InventoryRepository;
+import com.loopers.application.inventory.required.InventoryRepository;
 import com.loopers.domain.inventory.CreateInventorySpec;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.inventory.StockAdjustEvent;
 import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.share.error.CoreException;
+import com.loopers.share.error.ErrorType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

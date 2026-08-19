@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import com.loopers.interfaces.api.ApiResponse;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionResponse;
+import com.loopers.adapter.webapi.ApiResponse;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionResponse;
 
 @FeignClient(name = "pg-client", url = "http://localhost:8082")
 public interface PgFeignClient {

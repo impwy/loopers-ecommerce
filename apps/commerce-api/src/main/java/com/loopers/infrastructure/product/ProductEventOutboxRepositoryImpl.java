@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.loopers.application.required.ProductEventOutboxRepository;
+import com.loopers.application.product.required.ProductEventOutboxRepository;
 import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
 

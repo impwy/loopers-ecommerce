@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.required.MemberRepository;
-import com.loopers.application.required.OrderRepository;
-import com.loopers.application.required.PaymentRepository;
+import com.loopers.application.member.required.MemberRepository;
+import com.loopers.application.order.required.OrderRepository;
+import com.loopers.application.payment.required.PaymentRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.order.Order;
@@ -22,7 +22,7 @@ import com.loopers.domain.order.OrderFixture;
 import com.loopers.domain.payment.CardType;
 import com.loopers.domain.payment.PaymentType;
 import com.loopers.domain.payment.Payments;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PaymentRequest;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest

@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.member.MemberModifyService;
-import com.loopers.application.required.MemberRepository;
+import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Gender;
 import com.loopers.domain.member.Member;

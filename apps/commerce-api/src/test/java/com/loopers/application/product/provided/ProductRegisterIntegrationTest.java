@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.required.BrandRepository;
-import com.loopers.application.required.ProductRepository;
+import com.loopers.application.brand.required.BrandRepository;
+import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.product.CreateProductSpec;
@@ -40,7 +40,7 @@ public class ProductRegisterIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        brand = brandRepository.create(BrandFixture.createBrand());
+        brand = brandRepository.save(BrandFixture.createBrand());
     }
 
     @AfterEach

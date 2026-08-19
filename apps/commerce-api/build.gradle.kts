@@ -22,7 +22,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     // querydsl
-    annotationProcessor("com.querydsl:querydsl-apt::jakarta")
+    annotationProcessor ("com.querydsl:querydsl-apt:5.0.0:jakarta")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
 

@@ -2,7 +2,7 @@ package com.loopers.infrastructure.orderitem;
 
 import org.springframework.stereotype.Repository;
 
-import com.loopers.application.required.OrderItemRepository;
+import com.loopers.application.order.required.OrderItemRepository;
 import com.loopers.domain.order.orderitem.OrderItem;
 
 import lombok.RequiredArgsConstructor;

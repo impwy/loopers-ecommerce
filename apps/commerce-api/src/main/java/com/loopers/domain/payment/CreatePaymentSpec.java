@@ -2,7 +2,7 @@ package com.loopers.domain.payment;
 
 import java.math.BigDecimal;
 
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PaymentRequest;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
 
 public record CreatePaymentSpec(String orderId, Long memberId, String transactionKey,
                                 CardType cardType, String cardNo, BigDecimal totalAmount,
