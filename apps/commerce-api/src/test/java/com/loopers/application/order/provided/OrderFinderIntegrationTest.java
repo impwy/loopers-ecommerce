@@ -19,8 +19,8 @@ import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CouponFixture;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
-import com.loopers.share.error.CoreException;
-import com.loopers.share.error.ErrorType;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest

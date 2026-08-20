@@ -6,28 +6,24 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.domain.brand.Brand;
+import com.loopers.support.stereotype.ApplicationValidServiceTest;
 import com.loopers.utils.DatabaseCleanUp;
 
-import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
-@Transactional
-@SpringBootTest
+@ApplicationValidServiceTest
+@RequiredArgsConstructor
 class BrandRegisterTest {
-
     @MockitoSpyBean
     private BrandRepository brandRepository;
 
-    @Autowired
-    private BrandRegister brandRegister;
+    final BrandRegister brandRegister;
 
-    @Autowired
-    DatabaseCleanUp databaseCleanUp;
+    final DatabaseCleanUp databaseCleanUp;
 
     @AfterEach
     void tearDown() {

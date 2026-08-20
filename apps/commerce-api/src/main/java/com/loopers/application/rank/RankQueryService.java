@@ -9,21 +9,24 @@ import java.util.function.Function;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
-import org.springframework.stereotype.Component;
 
-import com.loopers.application.rank.provided.RankFinder;
 import com.loopers.adapter.integration.inmemory.InMemoryRepository;
+import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.adapter.webapi.rank.dto.RankingCriteria;
 import com.loopers.application.product.required.ProductRepository;
+import com.loopers.application.rank.provided.RankFinder;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductBrandDomainService;
 import com.loopers.domain.product.ProductInfo;
-import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.domain.rank.PeriodType;
+import com.loopers.shared.stereotype.ApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
+@ApplicationService
 @RequiredArgsConstructor
 public class RankQueryService implements RankFinder {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -61,6 +64,21 @@ public class RankQueryService implements RankFinder {
         Set<TypedTuple<Object>> typedTuples = inMemoryRepository.zReverRange(key, 0L, 99L);
         List<Long> productIds = parseProductIds(typedTuples);
         return findRankedProducts(productIds, pageable);
+    }
+
+    @Override
+    public ProductInfoPageResponse findProductRanking(RankingCriteria rankingCriteria) {
+        PeriodType period = rankingCriteria.period();
+        LocalDate date = rankingCriteria.date();
+        Integer page = rankingCriteria.page();
+        Integer size = rankingCriteria.size();
+        Pageable pageable = PageRequest.of(page, size);
+        switch (period) {
+            case DAILY -> {return getDailyRanking(date, pageable);}
+            case WEEKLY -> {return getWeeklyRanking(date, pageable);}
+            case MONTHLY -> {return getMonthlyRanking(date, pageable);}
+            default -> {return getDefaultRank(pageable);}
+        }
     }
 
     private ProductInfoPageResponse findRankedProducts(List<Long> productIds, Pageable pageable) {

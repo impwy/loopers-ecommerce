@@ -7,9 +7,9 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.loopers.domain.member.MemberId;
-import com.loopers.share.error.CoreException;
-import com.loopers.share.error.ErrorType;
+import com.loopers.domain.member.UserId;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
 
 @Component
 public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
@@ -18,7 +18,7 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(MemberId.class);
+        return parameter.getParameterType().equals(UserId.class);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
             throw new CoreException(ErrorType.NOT_FOUND, parameter.getParameterName());
         }
 
-        MemberId memberId = new MemberId(header);
-        return memberId;
+        UserId userId = new UserId(header);
+        return userId;
     }
 }

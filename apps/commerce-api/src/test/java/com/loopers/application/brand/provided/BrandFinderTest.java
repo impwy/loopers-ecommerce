@@ -7,24 +7,24 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.domain.brand.Brand;
+import com.loopers.support.stereotype.ApplicationServiceTest;
 import com.loopers.utils.DatabaseCleanUp;
 
-@SpringBootTest
-class BrandFinderTest {
+import lombok.RequiredArgsConstructor;
 
+@ApplicationServiceTest
+@RequiredArgsConstructor
+class BrandFinderTest {
     @MockitoSpyBean
     private BrandRepository brandRepository;
 
-    @Autowired
-    private BrandFinder brandFinder;
+    final BrandFinder brandFinder;
 
-    @Autowired
-    private DatabaseCleanUp databaseCleanUp;
+    final DatabaseCleanUp databaseCleanUp;
 
     @AfterEach
     void tearDown() {

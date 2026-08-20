@@ -1,7 +1,7 @@
 package com.loopers.application.payment.paymentrule;
 
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.point.PointUsageRequest;
+import com.loopers.domain.member.PointUsageRequest;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.payment.PaymentSuccess;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
@@ -17,7 +17,7 @@ public class PointPaymentService implements PaymentService {
 
     @Override
     public void requestPayment(Order order, Member member, PaymentRequest payment) {
-        eventPublisher.publishEvent(new PointUsageRequest(member.getMemberId(), payment.totalAmount()));
+        eventPublisher.publishEvent(new PointUsageRequest(member.getUserId(), payment.totalAmount()));
         eventPublisher.publishEvent(new PaymentSuccess(order.getOrderNo().value()));
     }
 }

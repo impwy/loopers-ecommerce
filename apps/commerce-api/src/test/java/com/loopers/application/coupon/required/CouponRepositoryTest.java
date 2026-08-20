@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CouponFixture;
-import com.loopers.domain.coupon.membercoupon.MemberCoupon;
+import com.loopers.domain.couponusage.CouponUsage;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 import com.loopers.support.stereotype.ApplicationJpaServiceTest;
 
 import lombok.RequiredArgsConstructor;
@@ -51,14 +51,14 @@ class CouponRepositoryTest {
     void findByMemberIdAndCouponId() {
         Member member = memberRepository.save(MemberFixture.createMember());
         Coupon coupon = CouponFixture.createCoupon();
-        MemberCoupon memberCoupon = MemberCoupon.create(member, coupon);
-        coupon.addMemberCoupon(memberCoupon);
+        CouponUsage couponUsage = CouponUsage.create(member, coupon);
+        coupon.addMemberCoupon(couponUsage);
         coupon = couponRepository.save(coupon);
         entityManager.flush();
         entityManager.clear();
 
-        MemberCoupon found = couponRepository.findByMemberIdAndCouponId(
-                new MemberId(member.getMemberId().memberId()), coupon.getId()
+        CouponUsage found = couponRepository.findByUserIdAndCouponId(
+                new UserId(member.getUserId().userId()), coupon.getId()
         ).orElseThrow();
 
         assertThat(found.getId()).isNotNull();

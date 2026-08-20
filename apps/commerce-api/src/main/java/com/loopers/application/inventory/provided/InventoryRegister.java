@@ -7,8 +7,10 @@ import com.loopers.domain.inventory.CreateInventorySpec;
 import com.loopers.application.inventory.DecreaseInventoryRequest;
 import com.loopers.domain.inventory.Inventory;
 
+import jakarta.validation.Valid;
+
 public interface InventoryRegister {
-    Inventory register(CreateInventorySpec createInventorySpec);
+    Inventory register(@Valid CreateInventorySpec createInventorySpec);
 
     Inventory decrease(Long productId, Long quantity);
 

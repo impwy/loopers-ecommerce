@@ -1,6 +1,11 @@
 package com.loopers.adapter.webapi.member;
 
-import com.loopers.domain.member.MemberId;
+import java.math.BigDecimal;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.loopers.domain.member.UserId;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
 import com.loopers.adapter.webapi.member.dto.MemberV1Dto;
@@ -28,5 +33,23 @@ public interface MemberV1ApiSpec {
     )
     ApiResponse<MemberV1Dto.Response.MemberInfoResponse> find(
             @Schema(name = "회원 ID", description = "조회할 회원 ID")
-            MemberId memberId);
+            UserId userId);
+
+    @Operation(
+            summary = "회원 포인트 조회",
+            description = "회원의 포인트를 조회합니다"
+    )
+    ApiResponse<MemberV1Dto.Response.MemberWithPointResponse> findPoints(
+            @Schema(name = "회원 ID", description = "조회할 회원 ID")
+            UserId userId);
+
+    @Operation(
+            summary = "회원 포인트 충전",
+            description = "회원의 포인트를 충전합니다"
+    )
+    ApiResponse<MemberV1Dto.Response.MemberWithPointResponse> chargePoints(
+            @Schema(name = "회원 ID", description = "충전할 회원 ID")
+            UserId userId,
+            @Schema(name = "충전할 포인트", description = "충전할 포인트")
+            BigDecimal chargePoint);
 }

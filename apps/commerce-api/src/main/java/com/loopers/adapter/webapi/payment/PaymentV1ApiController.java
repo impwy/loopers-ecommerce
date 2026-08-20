@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.loopers.application.payment.PaymentFacade;
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionResponse;
 
@@ -22,13 +22,13 @@ public class PaymentV1ApiController implements PaymentV1ApiSpec {
 
     @PostMapping("/pay")
     @Override
-    public void pay(MemberId memberId, @RequestBody PaymentRequest paymentRequest) {
-        paymentFacade.requestPayment(memberId, paymentRequest);
+    public void pay(UserId userId, @RequestBody PaymentRequest paymentRequest) {
+        paymentFacade.requestPayment(userId, paymentRequest);
     }
 
     @PostMapping("/pg-callback")
     @Override
-    public void callback(MemberId memberId, @RequestBody TransactionResponse transactionResponse) {
-        paymentFacade.callback(memberId, transactionResponse);
+    public void callback(UserId userId, @RequestBody TransactionResponse transactionResponse) {
+        paymentFacade.callback(userId, transactionResponse);
     }
 }

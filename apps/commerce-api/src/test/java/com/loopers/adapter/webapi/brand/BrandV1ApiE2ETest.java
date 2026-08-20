@@ -41,7 +41,7 @@ class BrandV1ApiE2ETest extends BaseApiTest {
 
             EntityExchangeResult<ApiResponse<BrandInfoResponse>> result = restTestClient.get()
                     .uri(endpoint)
-                    .header("X-USER-ID", member.getMemberId().memberId())
+                    .header("X-USER-ID", member.getUserId().userId())
                     .exchange()
                     .expectStatus().isNotFound()
                     .expectBody(responseType)
@@ -66,7 +66,7 @@ class BrandV1ApiE2ETest extends BaseApiTest {
 
             EntityExchangeResult<ApiResponse<BrandInfoResponse>> result = restTestClient.get()
                     .uri(endpoint)
-                    .header("X-USER-ID", member.getMemberId().memberId())
+                    .header("X-USER-ID", member.getUserId().userId())
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody(responseType)

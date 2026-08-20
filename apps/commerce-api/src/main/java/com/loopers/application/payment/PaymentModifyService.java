@@ -8,7 +8,7 @@ import com.loopers.application.order.provided.OrderFinder;
 import com.loopers.application.payment.provided.PaymentFinder;
 import com.loopers.application.payment.provided.PaymentRegister;
 import com.loopers.application.payment.required.PaymentRepository;
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.payment.CreatePaymentSpec;
 import com.loopers.domain.payment.PaymentGateway;
@@ -36,8 +36,8 @@ public class PaymentModifyService implements PaymentRegister {
     }
 
     @Override
-    public TransactionDetailResponse getPaymentDetailResponse(MemberId memberId, TransactionResponse transactionResponse) {
-        return paymentGateway.getPaymentDetailResponse(memberId, transactionResponse.transactionKey());
+    public TransactionDetailResponse getPaymentDetailResponse(UserId userId, TransactionResponse transactionResponse) {
+        return paymentGateway.getPaymentDetailResponse(userId, transactionResponse.transactionKey());
     }
 
     @Override

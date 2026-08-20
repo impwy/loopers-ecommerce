@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.client.EntityExchangeResult;
@@ -86,7 +85,7 @@ class PaymentE2ETest extends BaseApiTest {
 
         EntityExchangeResult<Void> paymentResult = restTestClient.post()
                 .uri("/api/v1/payments/pay")
-                .header("X-USER-ID", member.getMemberId().memberId())
+                .header("X-USER-ID", member.getUserId().userId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .exchange()
@@ -104,7 +103,7 @@ class PaymentE2ETest extends BaseApiTest {
                 new PaymentV1Dto.Response.TransactionResponse(transactionKey, PaymentStatus.SUCCESS, null);
         EntityExchangeResult<Void> callbackResult = restTestClient.post()
                 .uri("/api/v1/payments/pg-callback")
-                .header("X-USER-ID", member.getMemberId().memberId())
+                .header("X-USER-ID", member.getUserId().userId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(callback)
                 .exchange()

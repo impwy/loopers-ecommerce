@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import com.loopers.application.inventory.provided.InventoryFinder;
 import com.loopers.application.inventory.provided.InventoryRegister;
@@ -21,14 +22,15 @@ import com.loopers.domain.inventory.StockAdjustEvent;
 import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
-import com.loopers.share.error.CoreException;
-import com.loopers.share.error.ErrorType;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@Validated
 @RequiredArgsConstructor
 public class InventoryModifyService implements InventoryRegister {
     private final InventoryRepository inventoryRepository;
@@ -38,12 +40,8 @@ public class InventoryModifyService implements InventoryRegister {
 
     @Override
     public Inventory register(CreateInventorySpec createInventorySpec) {
-        try {
-            Inventory inventory = Inventory.of(createInventorySpec);
-            return inventoryRepository.save(inventory);
-        } catch (IllegalArgumentException e) {
-            throw new CoreException(ErrorType.BAD_REQUEST, e.getMessage());
-        }
+        Inventory inventory = Inventory.of(createInventorySpec);
+        return inventoryRepository.save(inventory);
     }
 
     @Override

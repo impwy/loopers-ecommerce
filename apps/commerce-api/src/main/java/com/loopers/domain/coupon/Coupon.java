@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.coupon.membercoupon.MemberCoupon;
+import com.loopers.domain.couponusage.CouponUsage;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -33,7 +33,7 @@ public class Coupon extends BaseEntity {
     private CouponType couponType;
 
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberCoupon> memberCoupons = new ArrayList<>();
+    private List<CouponUsage> couponUsages = new ArrayList<>();
 
     private Coupon(String code, Long quantity, DiscountPolicy discountPolicy, CouponType couponType) {
         if (quantity <= 0) {
@@ -52,9 +52,9 @@ public class Coupon extends BaseEntity {
                           createCouponSpec.couponType());
     }
 
-    public Coupon addMemberCoupon(MemberCoupon memberCoupon) {
-        this.memberCoupons.add(memberCoupon);
-        memberCoupon.addCoupon(this);
+    public Coupon addMemberCoupon(CouponUsage couponUsage) {
+        this.couponUsages.add(couponUsage);
+        couponUsage.addCoupon(this);
         return this;
     }
 

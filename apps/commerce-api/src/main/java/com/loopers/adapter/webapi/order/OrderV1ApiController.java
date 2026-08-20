@@ -2,7 +2,7 @@ package com.loopers.adapter.webapi.order;
 
 import com.loopers.application.order.OrderFacade;
 import com.loopers.application.order.OrderInfos;
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.order.dto.OrderV1Dto;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ public class OrderV1ApiController implements OrderV1ApiSpec {
 
     @Override
     @PostMapping
-    public ApiResponse<List<OrderV1Dto.Response.OrderInfo>> order(MemberId memberId, @RequestBody OrderV1Dto.Request.CreateOrderWithCouponRequest request) {
-        OrderInfos orderInfos = orderFacade.order(memberId, request);
+    public ApiResponse<List<OrderV1Dto.Response.OrderInfo>> order(UserId userId, @RequestBody OrderV1Dto.Request.CreateOrderWithCouponRequest request) {
+        OrderInfos orderInfos = orderFacade.order(userId, request);
         return ApiResponse.success(orderInfos.getOrderInfos());
     }
 }

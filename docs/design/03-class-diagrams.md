@@ -10,7 +10,7 @@ classDiagram
     }
 
     class Member {
-        - MemberId memberId
+        - UserId userId
         - String passwordHash
         - Gender gender
         - Email email
@@ -22,7 +22,7 @@ classDiagram
 
     class MemberId {
         <<embeddable>>
-        - String memberId
+        - String value
     }
 
     class Email {

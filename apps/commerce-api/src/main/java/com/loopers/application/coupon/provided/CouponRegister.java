@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 
 public interface CouponRegister {
     Coupon create(CreateCouponSpec createCouponSpec);
@@ -14,5 +14,5 @@ public interface CouponRegister {
 
     BigDecimal discountPrice(Long couponId, Member member, BigDecimal totalAmount);
 
-    void rollback(MemberId memberId, Long couponId);
+    void rollback(UserId userId, Long couponId);
 }

@@ -175,7 +175,7 @@ OrderFacade, InventoryFacade, PaymentFacade 흐름을 추적하고,
 특정 테스트 클래스:
 
 ```shell
-./gradlew :apps:commerce-api:test --tests com.loopers.application.product.provided.ProductFacadeIntegrationTest
+./gradlew :apps:commerce-api:test --tests com.loopers.application.product.provided.ProductFacadeTest
 ./gradlew :apps:commerce-api:test --tests com.loopers.adapter.webapi.order.OrderE2ETest
 ./gradlew :apps:commerce-streamer:test --tests com.loopers.batch.job.WeeklyProductRankJobConfigTest
 ```

@@ -1,82 +1,111 @@
 package com.loopers.application.product.provided;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.application.brand.required.BrandRepository;
+import com.loopers.application.like.required.ProductLikeRepository;
+import com.loopers.application.member.required.MemberRepository;
 import com.loopers.application.product.ProductFacade;
-import com.loopers.domain.product.LikeIncrease;
-import com.loopers.domain.product.LikeDecrease;
-import com.loopers.domain.product.ProductBrandDomainService;
-import com.loopers.domain.product.ProductPayload.ProductEventType;
-import com.loopers.domain.product.outbox.CreateProductOutbox;
-import com.loopers.domain.product.outbox.ProductEventOutbox;
+import com.loopers.application.product.required.ProductRepository;
+import com.loopers.domain.brand.Brand;
+import com.loopers.domain.brand.BrandFixture;
+import com.loopers.domain.like.ProductLike;
+import com.loopers.domain.member.Member;
+import com.loopers.domain.member.MemberFixture;
+import com.loopers.domain.product.Product;
+import com.loopers.domain.product.ProductFixture;
+import com.loopers.domain.product.ProductInfo;
+import com.loopers.domain.product.ProductInfoWithRank;
+import com.loopers.utils.DatabaseCleanUp;
+import com.loopers.utils.RedisCleanUp;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class ProductFacadeTest {
-    @Mock
-    private ProductFinder productFinder;
+    @MockitoSpyBean
+    private MemberRepository memberRepository;
 
-    @Mock
-    private ProductBrandDomainService productBrandDomainService;
+    @MockitoSpyBean
+    private BrandRepository brandRepository;
 
-    @Mock
-    private ApplicationEventPublisher eventPublisher;
+    @MockitoSpyBean
+    private ProductLikeRepository productLikeRepository;
 
-    @Mock
-    private ProductRegister productRegister;
+    @MockitoSpyBean
+    private ProductRepository productRepository;
 
-    @Mock
-    private ProductOutboxRegister productOutboxRegister;
-
-    @InjectMocks
+    @Autowired
     private ProductFacade productFacade;
 
-    @DisplayName("좋아요 감소 시 감소 이벤트 타입으로 outbox 를 생성한다")
-    @Test
-    void decrease_like_count_creates_decrement_outbox() {
-        Long productId = 1L;
-        ProductEventOutbox outbox = ProductEventOutbox.create(productId, "event-id",
-                                                              ProductEventType.PRODUCT_LIKE_DECREMENT, 0L, null);
-        when(productOutboxRegister.register(any(CreateProductOutbox.class))).thenReturn(outbox);
-        ArgumentCaptor<CreateProductOutbox> outboxCaptor = ArgumentCaptor.forClass(CreateProductOutbox.class);
-        ArgumentCaptor<LikeDecrease> eventCaptor = ArgumentCaptor.forClass(LikeDecrease.class);
+    @Autowired
+    private DatabaseCleanUp databaseCleanUp;
 
-        productFacade.decreaseLikeCount(productId);
+    @Autowired
+    private RedisCleanUp redisCleanUp;
 
-        verify(productRegister).decreaseLike(productId);
-        verify(productOutboxRegister).register(outboxCaptor.capture());
-        verify(eventPublisher).publishEvent(eventCaptor.capture());
-        assertThat(outboxCaptor.getValue().eventType()).isEqualTo(ProductEventType.PRODUCT_LIKE_DECREMENT);
-        assertThat(eventCaptor.getValue().productId()).isEqualTo(productId);
+    @AfterEach
+    void tearDown() {
+        databaseCleanUp.truncateAllTables();
+        redisCleanUp.truncateAll();
     }
 
-    @DisplayName("좋아요 증가 시 증가 이벤트 타입으로 outbox 를 생성한다")
+    Product product;
+    Brand brand;
+
+    @BeforeEach
+    void setUp() {
+        brand = brandRepository.save(BrandFixture.createBrand());
+
+        Product product = ProductFixture.createProduct(brand);
+        product.increaseLikeCount();
+        this.product = productRepository.save(product);
+    }
+
+    @DisplayName("상품 정보는 브랜드 정보, 좋아요 수를 포함한다.")
     @Test
-    void increase_like_count_creates_increment_outbox() {
-        Long productId = 1L;
-        ProductEventOutbox outbox = ProductEventOutbox.create(productId, "event-id",
-                                                              ProductEventType.PRODUCT_LIKE_INCREMENT, 0L, null);
-        when(productOutboxRegister.register(any(CreateProductOutbox.class))).thenReturn(outbox);
-        ArgumentCaptor<CreateProductOutbox> outboxCaptor = ArgumentCaptor.forClass(CreateProductOutbox.class);
-        ArgumentCaptor<LikeIncrease> eventCaptor = ArgumentCaptor.forClass(LikeIncrease.class);
+    void productInfo_has_brandInfo_and_like_count() {
+        Member member = memberRepository.save(MemberFixture.createMember());
+        productLikeRepository.save(ProductLike.create(member, product));
 
-        productFacade.increaseLikeCount(productId);
+        ProductInfoWithRank productInfoWithRank = productFacade.findProductInfo(product.getId());
+        ProductInfo productInfo = productInfoWithRank.productInfo();
 
-        verify(productRegister).increaseLike(productId);
-        verify(productOutboxRegister).register(outboxCaptor.capture());
-        verify(eventPublisher).publishEvent(eventCaptor.capture());
-        assertThat(outboxCaptor.getValue().eventType()).isEqualTo(ProductEventType.PRODUCT_LIKE_INCREMENT);
-        assertThat(eventCaptor.getValue().productId()).isEqualTo(productId);
+        assertAll(
+                () -> assertThat(productInfo.productName()).isEqualTo(product.getName()),
+                () -> assertThat(productInfo.productDescription()).isEqualTo(product.getDescription()),
+                () -> assertThat(productInfo.brandName()).isEqualTo(brand.getName()),
+                () -> assertThat(productInfo.brandDescription()).isEqualTo(brand.getDescription()),
+                () -> assertThat(productInfo.likeCount()).isOne()
+        );
+    }
+
+    @DisplayName("상품 정보는 브랜드 정보, 비정규화 좋아요 수를 포함한다.")
+    @Test
+    void productInfo_has_brandInfo_and_like_count_denormalization() {
+        ProductInfoPageResponse productInfoPageResponse
+                = productFacade.findProductsInfoDenormalizationWithRedis("LIKE_COUNT_DESC",
+                                                                         List.of(brand.getId()),
+                                                                         PageRequest.of(0, 10));
+        List<ProductInfo> content = productInfoPageResponse.content();
+
+        assertAll(
+                () -> assertThat(content.get(0).productName()).isEqualTo(product.getName()),
+                () -> assertThat(content.get(0).productDescription()).isEqualTo(product.getDescription()),
+                () -> assertThat(content.get(0).brandName()).isEqualTo(brand.getName()),
+                () -> assertThat(content.get(0).brandDescription()).isEqualTo(brand.getDescription()),
+                () -> assertThat(content.get(0).likeCount()).isOne()
+        );
     }
 }

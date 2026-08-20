@@ -8,8 +8,8 @@ import com.loopers.application.order.provided.OrderFinder;
 import com.loopers.application.order.required.OrderRepository;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.OrderNo;
-import com.loopers.share.error.CoreException;
-import com.loopers.share.error.ErrorType;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +29,7 @@ public class OrderQueryService implements OrderFinder {
     public Order findByMemberId(Long memberId) {
         return orderRepository.findByMemberId(memberId)
                               .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND,
-                                                                   "주문을 찾을 수 없습니다. memberId:" + memberId));
+                                                                   "주문을 찾을 수 없습니다. userId:" + memberId));
     }
 
     @Override

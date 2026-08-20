@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 import com.loopers.support.stereotype.ApplicationJpaServiceTest;
 
 import lombok.RequiredArgsConstructor;
@@ -28,17 +28,17 @@ class MemberRepositoryTest {
         Member found = memberRepository.findById(member.getId()).orElseThrow();
 
         assertThat(found.getId()).isEqualTo(member.getId());
-        assertThat(found.getMemberId()).isEqualTo(member.getMemberId());
+        assertThat(found.getUserId()).isEqualTo(member.getUserId());
     }
 
     @Test
     void findByMemberId() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        MemberId memberId = new MemberId(member.getMemberId().memberId());
+        UserId userId = new UserId(member.getUserId().userId());
         entityManager.flush();
         entityManager.clear();
 
-        Member found = memberRepository.findByMemberId(memberId).orElseThrow();
+        Member found = memberRepository.findByUserId(userId).orElseThrow();
 
         assertThat(found.getId()).isEqualTo(member.getId());
     }
@@ -46,11 +46,11 @@ class MemberRepositoryTest {
     @Test
     void findWithPoint() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        MemberId memberId = new MemberId(member.getMemberId().memberId());
+        UserId userId = new UserId(member.getUserId().userId());
         entityManager.flush();
         entityManager.clear();
 
-        Member found = memberRepository.findWithPoint(memberId).orElseThrow();
+        Member found = memberRepository.findWithPoint(userId).orElseThrow();
 
         assertThat(found.getPoint()).isNotNull();
     }
@@ -58,11 +58,11 @@ class MemberRepositoryTest {
     @Test
     void findByMemberIdWithPessimisticLock() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        MemberId memberId = new MemberId(member.getMemberId().memberId());
+        UserId userId = new UserId(member.getUserId().userId());
         entityManager.flush();
         entityManager.clear();
 
-        Member found = memberRepository.findByMemberIdWithPessimisticLock(memberId).orElseThrow();
+        Member found = memberRepository.findByUserIdWithPessimisticLock(userId).orElseThrow();
 
         assertThat(found.getId()).isEqualTo(member.getId());
     }

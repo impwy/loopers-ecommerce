@@ -34,8 +34,8 @@ import com.loopers.domain.product.ProductFixture;
 import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Request.CreateOrderRequest;
 import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
 import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Response.OrderInfo;
-import com.loopers.share.error.CoreException;
-import com.loopers.share.error.ErrorType;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
@@ -94,7 +94,7 @@ class OrderFacadeIntegrationTest {
     void create_order_fail_when_product_not_existed() {
         CreateOrderRequest createOrderRequest = CreateOrderRequest.of(-1L, 100L);
         CoreException coreException = assertThrows(CoreException.class,
-                                                   () -> orderFacade.order(savedMember.getMemberId(),
+                                                   () -> orderFacade.order(savedMember.getUserId(),
                                                                            CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedMember.getId())));
 
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
@@ -108,7 +108,7 @@ class OrderFacadeIntegrationTest {
         CreateOrderRequest createOrderRequest = CreateOrderRequest.of(savedProduct.getId(), 10L);
         savedMember.charge(savedProduct.getPrice().multiply(BigDecimal.TEN));
 
-        List<OrderInfo> orderProductInfos = orderFacade.order(savedMember.getMemberId(),
+        List<OrderInfo> orderProductInfos = orderFacade.order(savedMember.getUserId(),
                                                               CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId()))
                                                        .getOrderInfos();
 

@@ -14,7 +14,7 @@ import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.domain.coupon.CouponUsed;
 import com.loopers.domain.inventory.ProductInventoryUsed;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
@@ -33,8 +33,8 @@ public class OrderFacade {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public OrderInfos order(MemberId memberId, CreateOrderWithCouponRequest createOrderWithCouponRequest) {
-        Member member = memberFinder.findByMemberId(memberId);
+    public OrderInfos order(UserId userId, CreateOrderWithCouponRequest createOrderWithCouponRequest) {
+        Member member = memberFinder.findWithPoint(userId);
         Long couponId = createOrderWithCouponRequest.couponId();
 
         List<CreateOrderRequest> orderRequests = createOrderWithCouponRequest.createOrderRequests();
@@ -57,7 +57,7 @@ public class OrderFacade {
         eventPublisher.publishEvent(new ProductInventoryUsed(decreaseInventoryRequests));
 
         // 쿠폰 생성 및 감소
-        eventPublisher.publishEvent(new CouponUsed(couponId, member.getMemberId()));
+        eventPublisher.publishEvent(new CouponUsed(couponId, member.getUserId()));
 
         // 총 금액
         List<ProductTotalAmountRequest> productTotalAmountRequests

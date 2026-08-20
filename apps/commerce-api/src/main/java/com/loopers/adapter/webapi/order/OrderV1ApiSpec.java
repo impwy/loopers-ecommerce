@@ -1,6 +1,6 @@
 package com.loopers.adapter.webapi.order;
 
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.order.dto.OrderV1Dto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,5 +13,5 @@ import java.util.List;
 public interface OrderV1ApiSpec {
 
     @Operation(summary = "주문 생성", description = "상품을 주문합니다.")
-    ApiResponse<List<OrderV1Dto.Response.OrderInfo>> order(MemberId memberId, @RequestBody OrderV1Dto.Request.CreateOrderWithCouponRequest request);
+    ApiResponse<List<OrderV1Dto.Response.OrderInfo>> order(UserId userId, @RequestBody OrderV1Dto.Request.CreateOrderWithCouponRequest request);
 }

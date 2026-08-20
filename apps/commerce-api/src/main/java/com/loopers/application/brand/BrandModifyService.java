@@ -1,16 +1,13 @@
 package com.loopers.application.brand;
 
-import org.springframework.stereotype.Service;
-
 import com.loopers.application.brand.provided.BrandRegister;
 import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.domain.brand.Brand;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-@Service
-@Transactional
+@ApplicationValidService
 @RequiredArgsConstructor
 public class BrandModifyService implements BrandRegister {
     private final BrandRepository brandRepository;

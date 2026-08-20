@@ -2,7 +2,7 @@ package com.loopers.adapter.webapi.payment;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionResponse;
 
@@ -16,11 +16,11 @@ public interface PaymentV1ApiSpec {
             summary = "결제 요청",
             description = "결제를 요청한다."
     )
-    void pay(MemberId memberId, @RequestBody PaymentRequest paymentRequest);
+    void pay(UserId userId, @RequestBody PaymentRequest paymentRequest);
 
     @Operation(
             summary = "결제 콜백",
             description = "결제 콜백을 받는다."
     )
-    void callback(MemberId memberId, TransactionResponse transactionResponse);
+    void callback(UserId userId, TransactionResponse transactionResponse);
 }

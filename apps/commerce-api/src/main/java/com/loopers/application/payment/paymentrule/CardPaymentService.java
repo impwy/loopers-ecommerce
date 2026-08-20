@@ -21,6 +21,6 @@ public class CardPaymentService implements PaymentService {
         PaymentRequest paymentRequest = payment;
         PgPaymentRequest pgPaymentRequest = PgPaymentRequest.of(order.getOrderNo().value(), paymentRequest, callbackUrl);
 
-        paymentGateway.requestPayment(member.getMemberId(), pgPaymentRequest);
+        paymentGateway.requestPayment(member.getUserId(), pgPaymentRequest);
     }
 }

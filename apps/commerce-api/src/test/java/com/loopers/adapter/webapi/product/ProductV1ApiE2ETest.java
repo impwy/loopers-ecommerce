@@ -49,7 +49,7 @@ class ProductV1ApiE2ETest extends BaseApiTest {
                     new ParameterizedTypeReference<>() {};
             EntityExchangeResult<ApiResponse<ProductInfoWithRank>> result = restTestClient.get()
                     .uri(ENDPOINT_GET + "/" + product.getId())
-                    .header("X-USER-ID", member.getMemberId().memberId())
+                    .header("X-USER-ID", member.getUserId().userId())
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody(responseType)
@@ -78,7 +78,7 @@ class ProductV1ApiE2ETest extends BaseApiTest {
 
             EntityExchangeResult<ApiResponse<Object>> result = restTestClient.get()
                     .uri(ENDPOINT_GET + "/-1")
-                    .header("X-USER-ID", member.getMemberId().memberId())
+                    .header("X-USER-ID", member.getUserId().userId())
                     .exchange()
                     .expectStatus().isNotFound()
                     .expectBody(responseType)
@@ -105,7 +105,7 @@ class ProductV1ApiE2ETest extends BaseApiTest {
                     new ParameterizedTypeReference<>() {};
             EntityExchangeResult<ApiResponse<ProductInfoPageResponse>> result = restTestClient.get()
                     .uri(ENDPOINT_GET + "?page=0&brandIds=" + brand.getId() + "&size=2&sort=latestAt")
-                    .header("X-USER-ID", member.getMemberId().memberId())
+                    .header("X-USER-ID", member.getUserId().userId())
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody(responseType)
@@ -141,7 +141,7 @@ class ProductV1ApiE2ETest extends BaseApiTest {
                     new ParameterizedTypeReference<>() {};
             EntityExchangeResult<ApiResponse<ProductInfoPageResponse>> result = restTestClient.get()
                     .uri(ENDPOINT_GET + "/denormalization?page=0&brandIds=" + brand.getId() + "&size=2&sort=latestAt")
-                    .header("X-USER-ID", member.getMemberId().memberId())
+                    .header("X-USER-ID", member.getUserId().userId())
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody(responseType)
@@ -171,7 +171,7 @@ class ProductV1ApiE2ETest extends BaseApiTest {
                     new ParameterizedTypeReference<>() {};
             EntityExchangeResult<ApiResponse<ProductInfoPageResponse>> result = restTestClient.get()
                     .uri(ENDPOINT_GET + "/redis?page=0&brandIds=" + brand.getId() + "&size=2&sort=latestAt")
-                    .header("X-USER-ID", member.getMemberId().memberId())
+                    .header("X-USER-ID", member.getUserId().userId())
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody(responseType)

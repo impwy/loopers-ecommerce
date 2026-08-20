@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import com.loopers.application.brand.provided.BrandFinder;
 import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.domain.brand.Brand;
-import com.loopers.share.error.CoreException;
-import com.loopers.share.error.ErrorType;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

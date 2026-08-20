@@ -31,11 +31,11 @@ import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CouponFixture;
 import com.loopers.domain.coupon.CreateCouponSpec;
-import com.loopers.domain.coupon.membercoupon.MemberCoupon;
+import com.loopers.domain.couponusage.CouponUsage;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
 import com.loopers.utils.DatabaseCleanUp;
@@ -91,8 +91,8 @@ public class BaseApiTest {
         assertThat(response).as("회원 가입 응답 본문").isNotNull();
         assertThat(response.data()).as("회원 가입 응답 데이터").isNotNull();
 
-        String memberId = response.data().memberId();
-        return inNewTransaction(() -> memberRepository.findByMemberId(new MemberId(memberId)).orElseThrow());
+        String memberId = response.data().userId();
+        return inNewTransaction(() -> memberRepository.findByUserId(new UserId(memberId)).orElseThrow());
     }
 
     protected Brand prepareBrand() {
@@ -145,7 +145,7 @@ public class BaseApiTest {
         return inNewTransaction(() -> {
             Member managedMember = memberRepository.findById(memberId).orElseThrow();
             Coupon coupon = couponRepository.save(Coupon.create(spec));
-            coupon.addMemberCoupon(MemberCoupon.create(managedMember, coupon));
+            coupon.addMemberCoupon(CouponUsage.create(managedMember, coupon));
             return couponRepository.save(coupon);
         });
     }

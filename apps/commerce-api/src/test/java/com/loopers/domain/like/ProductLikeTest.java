@@ -93,7 +93,7 @@ class ProductLikeTest {
         productLike.restore();
         assertAll(
                 () -> assertThat(productLike.getDeletedAt()).isNull(),
-                () -> assertThat(productLike.getMember().getMemberId().memberId()).isEqualTo(member.getMemberId().memberId()),
+                () -> assertThat(productLike.getMember().getUserId().userId()).isEqualTo(member.getUserId().userId()),
                 () -> assertThat(productLike.getProduct().getName()).isEqualTo(product.getName())
         );
     }

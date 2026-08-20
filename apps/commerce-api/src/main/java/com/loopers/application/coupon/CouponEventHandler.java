@@ -10,7 +10,7 @@ import com.loopers.application.order.provided.OrderFinder;
 import com.loopers.domain.coupon.CouponRollback;
 import com.loopers.domain.coupon.CouponUsed;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 import com.loopers.domain.order.Order;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class CouponEventHandler {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(CouponUsed event) {
-        Member member = memberFinder.findByMemberId(event.memberId());
+        Member member = memberFinder.findWithPoint(event.userId());
         couponRegister.useMemberCoupon(event.couponId(), member);
     }
 
@@ -32,9 +32,9 @@ public class CouponEventHandler {
     public void handle(CouponRollback couponRollback) {
         String orderId = couponRollback.orderId();
         Order order = orderFinder.findByOrderNo(orderId);
-        MemberId memberId = couponRollback.memberId();
+        UserId userId = couponRollback.userId();
         order.getOrderItems().forEach(orderItem -> {
-            couponRegister.rollback(memberId, orderItem.getCouponId());
+            couponRegister.rollback(userId, orderItem.getCouponId());
         });
     }
 }

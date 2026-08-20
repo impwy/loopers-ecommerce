@@ -21,12 +21,12 @@
 - 좋아요 감소 outbox event type을 `PRODUCT_LIKE_DECREMENT`로 수정했습니다.
 - `Product.decreaseLikeCount()`에 좋아요 수가 0 이하일 때 실패하는 가드를 추가했습니다.
 - 도메인 테스트에 좋아요 감소 성공/실패 케이스를 추가했습니다.
-- `ProductFacadeTest`를 추가해 좋아요 증가/감소 시 outbox가 각각 증가/감소 이벤트 타입으로 생성되고 `LikeIncrease`/`LikeDecrease` 이벤트가 발행되는지 검증했습니다.
+- `ProductOutboxTest`를 추가해 좋아요 증가/감소 시 outbox가 각각 증가/감소 이벤트 타입으로 생성되고 `LikeIncrease`/`LikeDecrease` 이벤트가 발행되는지 검증했습니다.
 
 ### 필요한 테스트
 
 - `ProductTest`: 좋아요 수가 음수가 되지 않는 도메인 불변식
-- `ProductFacadeTest`: 좋아요 증가/감소 outbox/event 타입 정합성
+- `ProductOutboxTest`: 좋아요 증가/감소 outbox/event 타입 정합성
 
 ### 추가로 얻은 지식과 확인할 점
 
@@ -44,7 +44,7 @@
 ### 수정한 내용
 
 - `findByBrandAndLikeCount()` count 쿼리에 `product.brand.id.in(brandIds)` 조건을 추가했습니다.
-- `ProductFinderIntegrationTest`에 브랜드 필터가 content와 total count에 함께 반영되는 통합 테스트를 추가했습니다.
+- `ProductFinderTest`에 브랜드 필터가 content와 total count에 함께 반영되는 통합 테스트를 추가했습니다.
 
 ### 필요한 테스트
 
@@ -53,7 +53,7 @@
 ### 검증 결과
 
 - `mise exec java@21.0.2 -- ./gradlew :apps:commerce-api:compileTestJava` 성공.
-- `ProductFinderIntegrationTest` 실행은 Testcontainers가 Docker Desktop에 Docker API 1.32로 접근하면서 현재 Docker의 최소 API 1.40 요구와 충돌해 실패했습니다.
+- `ProductFinderTest` 실행은 Testcontainers가 Docker Desktop에 Docker API 1.32로 접근하면서 현재 Docker의 최소 API 1.40 요구와 충돌해 실패했습니다.
 - `DOCKER_API_VERSION=1.40`, `TESTCONTAINERS_RYUK_DISABLED=true`, `DOCKER_HOST=unix:///Users/yong/.docker/run/docker.sock` 조합을 각각 확인했지만 로컬 Testcontainers Docker 환경 탐색 문제는 해소되지 않았습니다.
 
 ### 추가로 얻은 지식과 확인할 점
@@ -83,8 +83,8 @@
 ### 필요한 테스트
 
 - `RankFacadeTest`: 요청 page/size가 `Pageable`에 반영되는지 확인.
-- `RankQueryServiceTest`: 일간 랭킹이 요청 날짜 key를 조회하고 문자열 productId를 변환하는지 확인.
-- `RankQueryServiceTest`: 주간 랭킹이 현재 날짜가 아니라 요청 날짜가 속한 주의 key를 조회하는지 확인.
+- `RankFinderTest`: 일간 랭킹이 요청 날짜 key를 조회하고 문자열 productId를 변환하는지 확인.
+- `RankFinderTest`: 주간 랭킹이 현재 날짜가 아니라 요청 날짜가 속한 주의 key를 조회하는지 확인.
 
 ### 검증 결과
 

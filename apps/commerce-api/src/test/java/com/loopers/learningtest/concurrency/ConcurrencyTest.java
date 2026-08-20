@@ -46,8 +46,8 @@ import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
-import com.loopers.share.error.CoreException;
-import com.loopers.share.error.ErrorType;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest(classes = CommerceApiApplication.class)
@@ -205,10 +205,10 @@ class ConcurrencyTest {
             Member savedMember = memberRepository.save(member);
 
             runConcurrently(threadCount,
-                            () -> memberRegister.usePoint(member.getMemberId(), BigDecimal.valueOf(1000000)));
+                            () -> memberRegister.usePoint(member.getUserId(), BigDecimal.valueOf(1000000)));
 
-            Member updatedMember = memberFinder.findByMemberId(savedMember.getMemberId());
-            assertThat(updatedMember.getPoint().getAmount().compareTo(BigDecimal.valueOf(0))).isZero();
+            Member updatedMember = memberFinder.findWithPoint(savedMember.getUserId());
+            assertThat(updatedMember.getPoint().compareTo(BigDecimal.valueOf(0))).isZero();
         }
 
         @Test
@@ -223,7 +223,7 @@ class ConcurrencyTest {
 
             runConcurrently(threadCount, () -> {
                 try {
-                    memberRegister.usePoint(member.getMemberId(), BigDecimal.valueOf(1_000_000));
+                    memberRegister.usePoint(member.getUserId(), BigDecimal.valueOf(1_000_000));
                     successCount.incrementAndGet();
                 } catch (CoreException e) {
                     assertThat(e.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
@@ -231,8 +231,8 @@ class ConcurrencyTest {
                 }
             });
 
-            Member updatedMember = memberFinder.findByMemberId(savedMember.getMemberId());
-            assertThat(updatedMember.getPoint().getAmount()).isZero();
+            Member updatedMember = memberFinder.findWithPoint(savedMember.getUserId());
+            assertThat(updatedMember.getPoint()).isZero();
             assertThat(successCount).hasValue(5);
             assertThat(failureCount).hasValue(threadCount - 5);
         }

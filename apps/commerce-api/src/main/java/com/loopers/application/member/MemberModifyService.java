@@ -13,11 +13,11 @@ import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberId;
-import com.loopers.domain.member.point.PointUsageRequest;
+import com.loopers.domain.member.UserId;
+import com.loopers.domain.member.PointUsageRequest;
 import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
-import com.loopers.share.error.CoreException;
-import com.loopers.share.error.ErrorType;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -42,23 +42,24 @@ public class MemberModifyService implements MemberRegister {
     }
 
     @Override
-    public BigDecimal chargePoint(MemberId memberId, BigDecimal amount) {
-        Member member = memberFinder.findByMemberId(memberId);
-        BigDecimal chargedPoint = member.charge(amount);
-        memberRepository.save(member);
-        return chargedPoint;
+    public Member chargePoint(UserId userId, BigDecimal amount) {
+        Member member = memberFinder.findWithPoint(userId);
+        member.charge(amount);
+        member = memberRepository.save(member);
+
+        return member;
     }
 
     private void checkDuplicateId(MemberRegisterRequest registerRequest) {
-        if (memberRepository.findByMemberId(new MemberId(registerRequest.memberId())).isPresent()) {
+        if (memberRepository.findByUserId(new UserId(registerRequest.memberId())).isPresent()) {
             throw new DuplicateMemberIdException("이미 사용중인 ID 입니다: " + registerRequest.memberId());
         }
     }
 
     @Transactional
     @Override
-    public Member usePoint(MemberId memberId, BigDecimal discountedPrice) {
-        Member member = memberFinder.findByMemberIdWithPessimisticLock(memberId);
+    public Member usePoint(UserId userId, BigDecimal discountedPrice) {
+        Member member = memberFinder.findByMemberIdWithPessimisticLock(userId);
 
         try {
             member.usePoint(discountedPrice);
@@ -70,6 +71,6 @@ public class MemberModifyService implements MemberRegister {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(PointUsageRequest event) {
-        usePoint(event.memberId(), event.totalAmount());
+        usePoint(event.userId(), event.totalAmount());
     }
 }

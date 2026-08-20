@@ -15,7 +15,7 @@ import com.loopers.application.member.required.MemberRepository;
 import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
-import com.loopers.share.error.CoreException;
+import com.loopers.shared.error.CoreException;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest

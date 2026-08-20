@@ -2,9 +2,9 @@ package com.loopers.application.member.provided;
 
 import java.math.BigDecimal;
 
-import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberId;
 import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
+import com.loopers.domain.member.Member;
+import com.loopers.domain.member.UserId;
 
 import jakarta.validation.Valid;
 
@@ -14,7 +14,7 @@ import jakarta.validation.Valid;
 public interface MemberRegister {
     Member register(@Valid MemberRegisterRequest registerRequest);
 
-    BigDecimal chargePoint(MemberId memberId, BigDecimal amount);
+    Member chargePoint(UserId userId, BigDecimal amount);
 
-    Member usePoint(MemberId memberId, BigDecimal discountedPrice);
+    Member usePoint(UserId userId, BigDecimal discountedPrice);
 }

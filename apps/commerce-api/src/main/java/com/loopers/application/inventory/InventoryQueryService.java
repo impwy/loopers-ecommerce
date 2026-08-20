@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import com.loopers.application.inventory.provided.InventoryFinder;
 import com.loopers.application.inventory.required.InventoryRepository;
 import com.loopers.domain.inventory.Inventory;
-import com.loopers.share.error.CoreException;
-import com.loopers.share.error.ErrorType;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
 
 import lombok.RequiredArgsConstructor;
 

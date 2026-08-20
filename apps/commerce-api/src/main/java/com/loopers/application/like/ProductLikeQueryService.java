@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import com.loopers.application.like.provided.ProductLikeFinder;
 import com.loopers.application.like.required.ProductLikeRepository;
 import com.loopers.domain.like.ProductLike;
-import com.loopers.share.error.CoreException;
-import com.loopers.share.error.ErrorType;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
 
 import lombok.RequiredArgsConstructor;
 

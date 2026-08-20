@@ -1,6 +1,6 @@
 package com.loopers.domain.coupon;
 
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 
-public record CouponUsed(Long couponId, MemberId memberId) {
+public record CouponUsed(Long couponId, UserId userId) {
 }

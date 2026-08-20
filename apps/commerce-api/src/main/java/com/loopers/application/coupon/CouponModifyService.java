@@ -12,12 +12,12 @@ import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.coupon.discount.Calculator;
 import com.loopers.domain.coupon.discount.DiscountServiceFactory;
-import com.loopers.domain.coupon.membercoupon.CouponStatus;
-import com.loopers.domain.coupon.membercoupon.MemberCoupon;
+import com.loopers.domain.coupon.CouponStatus;
+import com.loopers.domain.couponusage.CouponUsage;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberId;
-import com.loopers.share.error.CoreException;
-import com.loopers.share.error.ErrorType;
+import com.loopers.domain.member.UserId;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -45,17 +45,17 @@ public class CouponModifyService implements CouponRegister {
         if (memberCouponRepository.existsByMemberAndCoupon(member, coupon)) {
             throw new CoreException(ErrorType.CONFLICT, "이미 발급 된 쿠폰입니다.");
         }
-        MemberCoupon memberCoupon = MemberCoupon.create(member, coupon);
+        CouponUsage couponUsage = CouponUsage.create(member, coupon);
 
-        if (memberCoupon.getCouponStatus().equals(CouponStatus.USED)) {
+        if (couponUsage.getStatus().equals(CouponStatus.USED)) {
             throw new CoreException(ErrorType.CONFLICT, "이미 사용된 쿠폰입니다.");
         }
 
-        coupon.addMemberCoupon(memberCoupon);
+        coupon.addMemberCoupon(couponUsage);
 
         couponRepository.save(coupon);
 
-        memberCoupon.useCoupon();
+        couponUsage.useCoupon();
         return coupon;
     }
 
@@ -69,9 +69,9 @@ public class CouponModifyService implements CouponRegister {
 
     @Transactional
     @Override
-    public void rollback(MemberId memberId, Long couponId) {
-        MemberCoupon memberCoupon = couponFinder.findMemberCoupon(memberId, couponId);
-        memberCoupon.rollback();
+    public void rollback(UserId userId, Long couponId) {
+        CouponUsage couponUsage = couponFinder.findMemberCoupon(userId, couponId);
+        couponUsage.rollback();
         Coupon coupon = couponFinder.find(couponId);
         coupon.rollback();
     }
