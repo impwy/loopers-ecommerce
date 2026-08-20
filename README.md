@@ -77,7 +77,7 @@ Root
 
 | 구분 | 기술 | 적용 이유 |
 | --- | --- | --- |
-| 언어·프레임워크 | Java 21, Spring Boot 3.4.4 | 트랜잭션, 이벤트, 배치 등 이커머스 흐름에 필요한 기능을 일관된 방식으로 구현하기 위해 사용 |
+| 언어·프레임워크 | Java 25, Spring Boot 4.1.0, Spring Cloud 2025.1.2 | 트랜잭션, 이벤트, 배치 등 이커머스 흐름에 필요한 기능을 일관된 방식으로 구현하기 위해 사용 |
 | 데이터베이스 | MySQL, Spring Data JPA, QueryDSL | 주문 데이터의 트랜잭션 정합성을 지키고, 상품 필터·정렬 조건을 표현하기 위해 사용 |
 | 동시성 제어 | JPA Pessimistic Lock | 같은 재고·쿠폰·포인트·상품 행을 동시에 변경할 때 갱신 손실과 초과 사용을 막기 위해 사용 |
 | 캐시·랭킹 | Redis, Sorted Set | 반복 상품 조회를 캐시하고, 점수 순서가 필요한 상품 랭킹을 빠르게 조회하기 위해 사용 |
@@ -165,10 +165,10 @@ Prometheus가 k6와 Spring Actuator 지표를 수집하고, Grafana의 `Loopers 
 
 ### 사전 준비
 
-- Java 21
+- Java 25 (저장소의 `.tool-versions`는 mise `25.0.2`를 가리킵니다)
 - Docker Desktop
 
-Gradle 데몬은 `gradle/gradle-daemon-jvm.properties` 설정에 따라 Java 21을 사용합니다.
+Gradle Wrapper 9.1.0과 Gradle 데몬 JVM 기준은 `gradle/gradle-daemon-jvm.properties`에 따라 Java 25를 사용합니다. 로컬에 Java 25가 없으면 Gradle toolchain resolver가 호환 JDK를 자동으로 준비할 수 있습니다.
 
 ```shell
 ./gradlew --version

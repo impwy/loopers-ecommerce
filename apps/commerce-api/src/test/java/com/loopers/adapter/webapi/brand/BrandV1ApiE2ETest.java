@@ -3,116 +3,81 @@ package com.loopers.adapter.webapi.brand;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.function.Function;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.client.EntityExchangeResult;
 
-import com.loopers.application.brand.required.BrandRepository;
-import com.loopers.application.member.required.MemberRepository;
-import com.loopers.application.product.required.ProductRepository;
-import com.loopers.domain.brand.Brand;
-import com.loopers.domain.brand.BrandFixture;
-import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberFixture;
-import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductFixture;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.ApiResponse.Metadata.Result;
 import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.Response.BrandInfoResponse;
-import com.loopers.utils.DatabaseCleanUp;
+import com.loopers.domain.brand.Brand;
+import com.loopers.domain.member.Member;
+import com.loopers.domain.product.Product;
+import com.loopers.support.BaseApiTest;
+import com.loopers.support.stereotype.WebApiAdapterTest;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class BrandV1ApiE2ETest {
-    private final TestRestTemplate testRestTemplate;
-    private final DatabaseCleanUp databaseCleanUp;
-    private final BrandRepository brandRepository;
-    private final ProductRepository productRepository;
-    private final MemberRepository memberRepository;
-
-    @Autowired
-    BrandV1ApiE2ETest(TestRestTemplate testRestTemplate, DatabaseCleanUp databaseCleanUp,
-                      BrandRepository brandRepository, ProductRepository productRepository,
-                      MemberRepository memberRepository) {
-        this.testRestTemplate = testRestTemplate;
-        this.databaseCleanUp = databaseCleanUp;
-        this.brandRepository = brandRepository;
-        this.productRepository = productRepository;
-        this.memberRepository = memberRepository;
-    }
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
-    }
-
+@WebApiAdapterTest
+class BrandV1ApiE2ETest extends BaseApiTest {
     @DisplayName("Get /api/v1/brands")
     @Nested
     class Get {
-        private final Function<Long, String> ENDPOINT_GET = id -> "/api/v1/brands/" + id;
+        private String endpointGet(Long id) {
+            return "/api/v1/brands/" + id;
+        }
 
         @DisplayName("존재하지 않는 브랜드 ID로 조회시 NOT_FOUND 반환")
         @Test
         void find_brandInfo_fail_when_given_invalid_id() {
-            Member member = memberRepository.save(MemberFixture.createMember());
-            Brand brand = brandRepository.save(BrandFixture.createBrand());
-            productRepository.save(ProductFixture.createProduct(brand));
+            Member member = prepareMember();
+            Brand brand = prepareBrand();
+            prepareProduct(brand);
 
-            String enPoint = ENDPOINT_GET.apply(-1L);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            String endpoint = endpointGet(-1L);
 
             ParameterizedTypeReference<ApiResponse<BrandInfoResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
 
-            ResponseEntity<ApiResponse<BrandInfoResponse>> response =
-                    testRestTemplate.exchange(RequestEntity.get(enPoint)
-                                                           .header("X-USER-ID", member.getMemberId().memberId())
-                                                           .build(),
-                                              responseType);
+            EntityExchangeResult<ApiResponse<BrandInfoResponse>> result = restTestClient.get()
+                    .uri(endpoint)
+                    .header("X-USER-ID", member.getMemberId().memberId())
+                    .exchange()
+                    .expectStatus().isNotFound()
+                    .expectBody(responseType)
+                    .returnResult();
+            ApiResponse<BrandInfoResponse> response = result.getResponseBody();
+            assertThat(response).isNotNull();
 
-            assertThat(response.getBody().meta().result()).isEqualTo(Result.FAIL);
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(response.meta().result()).isEqualTo(Result.FAIL);
         }
 
         @DisplayName("브랜드 ID로 브랜드 정보를 조회한다.")
         @Test
         void find_brandInfo_when_given_brandId() {
-            Member member = memberRepository.save(MemberFixture.createMember());
-            Brand brand = brandRepository.save(BrandFixture.createBrand());
-            Product product = productRepository.save(ProductFixture.createProduct(brand));
+            Member member = prepareMember();
+            Brand brand = prepareBrand();
+            Product product = prepareProduct(brand);
 
-            String enPoint = ENDPOINT_GET.apply(brand.getId());
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            String endpoint = endpointGet(brand.getId());
 
             ParameterizedTypeReference<ApiResponse<BrandInfoResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
 
-            ResponseEntity<ApiResponse<BrandInfoResponse>> response =
-                    testRestTemplate.exchange(RequestEntity.get(enPoint)
-                                                           .header("X-USER-ID", member.getMemberId().memberId())
-                                                           .build(),
-                                              responseType);
-
-            BrandInfoResponse expected = response.getBody().data();
+            EntityExchangeResult<ApiResponse<BrandInfoResponse>> result = restTestClient.get()
+                    .uri(endpoint)
+                    .header("X-USER-ID", member.getMemberId().memberId())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(responseType)
+                    .returnResult();
+            ApiResponse<BrandInfoResponse> response = result.getResponseBody();
+            assertThat(response).isNotNull();
+            BrandInfoResponse expected = response.data();
+            assertThat(expected).isNotNull();
 
             assertAll(
-                    () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
-                    () -> assertThat(response.getBody().meta().result()).isEqualTo(ApiResponse.Metadata.Result.SUCCESS),
+                    () -> assertThat(response.meta().result()).isEqualTo(ApiResponse.Metadata.Result.SUCCESS),
                     () -> assertThat(expected.productInfos()).singleElement().satisfies(productInfo -> {
                         assertThat(productInfo.brandId()).isEqualTo(brand.getId());
                         assertThat(productInfo.brandName()).isEqualTo(brand.getName());

@@ -5,7 +5,8 @@
 ## 프로젝트 요약
 
 - Gradle Kotlin DSL 기반 멀티모듈 Spring Boot 프로젝트입니다.
-- Java 21, Spring Boot 3.4.4, Spring Cloud 2024.0.1을 사용합니다.
+- Java 25, Spring Boot 4.1.0, Spring Cloud 2025.1.2를 사용합니다.
+- Gradle Wrapper 9.1.0과 Java 25 toolchain을 사용하며, `gradle/gradle-daemon-jvm.properties`가 Gradle 데몬 JVM 기준을 고정합니다.
 - 주요 실행 앱은 `apps:commerce-api`, `apps:commerce-streamer`, `apps:pg-simulator`입니다.
 - 공통 인프라 모듈은 `modules:jpa`, `modules:redis`, `modules:kafka`입니다.
 - 부가 기능 모듈은 `supports:jackson`, `supports:logging`, `supports:monitoring`입니다.

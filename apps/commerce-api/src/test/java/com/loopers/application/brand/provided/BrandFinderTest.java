@@ -15,7 +15,7 @@ import com.loopers.domain.brand.Brand;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
-class BrandFinderIntegrationTest {
+class BrandFinderTest {
 
     @MockitoSpyBean
     private BrandRepository brandRepository;

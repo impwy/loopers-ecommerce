@@ -1,18 +1,3 @@
-rootProject.name = "loopers-java-spring-template"
-
-include(
-    ":apps:commerce-api",
-    ":apps:pg-simulator",
-    ":apps:commerce-streamer",
-    ":modules:jpa",
-    ":modules:redis",
-    ":modules:kafka",
-    ":supports:jackson",
-    ":supports:logging",
-    ":supports:monitoring",
-)
-
-// configurations
 pluginManagement {
     val springBootVersion: String by settings
     val springDependencyManagementVersion: String by settings
@@ -32,3 +17,21 @@ pluginManagement {
         }
     }
 }
+
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
+rootProject.name = "loopers-java-spring-template"
+
+include(
+    ":apps:commerce-api",
+    ":apps:pg-simulator",
+    ":apps:commerce-streamer",
+    ":modules:jpa",
+    ":modules:redis",
+    ":modules:kafka",
+    ":supports:jackson",
+    ":supports:logging",
+    ":supports:monitoring",
+)

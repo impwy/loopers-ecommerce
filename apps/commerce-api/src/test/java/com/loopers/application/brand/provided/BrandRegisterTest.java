@@ -18,7 +18,7 @@ import jakarta.transaction.Transactional;
 
 @Transactional
 @SpringBootTest
-class BrandRegisterIntegrationTest {
+class BrandRegisterTest {
 
     @MockitoSpyBean
     private BrandRepository brandRepository;

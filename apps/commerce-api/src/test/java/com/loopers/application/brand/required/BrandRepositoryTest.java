@@ -3,7 +3,7 @@ package com.loopers.application.brand.required;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;

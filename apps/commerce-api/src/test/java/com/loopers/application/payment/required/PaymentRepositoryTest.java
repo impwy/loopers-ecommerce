@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 
 import com.loopers.domain.payment.CardType;
 import com.loopers.domain.payment.CreatePaymentSpec;

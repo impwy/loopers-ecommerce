@@ -1,4 +1,4 @@
-package com.loopers.application.concurrency;
+package com.loopers.learningtest.concurrency;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,14 +23,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.inventory.DecreaseInventoryRequest;
+import com.loopers.CommerceApiApplication;
+import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.application.coupon.provided.CouponRegister;
+import com.loopers.application.coupon.required.CouponRepository;
+import com.loopers.application.inventory.DecreaseInventoryRequest;
 import com.loopers.application.inventory.provided.InventoryRegister;
+import com.loopers.application.inventory.required.InventoryRepository;
 import com.loopers.application.member.provided.MemberFinder;
 import com.loopers.application.member.provided.MemberRegister;
-import com.loopers.application.brand.required.BrandRepository;
-import com.loopers.application.coupon.required.CouponRepository;
-import com.loopers.application.inventory.required.InventoryRepository;
 import com.loopers.application.member.required.MemberRepository;
 import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
@@ -49,7 +50,7 @@ import com.loopers.share.error.CoreException;
 import com.loopers.share.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
-@SpringBootTest
+@SpringBootTest(classes = CommerceApiApplication.class)
 class ConcurrencyTest {
 
     private static final long CONCURRENCY_TIMEOUT_SECONDS = 60L;

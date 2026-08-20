@@ -8,15 +8,15 @@ dependencies {
     implementation(project(":supports:monitoring"))
 
     // web
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${project.properties["springDocOpenApiVersion"]}")
-    implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.boot:spring-boot-starter-batch-jdbc")
 
 
     //resilience4j
-    implementation ("io.github.resilience4j:resilience4j-spring-boot3")
-    implementation ("org.springframework.boot:spring-boot-starter-aop")
+    implementation ("io.github.resilience4j:resilience4j-spring-boot4:2.4.0")
+    implementation ("org.springframework.boot:spring-boot-starter-aspectj")
 
     //feign
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
@@ -32,8 +32,17 @@ dependencies {
     testImplementation(testFixtures(project(":modules:kafka")))
     testImplementation("org.awaitility:awaitility:4.2.0")
     testImplementation("org.springframework.batch:spring-batch-test")
+    testImplementation("org.springframework.boot:spring-boot-resttestclient")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.projectlombok:lombok")
     testAnnotationProcessor ("org.projectlombok:lombok")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("io.github.resilience4j:resilience4j-bom:2.4.0")
+    }
 }

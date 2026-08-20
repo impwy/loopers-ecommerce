@@ -1,104 +1,86 @@
 package com.loopers.adapter.webapi.order;
 
-import com.loopers.application.brand.required.BrandRepository;
-import com.loopers.application.coupon.required.CouponRepository;
-import com.loopers.application.inventory.required.InventoryRepository;
-import com.loopers.application.member.required.MemberRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.client.EntityExchangeResult;
+
+import com.loopers.adapter.webapi.ApiResponse;
+import com.loopers.adapter.webapi.order.dto.OrderV1Dto;
 import com.loopers.application.order.required.OrderRepository;
-import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CouponType;
 import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.coupon.DiscountPolicy;
-import com.loopers.domain.inventory.Inventory;
-import com.loopers.domain.member.CreateMemberSpec;
-import com.loopers.domain.member.Gender;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.OrderNo;
 import com.loopers.domain.order.OrderStatus;
 import com.loopers.domain.product.Product;
-import com.loopers.adapter.webapi.ApiResponse;
-import com.loopers.adapter.webapi.order.dto.OrderV1Dto;
-import com.loopers.utils.DatabaseCleanUp;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import com.loopers.support.BaseApiTest;
+import com.loopers.support.stereotype.WebApiAdapterTest;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.List;
+@WebApiAdapterTest
+class OrderE2ETest extends BaseApiTest {
+    private final OrderRepository orderRepository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class OrderE2ETest {
-
-    @Autowired
-    private TestRestTemplate testRestTemplate;
-    @Autowired
-    private DatabaseCleanUp databaseCleanUp;
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private BrandRepository brandRepository;
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private InventoryRepository inventoryRepository;
-    @Autowired
-    private CouponRepository couponRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
+    OrderE2ETest(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
     }
 
     @Test
     @DisplayName("주문 생성 E2E 테스트")
     void createOrderE2ETest() {
-        // given
-        Member member = memberRepository.save(Member.create(new CreateMemberSpec("testuser1", "password", Gender.MALE, "test@example.com", LocalDate.now())));
-        Brand brand = brandRepository.save(Brand.create("Test Brand", "Brand Description"));
-        Product product = productRepository.save(Product.create("Test Product", "Product Description", BigDecimal.valueOf(10000), brand, ZonedDateTime.now()));
-        inventoryRepository.save(Inventory.create(product.getId(), 100L));
-        Coupon coupon = couponRepository.save(Coupon.create(CreateCouponSpec.create("AMOUNT_1000", 100L, DiscountPolicy.AMOUNT, CouponType.ORDER)));
+        Member member = prepareMember();
+        Brand brand = prepareBrand("Test Brand", "Brand Description");
+        Product product = prepareProduct(brand, "Test Product", "Product Description",
+                BigDecimal.valueOf(10000), ZonedDateTime.parse("2025-01-01T00:00:00Z"));
+        prepareInventory(product, 100L);
+        Coupon coupon = prepareCoupon(CreateCouponSpec.create("AMOUNT_1000", 100L,
+                DiscountPolicy.AMOUNT, CouponType.ORDER));
 
-        OrderV1Dto.Request.CreateOrderRequest orderRequest = new OrderV1Dto.Request.CreateOrderRequest(product.getId(), 2L);
-        OrderV1Dto.Request.CreateOrderWithCouponRequest request = new OrderV1Dto.Request.CreateOrderWithCouponRequest(List.of(orderRequest), coupon.getId());
+        OrderV1Dto.Request.CreateOrderRequest orderRequest =
+                new OrderV1Dto.Request.CreateOrderRequest(product.getId(), 2L);
+        OrderV1Dto.Request.CreateOrderWithCouponRequest request =
+                new OrderV1Dto.Request.CreateOrderWithCouponRequest(List.of(orderRequest), coupon.getId());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("X-USER-ID", member.getMemberId().memberId());
-        HttpEntity<OrderV1Dto.Request.CreateOrderWithCouponRequest> httpEntity = new HttpEntity<>(request, headers);
+        EntityExchangeResult<ApiResponse<List<OrderV1Dto.Response.OrderInfo>>> result = restTestClient.post()
+                .uri("/api/v1/orders")
+                .header("X-USER-ID", member.getMemberId().memberId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<ApiResponse<List<OrderV1Dto.Response.OrderInfo>>>() {})
+                .returnResult();
+        ApiResponse<List<OrderV1Dto.Response.OrderInfo>> response = result.getResponseBody();
+        assertThat(response).isNotNull();
+        assertThat(response.data()).isNotNull();
+        assertThat(response.meta().result()).isEqualTo(ApiResponse.Metadata.Result.SUCCESS);
 
-        // when
-        ResponseEntity<ApiResponse<List<OrderV1Dto.Response.OrderInfo>>> response = testRestTemplate.exchange(
-                "/api/v1/orders",
-                HttpMethod.POST,
-                httpEntity,
-                new ParameterizedTypeReference<>() {}
-        );
+        OrderV1Dto.Response.OrderInfo orderInfo = response.data().getFirst();
+        assertThat(orderInfo.productName()).isEqualTo(product.getName());
+        assertThat(orderInfo.totalQuantity()).isEqualTo(2L);
+        assertThat(orderInfo.totalPrice()).isEqualByComparingTo(BigDecimal.valueOf(20000));
 
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        String orderNo = response.getBody().data().get(0).orderNo();
-        Order order = orderRepository.findByOrderNoWithItems(new OrderNo(orderNo)).get();
-
-        assertThat(order.getMemberId()).isEqualTo(member.getId());
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.PENDING);
-        assertThat(order.getOrderItems()).hasSize(1);
-        assertThat(order.getOrderItems().get(0).getProductId()).isEqualTo(product.getId());
-        assertThat(order.getOrderItems().get(0).getQuantity()).isEqualTo(2L);
-        assertThat(order.getOrderItems().get(0).getCouponId()).isEqualTo(coupon.getId());
+        inNewTransaction(() -> {
+            Order order = orderRepository.findByOrderNoWithItems(new OrderNo(orderInfo.orderNo())).orElseThrow();
+            assertThat(order.getMemberId()).isEqualTo(member.getId());
+            assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.PENDING);
+            assertThat(order.getOrderItems()).hasSize(1);
+            assertThat(order.getOrderItems().get(0).getProductId()).isEqualTo(product.getId());
+            assertThat(order.getOrderItems().get(0).getQuantity()).isEqualTo(2L);
+            assertThat(order.getOrderItems().get(0).getCouponId()).isEqualTo(coupon.getId());
+            assertThat(inventoryRepository.findByProductId(product.getId()).orElseThrow().getQuantity()).isEqualTo(98L);
+            return null;
+        });
     }
 }
