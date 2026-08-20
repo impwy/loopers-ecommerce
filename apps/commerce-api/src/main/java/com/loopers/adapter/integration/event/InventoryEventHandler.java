@@ -1,4 +1,4 @@
-package com.loopers.application.inventory;
+package com.loopers.adapter.integration.event;
 
 import java.util.List;
 import java.util.Map;

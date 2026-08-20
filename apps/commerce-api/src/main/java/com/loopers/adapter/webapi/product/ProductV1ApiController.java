@@ -7,16 +7,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.loopers.application.product.ProductFacade;
-import com.loopers.domain.product.ProductInfoWithRank;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.application.product.ProductFacade;
+import com.loopers.domain.product.ProductInfoWithRank;
+import com.loopers.shared.stereotype.WebApiAdapter;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
+@WebApiAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
 public class ProductV1ApiController implements ProductV1ApiSpec {

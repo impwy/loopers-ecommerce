@@ -1,4 +1,4 @@
-package com.loopers.application.payment.paymentrule;
+package com.loopers.application.payment;
 
 import java.util.Map;
 import java.util.Map.Entry;

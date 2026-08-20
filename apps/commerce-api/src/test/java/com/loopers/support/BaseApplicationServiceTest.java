@@ -22,7 +22,7 @@ public class BaseApplicationServiceTest {
     protected Product product;
 
     protected Brand prepareBrand() {
-        brand = brandRegister.create(BrandFixture.createBrand());
+        brand = brandRegister.create(BrandFixture.createBrandCreateRequest());
 
         return brand;
     }

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +14,6 @@ import com.loopers.application.product.provided.ProductOutboxRegister;
 import com.loopers.application.product.provided.ProductRegister;
 import com.loopers.domain.product.LikeDecrease;
 import com.loopers.domain.product.LikeIncrease;
-import com.loopers.domain.product.ProductBrandDomainService;
-import com.loopers.domain.product.ProductInfo;
 import com.loopers.domain.product.ProductInfoWithRank;
 import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
@@ -30,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductFacade {
     private final ProductFinder productFinder;
-    private final ProductBrandDomainService productBrandDomainService;
     private final ApplicationEventPublisher eventPublisher;
     private final ProductRegister productRegister;
     private final ProductOutboxRegister productOutboxRegister;
@@ -43,43 +38,19 @@ public class ProductFacade {
 
     @Transactional
     public ProductInfoPageResponse findProductsInfo(String sort, List<Long> brandIds, Pageable pageable) {
-        Page<ProductWithLikeCount> withLikeCount = productFinder.findWithLikeCount(sort, brandIds, pageable);
-
-        List<ProductInfo> productInfos
-                = withLikeCount.stream()
-                               .map(p -> productBrandDomainService.findProductWithBrand(p.product(),
-                                                                                        p.product().getBrand(),
-                                                                                        p.likeCount()))
-                               .toList();
-        return ProductInfoPageResponse.from(new PageImpl<>(productInfos, pageable, withLikeCount.getTotalElements()));
+        return ProductInfoPageResponse.from(productFinder.findWithLikeCount(sort, brandIds, pageable));
     }
 
     @Transactional
     public ProductInfoPageResponse findProductsInfoDenormalization(String sort, List<Long> brandIds, Pageable pageable) {
-        Page<ProductWithLikeCount> withLikeCount = productFinder.findByBrandAndLikeCountDenormalization(sort, brandIds, pageable);
-
-        List<ProductInfo> productInfos
-                = withLikeCount.stream()
-                               .map(p -> productBrandDomainService.findProductWithBrand(p.product(),
-                                                                                        p.product().getBrand(),
-                                                                                        p.likeCount()))
-                               .toList();
-        return ProductInfoPageResponse.from(new PageImpl<>(productInfos, pageable, withLikeCount.getTotalElements()));
+        return ProductInfoPageResponse.from(
+                productFinder.findByBrandAndLikeCountDenormalization(sort, brandIds, pageable));
     }
 
     @Transactional
     public ProductInfoPageResponse findProductsInfoDenormalizationWithRedis(String sort, List<Long> brandIds, Pageable pageable) {
-        Page<ProductWithLikeCount> withLikeCount = productFinder.findByBrandAndLikeCountDenormalizationWithRedis(sort,
-                                                                                                                 brandIds,
-                                                                                                                 pageable);
-
-        List<ProductInfo> productInfos
-                = withLikeCount.stream()
-                               .map(p -> productBrandDomainService.findProductWithBrand(p.product(),
-                                                                                        p.product().getBrand(),
-                                                                                        p.likeCount()))
-                               .toList();
-        return ProductInfoPageResponse.from(new PageImpl<>(productInfos, pageable, withLikeCount.getTotalElements()));
+        return ProductInfoPageResponse.from(
+                productFinder.findByBrandAndLikeCountDenormalizationWithRedis(sort, brandIds, pageable));
     }
 
     @Transactional

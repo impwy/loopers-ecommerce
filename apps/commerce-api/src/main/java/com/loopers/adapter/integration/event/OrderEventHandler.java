@@ -1,4 +1,4 @@
-package com.loopers.application.order;
+package com.loopers.adapter.integration.event;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;

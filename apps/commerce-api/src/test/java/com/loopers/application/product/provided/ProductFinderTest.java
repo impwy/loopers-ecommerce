@@ -3,6 +3,7 @@ package com.loopers.application.product.provided;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.time.LocalDate;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -27,8 +28,8 @@ import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
-import com.loopers.application.product.ProductWithLikeCount;
 import com.loopers.utils.DatabaseCleanUp;
+import com.loopers.domain.product.ProductInfo;
 
 @SpringBootTest
 class ProductFinderTest {
@@ -134,17 +135,20 @@ class ProductFinderTest {
     @DisplayName("브랜드 필터 상품 조회 시 전체 개수는 필터 조건을 반영한다")
     @Test
     void find_with_like_count_total_count_applies_brand_filter() {
-        Brand otherBrand = brandRepository.save(Brand.create("다른 브랜드", "다른 브랜드입니다."));
+        Brand otherBrand = brandRepository.save(
+                Brand.create("다른 브랜드", "다른 브랜드입니다.", LocalDate.of(2001, 1, 1)));
         productRepository.save(Product.create("다른 브랜드 상품", "다른 브랜드 상품입니다.", BigDecimal.valueOf(700),
                                               otherBrand, ZonedDateTime.now()));
 
-        Page<ProductWithLikeCount> products =
+        Page<ProductInfo> products =
                 productFinder.findWithLikeCount("latestAt", List.of(brand.getId()), PageRequest.of(0, 10));
 
         assertAll(
                 () -> assertThat(products.getContent())
-                        .extracting(productWithLikeCount -> productWithLikeCount.product().getId())
+                        .extracting(ProductInfo::productId)
                         .containsExactly(product.getId()),
+                () -> assertThat(products.getContent().get(0).brandId()).isEqualTo(brand.getId()),
+                () -> assertThat(products.getContent().get(0).brandName()).isEqualTo(brand.getName()),
                 () -> assertThat(products.getTotalElements()).isEqualTo(1)
         );
     }

@@ -1,4 +1,4 @@
-package com.loopers.application.payment.paymentrule;
+package com.loopers.application.payment;
 
 import com.loopers.domain.payment.PaymentType;
 

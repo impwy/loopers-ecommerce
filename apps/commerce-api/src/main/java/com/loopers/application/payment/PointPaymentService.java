@@ -1,4 +1,4 @@
-package com.loopers.application.payment.paymentrule;
+package com.loopers.application.payment;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

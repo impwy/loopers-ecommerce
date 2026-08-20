@@ -1,4 +1,4 @@
-package com.loopers.application.payment.paymentrule;
+package com.loopers.application.payment;
 
 import org.springframework.stereotype.Component;
 
@@ -6,7 +6,7 @@ import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentReques
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.order.Order;
-import com.loopers.domain.payment.PaymentGateway;
+import com.loopers.application.payment.required.PaymentGateway;
 
 import lombok.RequiredArgsConstructor;
 

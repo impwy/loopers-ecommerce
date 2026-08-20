@@ -10,6 +10,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.domain.brand.Brand;
+import com.loopers.domain.brand.BrandFixture;
 import com.loopers.support.stereotype.ApplicationValidServiceTest;
 import com.loopers.utils.DatabaseCleanUp;
 
@@ -33,11 +34,12 @@ class BrandRegisterTest {
     @DisplayName("브랜드 생성 통합테스트")
     @Test
     void createBrand() {
-        Brand brand = brandRegister.create(Brand.create("브랜드", "브랜드입니다."));
+        Brand brand = brandRegister.create(BrandFixture.createBrandCreateRequest());
 
         assertAll(
                 () -> assertThat(brand.getName()).isEqualTo("브랜드"),
-                () -> assertThat(brand.getDescription()).isEqualTo("브랜드입니다.")
+                () -> assertThat(brand.getDescription()).isEqualTo("브랜드입니다."),
+                () -> assertThat(brand.getBrandProfile().getSince()).isNotNull()
         );
     }
 }

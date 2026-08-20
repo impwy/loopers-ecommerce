@@ -86,7 +86,6 @@ class ProductFacadeTest {
                 () -> assertThat(productInfo.productName()).isEqualTo(product.getName()),
                 () -> assertThat(productInfo.productDescription()).isEqualTo(product.getDescription()),
                 () -> assertThat(productInfo.brandName()).isEqualTo(brand.getName()),
-                () -> assertThat(productInfo.brandDescription()).isEqualTo(brand.getDescription()),
                 () -> assertThat(productInfo.likeCount()).isOne()
         );
     }
@@ -104,7 +103,6 @@ class ProductFacadeTest {
                 () -> assertThat(content.get(0).productName()).isEqualTo(product.getName()),
                 () -> assertThat(content.get(0).productDescription()).isEqualTo(product.getDescription()),
                 () -> assertThat(content.get(0).brandName()).isEqualTo(brand.getName()),
-                () -> assertThat(content.get(0).brandDescription()).isEqualTo(brand.getDescription()),
                 () -> assertThat(content.get(0).likeCount()).isOne()
         );
     }

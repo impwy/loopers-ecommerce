@@ -1,4 +1,4 @@
-package com.loopers.application.product.outbox;
+package com.loopers.application.product;
 
 import java.util.Optional;
 

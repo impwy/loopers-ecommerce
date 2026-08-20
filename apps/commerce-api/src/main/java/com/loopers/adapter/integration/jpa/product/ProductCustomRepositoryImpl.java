@@ -1,4 +1,4 @@
-package com.loopers.adapter.jpa.product;
+package com.loopers.adapter.integration.jpa.product;
 
 import static com.loopers.domain.brand.QBrand.brand;
 import static com.loopers.domain.like.QProductLike.productLike;
@@ -11,8 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import com.loopers.application.product.ProductWithBrand;
-import com.loopers.application.product.ProductWithLikeCount;
+import com.loopers.domain.product.ProductInfo;
 import com.loopers.domain.product.QProduct;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -25,21 +24,26 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     private final JPQLQueryFactory queryFactory;
 
     @Override
-    public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable) {
-        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
-
-        List<ProductWithLikeCount> content = queryFactory
-                .select(Projections.constructor(ProductWithLikeCount.class,
-                                                product,
-                                                brand,
+    public Page<ProductInfo> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable) {
+        List<ProductInfo> content = queryFactory
+                .select(Projections.constructor(ProductInfo.class,
+                                                product.id,
+                                                brand.id,
+                                                product.name,
+                                                product.description,
+                                                product.price,
+                                                brand.name,
+                                                product.createdAt,
+                                                product.updatedAt,
                                                 productLike.countDistinct()
                 ))
                 .from(product)
-                .leftJoin(product.brand, brand).fetchJoin()
+                .join(product.brand, brand)
                 .leftJoin(productLike).on(productLike.product.eq(product))
                 .where(brand.id.in(brandIds))
-                .groupBy(product.id)
-                .orderBy(orderSpecifier)
+                .groupBy(product.id, brand.id, product.name, product.description, product.price,
+                         brand.name, product.createdAt, product.updatedAt)
+                .orderBy(getOrderSpecifier(sortKey, product))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -57,53 +61,23 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     }
 
     @Override
-    public Page<ProductWithLikeCount> findByBrandDenormalizationWithLike(String sortKey, List<Long> brandIds, Pageable pageable) {
-        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
-
-        List<ProductWithLikeCount> content = queryFactory
-                .select(Projections.constructor(ProductWithLikeCount.class,
-                                                product,
-                                                brand,
+    public Page<ProductInfo> findByBrandDenormalizationWithLike(String sortKey, List<Long> brandIds, Pageable pageable) {
+        List<ProductInfo> content = queryFactory
+                .select(Projections.constructor(ProductInfo.class,
+                                                product.id,
+                                                brand.id,
+                                                product.name,
+                                                product.description,
+                                                product.price,
+                                                brand.name,
+                                                product.createdAt,
+                                                product.updatedAt,
                                                 product.likeCount
                 ))
                 .from(product)
                 .leftJoin(product.brand, brand)
-                .fetchJoin()
                 .where(brand.id.in(brandIds))
-                .orderBy(orderSpecifier)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        Long total = queryFactory
-                .select(product.id.countDistinct())
-                .from(product)
-                .where(product.brand.id.in(brandIds))
-                .fetchOne();
-
-        return PageableExecutionUtils.getPage(
-                content,
-                pageable,
-                () -> Optional.ofNullable(total).orElse(0L)
-        );
-    }
-
-    @Override
-    public Page<ProductWithBrand> findByBrandDenormalization(String sortKey,
-                                                             List<Long> brandIds,
-                                                             Pageable pageable) {
-        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(sortKey, product);
-
-        List<ProductWithBrand> content = queryFactory
-                .select(Projections.constructor(ProductWithBrand.class,
-                                                product,
-                                                brand
-                ))
-                .from(product)
-                .leftJoin(product.brand, brand)
-                .fetchJoin()
-                .where(brand.id.in(brandIds))
-                .orderBy(orderSpecifier)
+                .orderBy(getOrderSpecifier(sortKey, product))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

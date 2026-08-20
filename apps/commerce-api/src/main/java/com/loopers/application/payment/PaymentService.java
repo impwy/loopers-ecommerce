@@ -1,4 +1,4 @@
-package com.loopers.application.payment.paymentrule;
+package com.loopers.application.payment;
 
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
 import com.loopers.domain.member.Member;

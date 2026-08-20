@@ -10,9 +10,9 @@ import org.springframework.data.domain.Sort;
 
 import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 import com.loopers.application.product.ProductTotalAmountRequest;
-import com.loopers.application.product.ProductWithLikeCount;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
+import com.loopers.domain.product.ProductInfo;
 import com.loopers.domain.product.ProductInfoWithRank;
 
 public interface ProductFinder {
@@ -24,12 +24,16 @@ public interface ProductFinder {
 
     List<Product> findByBrand(Brand brand);
 
-    Page<ProductWithLikeCount> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable);
+    Page<ProductInfo> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable);
 
-    Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey, List<Long> brandId, Pageable pageable);
+    Page<ProductInfo> findByBrandAndLikeCountDenormalization(String sortKey, List<Long> brandId, Pageable pageable);
 
-    Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalizationWithRedis(String sortKey, List<Long> brandId,
-                                                                               Pageable pageable);
+    Page<ProductInfo> findByBrandAndLikeCountDenormalizationWithRedis(String sortKey, List<Long> brandId,
+                                                                      Pageable pageable);
+
+    Page<ProductInfo> findProductInfosByIds(List<Long> productIds, Pageable pageable);
+
+    Page<ProductInfo> findProductInfosByLikeCountDesc(Pageable pageable);
 
     BigDecimal getTotalPrice(List<ProductTotalAmountRequest> productTotalAmountRequests);
 

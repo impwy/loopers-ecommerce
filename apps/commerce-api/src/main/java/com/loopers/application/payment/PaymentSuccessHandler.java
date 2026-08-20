@@ -1,13 +1,13 @@
 package com.loopers.application.payment;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 
 import com.loopers.domain.payment.PaymentSuccess;
+import com.loopers.shared.stereotype.ApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
+@ApplicationService
 @RequiredArgsConstructor
 public class PaymentSuccessHandler {
     private final ApplicationEventPublisher eventPublisher;

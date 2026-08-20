@@ -5,8 +5,6 @@ import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionD
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionResponse;
 import com.loopers.application.member.provided.MemberFinder;
 import com.loopers.application.order.provided.OrderFinder;
-import com.loopers.application.payment.paymentrule.PaymentProcessor;
-import com.loopers.application.payment.paymentrule.PaymentService;
 import com.loopers.application.payment.provided.PaymentRegister;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.UserId;

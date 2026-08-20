@@ -1,4 +1,4 @@
-package com.loopers.domain.payment;
+package com.loopers.application.payment.required;
 
 import com.loopers.domain.member.UserId;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;

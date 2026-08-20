@@ -1,4 +1,4 @@
-package com.loopers.adapter.integration.inmemory;
+package com.loopers.shared;
 
 import java.util.List;
 
@@ -6,18 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import lombok.Data;
-
-@Data
-public class CachedPage<T> {
-    private List<T> content;
-    private Long totalElements;
+public record CachedPage<T>(List<T> content,
+                            Long totalElements) {
 
     public static <T> CachedPage<T> of(Page<T> page) {
-        CachedPage<T> cp = new CachedPage<>();
-        cp.content = page.getContent();
-        cp.totalElements = page.getTotalElements();
-        return cp;
+        return new CachedPage<>(page.getContent(), page.getTotalElements());
     }
 
     public Page<T> toPage(Pageable pageable) {

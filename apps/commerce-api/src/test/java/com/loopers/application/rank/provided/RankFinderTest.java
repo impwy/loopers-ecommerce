@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -20,11 +18,9 @@ import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import com.loopers.adapter.integration.inmemory.InMemoryRepository;
+import com.loopers.shared.InMemoryRepository;
 import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 import com.loopers.adapter.webapi.rank.dto.RankingCriteria;
-import com.loopers.application.brand.required.BrandRepository;
-import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.rank.PeriodType;

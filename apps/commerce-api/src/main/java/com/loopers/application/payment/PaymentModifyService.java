@@ -12,7 +12,7 @@ import com.loopers.application.payment.required.PaymentRepository;
 import com.loopers.domain.member.UserId;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.payment.CreatePaymentSpec;
-import com.loopers.domain.payment.PaymentGateway;
+import com.loopers.application.payment.required.PaymentGateway;
 import com.loopers.domain.payment.Payments;
 import com.loopers.shared.stereotype.ApplicationValidService;
 

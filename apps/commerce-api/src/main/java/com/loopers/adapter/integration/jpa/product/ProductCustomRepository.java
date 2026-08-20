@@ -1,4 +1,4 @@
-package com.loopers.adapter.jpa.product;
+package com.loopers.adapter.integration.jpa.product;
 
 import com.loopers.application.product.required.ProductQueryRepository;
 

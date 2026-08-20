@@ -1,4 +1,4 @@
-package com.loopers.application.product.outbox;
+package com.loopers.application.product;
 
 import com.loopers.application.product.provided.ProductOutboxFinder;
 import com.loopers.application.product.required.ProductEventOutboxRepository;

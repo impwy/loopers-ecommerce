@@ -1,11 +1,17 @@
 package com.loopers.adapter.webapi.brand;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import com.loopers.adapter.webapi.ApiResponse;
-import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.Response.BrandInfoResponse;
+import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.BrandCreateResponse;
+import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.BrandDetailResponse;
+import com.loopers.domain.brand.BrandCreateRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 /**
  * 브랜드 관련 API 스펙입니다.
@@ -16,8 +22,18 @@ public interface BrandV1ApiSpec {
             summary = "브랜드 조회",
             description = "브랜드 아이디로 브랜드와 상품을 조회합니다"
     )
-    ApiResponse<BrandInfoResponse> find(
+    ApiResponse<BrandDetailResponse> find(
             @Schema(name = "브랜드 ID", description = "브랜드 ID")
-            Long brandId
+            Long brandId,
+            Pageable pageable
     );
+
+    @Operation(
+            summary = "브랜드 생성",
+            description = "브랜드 생성합니다"
+    )
+    ApiResponse<BrandCreateResponse> create(
+            @Schema(name = "브랜드 요청", description = "브랜드 생성을 요청")
+            @Valid BrandCreateRequest createRequest);
+
 }

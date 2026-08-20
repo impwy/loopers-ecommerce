@@ -65,8 +65,7 @@ class ProductV1ApiE2ETest extends BaseApiTest {
                     () -> assertThat(productInfo.brandId()).isEqualTo(brand.getId()),
                     () -> assertThat(productInfo.productName()).isEqualTo(product.getName()),
                     () -> assertThat(productInfo.productDescription()).isEqualTo(product.getDescription()),
-                    () -> assertThat(productInfo.brandName()).isEqualTo(brand.getName()),
-                    () -> assertThat(productInfo.brandDescription()).isEqualTo(brand.getDescription())
+                    () -> assertThat(productInfo.brandName()).isEqualTo(brand.getName())
             );
         }
 

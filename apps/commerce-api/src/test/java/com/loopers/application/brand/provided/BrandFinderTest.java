@@ -3,6 +3,7 @@ package com.loopers.application.brand.provided;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class BrandFinderTest {
     @DisplayName("브랜드 조회 통합테스트")
     @Test
     void find_brand() {
-        Brand brand = brandRepository.save(Brand.create("브랜드", "브랜드입니다."));
+        Brand brand = brandRepository.save(Brand.create("브랜드", "브랜드입니다.", LocalDate.of(1999, 1, 1)));
 
         Brand expected = brandFinder.find(brand.getId());
 

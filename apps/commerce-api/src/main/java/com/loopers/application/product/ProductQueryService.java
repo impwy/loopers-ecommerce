@@ -18,14 +18,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.loopers.adapter.integration.inmemory.CachedPage;
-import com.loopers.adapter.integration.inmemory.InMemoryRepository;
+import com.loopers.shared.CachedPage;
+import com.loopers.shared.InMemoryRepository;
 import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductBrandDomainService;
 import com.loopers.domain.product.ProductInfo;
 import com.loopers.domain.product.ProductInfoWithRank;
 import com.loopers.shared.error.CoreException;
@@ -39,7 +38,6 @@ import lombok.RequiredArgsConstructor;
 public class ProductQueryService implements ProductFinder {
     private final ProductRepository productRepository;
     private final InMemoryRepository inMemoryRepository;
-    private final ProductBrandDomainService productBrandDomainService;
 
     private static final Function<String, String> PRODUCT_RANKING_KEY = key -> "ranking:all:" + key;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -61,11 +59,10 @@ public class ProductQueryService implements ProductFinder {
             return ProductInfoWithRank.of(productInfoOpt.get(), rank);
         }
 
-        Product product = productRepository.findById(productId)
+        Product product = productRepository.findByIdWithBrand(productId)
                                            .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
 
-        ProductInfo productInfo = productBrandDomainService.findProductWithBrand(product, product.getBrand(),
-                                                                                 product.getLikeCount());
+        ProductInfo productInfo = ProductInfo.of(product, product.getBrand(), product.getLikeCount());
         inMemoryRepository.save(redisKey, productInfo, Duration.ofMinutes(5));
 
         return ProductInfoWithRank.of(productInfo, rank);
@@ -82,48 +79,41 @@ public class ProductQueryService implements ProductFinder {
     }
 
     @Override
-    public Page<ProductWithLikeCount> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable) {
+    public Page<ProductInfo> findWithLikeCount(String sortKey, List<Long> brandIds, Pageable pageable) {
         return productRepository.findWithLikeCount(sortKey, brandIds, pageable);
     }
 
     @Override
-    public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalization(String sortKey, List<Long> brandIds,
-                                                                             Pageable pageable) {
+    public Page<ProductInfo> findByBrandAndLikeCountDenormalization(String sortKey, List<Long> brandIds,
+                                                                    Pageable pageable) {
 
-        Page<ProductWithLikeCount> productWithLikeCounts
-                = productRepository.findByBrandDenormalizationWithLike(sortKey, brandIds, pageable);
-        return productWithLikeCounts;
+        return productRepository.findByBrandDenormalizationWithLike(sortKey, brandIds, pageable);
     }
 
     @Override
-    public Page<ProductWithLikeCount> findByBrandAndLikeCountDenormalizationWithRedis(String sortKey,
-                                                                                      List<Long> brandIds,
-                                                                                      Pageable pageable) {
+    public Page<ProductInfo> findByBrandAndLikeCountDenormalizationWithRedis(String sortKey,
+                                                                             List<Long> brandIds,
+                                                                             Pageable pageable) {
         String redisKey = String.format("product:brands:%s:sort:%s:page:%d",
                                         String.join("-", brandIds.stream().map(String::valueOf).toList()),
                                         sortKey, pageable.getPageNumber());
 
-        Optional<CachedPage<ProductWithLikeCount>> cachedPageOpt =
+        Optional<CachedPage<ProductInfo>> cachedPageOpt =
                 inMemoryRepository.get(redisKey, new TypeReference<>() {});
 
         if (cachedPageOpt.isPresent()) {
             return cachedPageOpt.get().toPage(pageable);
         }
 
-        Page<ProductWithLikeCount> productWithLikeCounts
-                = productRepository.findByBrandDenormalizationWithLike(sortKey, brandIds, pageable);
-
-        List<ProductWithLikeCount> content = productWithLikeCounts.toList();
-
-        PageImpl<ProductWithLikeCount> pageResult = new PageImpl<>(content, pageable,
-                                                                   productWithLikeCounts.getTotalElements());
+        Page<ProductInfo> productInfoPage =
+                productRepository.findByBrandDenormalizationWithLike(sortKey, brandIds, pageable);
 
         if (pageable.getPageNumber() <= 1) {
-            CachedPage<ProductWithLikeCount> cached = CachedPage.of(pageResult);
+            CachedPage<ProductInfo> cached = CachedPage.of(productInfoPage);
             inMemoryRepository.save(redisKey, cached, Duration.ofMinutes(5));
         }
 
-        return pageResult;
+        return productInfoPage;
     }
 
     @Override
@@ -157,14 +147,31 @@ public class ProductQueryService implements ProductFinder {
         Set<TypedTuple<Object>> typedTuples = inMemoryRepository.zReverRange(redisKey, 0L, 100L);
         List<Long> productIds = typedTuples.stream().map(TypedTuple::getValue).map(Long.class::cast).toList();
 
-        Page<Product> products = productRepository.findAllByIdIn(productIds, pageable);
-        List<ProductInfo> list = products.stream()
-                                         .map(product -> productBrandDomainService.findProductWithBrand(product,
-                                                                                                        product.getBrand(),
-                                                                                                        product.getLikeCount()))
-                                         .toList();
-
-        PageImpl<ProductInfo> page = new PageImpl<>(list, pageable, products.getTotalElements());
-        return ProductInfoPageResponse.from(page);
+        return ProductInfoPageResponse.from(findProductInfosByIds(productIds, pageable));
     }
+
+    @Override
+    public Page<ProductInfo> findProductInfosByIds(List<Long> productIds, Pageable pageable) {
+        if (productIds.isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, 0L);
+        }
+
+        Page<Product> products = productRepository.findAllByIdInWithBrand(productIds, pageable);
+        List<ProductInfo> productInfos = products.stream()
+                                                 .map(product -> ProductInfo.of(product, product.getBrand(),
+                                                                                product.getLikeCount()))
+                                                 .toList();
+        return new PageImpl<>(productInfos, pageable, products.getTotalElements());
+    }
+
+    @Override
+    public Page<ProductInfo> findProductInfosByLikeCountDesc(Pageable pageable) {
+        Page<Product> products = productRepository.findAllByOrderByLikeCountDescWithBrand(pageable);
+        List<ProductInfo> productInfos = products.stream()
+                                                 .map(product -> ProductInfo.of(product, product.getBrand(),
+                                                                                product.getLikeCount()))
+                                                 .toList();
+        return new PageImpl<>(productInfos, pageable, products.getTotalElements());
+    }
+
 }

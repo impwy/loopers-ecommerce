@@ -3,6 +3,7 @@ package com.loopers.support;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.function.Supplier;
 
@@ -40,13 +41,6 @@ import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
 import com.loopers.utils.DatabaseCleanUp;
 
-/**
- * Common support for HTTP API integration tests.
- *
- * <p>The test itself keeps the transaction supplied by {@code @WebApiAdapterTest},
- * while fixture setup and verification reads that must observe HTTP commits run in
- * an independent transaction.</p>
- */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureRestTestClient
 public class BaseApiTest {
@@ -100,7 +94,11 @@ public class BaseApiTest {
     }
 
     protected Brand prepareBrand(String name, String description) {
-        return prepareBrand(Brand.create(name, description));
+        return prepareBrand(name, description, LocalDate.of(2000, 1, 1));
+    }
+
+    protected Brand prepareBrand(String name, String description, LocalDate since) {
+        return prepareBrand(Brand.create(name, description, since));
     }
 
     private Brand prepareBrand(Brand brand) {

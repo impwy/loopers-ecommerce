@@ -1,9 +1,9 @@
-package com.loopers.domain.payment;
+package com.loopers.adapter.integration.feign;
 
 import org.springframework.stereotype.Component;
 
+import com.loopers.application.payment.required.PaymentGateway;
 import com.loopers.domain.member.UserId;
-import com.loopers.adapter.integration.feign.PgFeignClient;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PaymentGatewayImpl implements PaymentGateway {
+public class PaymentGatewayAdapter implements PaymentGateway {
     private final PgFeignClient pgFeignClient;
 
     @CircuitBreaker(name = "pgCircuit", fallbackMethod = "fallbackPgPayment")

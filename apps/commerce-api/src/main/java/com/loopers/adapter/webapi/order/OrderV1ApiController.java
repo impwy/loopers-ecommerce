@@ -1,19 +1,21 @@
 package com.loopers.adapter.webapi.order;
 
-import com.loopers.application.order.OrderFacade;
-import com.loopers.application.order.OrderInfos;
-import com.loopers.domain.member.UserId;
-import com.loopers.adapter.webapi.ApiResponse;
-import com.loopers.adapter.webapi.order.dto.OrderV1Dto;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.loopers.adapter.webapi.ApiResponse;
+import com.loopers.adapter.webapi.order.dto.OrderV1Dto;
+import com.loopers.application.order.OrderFacade;
+import com.loopers.application.order.OrderInfos;
+import com.loopers.domain.member.UserId;
+import com.loopers.shared.stereotype.WebApiAdapter;
 
-@RestController
+import lombok.RequiredArgsConstructor;
+
+@WebApiAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/orders")
 public class OrderV1ApiController implements OrderV1ApiSpec {

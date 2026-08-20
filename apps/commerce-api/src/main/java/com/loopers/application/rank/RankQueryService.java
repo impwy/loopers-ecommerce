@@ -7,20 +7,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
-import com.loopers.adapter.integration.inmemory.InMemoryRepository;
+import com.loopers.shared.InMemoryRepository;
 import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 import com.loopers.adapter.webapi.rank.dto.RankingCriteria;
-import com.loopers.application.product.required.ProductRepository;
+import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.application.rank.provided.RankFinder;
-import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductBrandDomainService;
-import com.loopers.domain.product.ProductInfo;
 import com.loopers.domain.rank.PeriodType;
 import com.loopers.shared.stereotype.ApplicationService;
 
@@ -34,8 +29,7 @@ public class RankQueryService implements RankFinder {
             date -> "ranking:all:" + date.format(formatter);
 
     private final InMemoryRepository inMemoryRepository;
-    private final ProductRepository productRepository;
-    private final ProductBrandDomainService productBrandDomainService;
+    private final ProductFinder productFinder;
 
     @Override
     public ProductInfoPageResponse getDailyRanking(LocalDate date, Pageable pageable) {
@@ -82,15 +76,7 @@ public class RankQueryService implements RankFinder {
     }
 
     private ProductInfoPageResponse findRankedProducts(List<Long> productIds, Pageable pageable) {
-        Page<Product> products = productRepository.findAllByIdIn(productIds, pageable);
-        List<ProductInfo> list = products.stream()
-                                         .map(product -> productBrandDomainService.findProductWithBrand(product,
-                                                                                                        product.getBrand(),
-                                                                                                        product.getLikeCount()))
-                                         .toList();
-
-        PageImpl<ProductInfo> page = new PageImpl<>(list, pageable, products.getTotalElements());
-        return ProductInfoPageResponse.from(page);
+        return ProductInfoPageResponse.from(productFinder.findProductInfosByIds(productIds, pageable));
     }
 
     private List<Long> parseProductIds(Set<TypedTuple<Object>> typedTuples) {
@@ -112,14 +98,6 @@ public class RankQueryService implements RankFinder {
 
     @Override
     public ProductInfoPageResponse getDefaultRank(Pageable pageable) {
-        Page<Product> products = productRepository.findAllByOrderByLikeCountDesc(pageable);
-        List<ProductInfo> list = products.stream()
-                                         .map(product -> productBrandDomainService.findProductWithBrand(product,
-                                                                                                        product.getBrand(),
-                                                                                                        product.getLikeCount()))
-                                         .toList();
-
-        PageImpl<ProductInfo> page = new PageImpl<>(list, pageable, products.getTotalElements());
-        return ProductInfoPageResponse.from(page);
+        return ProductInfoPageResponse.from(productFinder.findProductInfosByLikeCountDesc(pageable));
     }
 }

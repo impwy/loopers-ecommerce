@@ -1,26 +1,41 @@
 package com.loopers.adapter.webapi.brand;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.loopers.application.brand.BrandFacade;
 import com.loopers.adapter.webapi.ApiResponse;
-import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.Response.BrandInfoResponse;
+import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.BrandCreateResponse;
+import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.BrandDetailResponse;
+import com.loopers.application.brand.provided.BrandFinder;
+import com.loopers.application.brand.provided.BrandRegister;
+import com.loopers.domain.brand.Brand;
+import com.loopers.domain.brand.BrandCreateRequest;
+import com.loopers.shared.stereotype.WebApiAdapter;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
+@WebApiAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/brands")
 public class BrandV1ApiController implements BrandV1ApiSpec {
-    private final BrandFacade brandFacade;
+    private final BrandFinder brandFinder;
+    private final BrandRegister brandRegister;
 
     @Override
     @GetMapping("/{brandId}")
-    public ApiResponse<BrandInfoResponse> find(@PathVariable Long brandId) {
-        BrandInfoResponse brandInfoResponse = brandFacade.findBrandProductInfo(brandId);
-        return ApiResponse.success(brandInfoResponse);
+    public ApiResponse<BrandDetailResponse> find(@PathVariable Long brandId, Pageable pageable) {
+        BrandDetailResponse brandDetailResponse = brandFinder.findDetail(brandId, pageable);
+        return ApiResponse.success(brandDetailResponse);
+    }
+
+    @Override
+    @PostMapping
+    public ApiResponse<BrandCreateResponse> create(@RequestBody BrandCreateRequest createRequest) {
+        Brand brand = brandRegister.create(createRequest);
+        return ApiResponse.success(BrandCreateResponse.of(brand));
     }
 }

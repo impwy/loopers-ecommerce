@@ -6,21 +6,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+import com.loopers.adapter.webapi.ApiResponse;
+import com.loopers.adapter.webapi.member.dto.MemberV1Dto;
+import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
+import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Response.MemberInfoResponse;
 import com.loopers.application.member.provided.MemberFinder;
 import com.loopers.application.member.provided.MemberRegister;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.UserId;
-import com.loopers.adapter.webapi.ApiResponse;
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto;
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Response.MemberInfoResponse;
+import com.loopers.shared.stereotype.WebApiAdapter;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@RestController
+@WebApiAdapter
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/members")
 public class MemberV1ApiController implements MemberV1ApiSpec {

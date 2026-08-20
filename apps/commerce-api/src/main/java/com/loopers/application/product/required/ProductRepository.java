@@ -18,6 +18,8 @@ public interface ProductRepository extends Repository<Product, Long>, ProductQue
 
     Optional<Product> findById(Long productId);
 
+    Optional<Product> findByIdWithBrand(Long productId);
+
     List<Product> findAll(Sort sort);
 
     List<Product> findByBrand(Brand brand);
@@ -26,7 +28,11 @@ public interface ProductRepository extends Repository<Product, Long>, ProductQue
 
     Page<Product> findAllByIdIn(List<Long> productIds, Pageable pageable);
 
+    Page<Product> findAllByIdInWithBrand(List<Long> productIds, Pageable pageable);
+
     Page<Product> findAllByOrderByLikeCountDesc(Pageable pageable);
+
+    Page<Product> findAllByOrderByLikeCountDescWithBrand(Pageable pageable);
 
     Optional<Product> findByIdPessimisticLock(Long productId);
 }

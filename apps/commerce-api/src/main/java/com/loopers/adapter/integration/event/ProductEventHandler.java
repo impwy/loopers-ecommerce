@@ -1,4 +1,4 @@
-package com.loopers.application.product;
+package com.loopers.adapter.integration.event;
 
 import java.time.ZonedDateTime;
 
@@ -9,9 +9,9 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loopers.adapter.integration.messaging.ProductEventProducer;
 import com.loopers.application.product.provided.ProductOutboxFinder;
 import com.loopers.application.product.provided.ProductOutboxRegister;
+import com.loopers.application.product.required.ProductEventPublisher;
 import com.loopers.domain.product.LikeDecrease;
 import com.loopers.domain.product.LikeIncrease;
 import com.loopers.domain.product.ProductPayload;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductEventHandler {
     private final ProductOutboxRegister productOutboxRegister;
     private final ProductOutboxFinder productOutboxFinder;
-    private final ProductEventProducer productEventProducer;
+    private final ProductEventPublisher productEventProducer;
     private final ObjectMapper objectMapper;
 
     @Async
