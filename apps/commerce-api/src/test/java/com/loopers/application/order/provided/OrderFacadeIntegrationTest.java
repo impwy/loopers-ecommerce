@@ -110,7 +110,7 @@ class OrderFacadeIntegrationTest {
 
         List<OrderInfo> orderProductInfos = orderFacade.order(savedMember.getUserId(),
                                                               CreateOrderWithCouponRequest.create(List.of(createOrderRequest), savedCoupon.getId()))
-                                                       .getOrderInfos();
+                                                       .orderInfos();
 
         BigDecimal totalPrice = savedProduct.getPrice().multiply(BigDecimal.valueOf(createOrderRequest.quantity()));
 

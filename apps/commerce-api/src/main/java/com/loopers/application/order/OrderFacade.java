@@ -4,12 +4,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 
+import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Request.CreateOrderRequest;
+import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
 import com.loopers.application.inventory.DecreaseInventoryRequest;
-import com.loopers.application.product.ProductTotalAmountRequest;
 import com.loopers.application.member.provided.MemberFinder;
 import com.loopers.application.order.provided.OrderRegister;
+import com.loopers.application.product.ProductTotalAmountRequest;
 import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.domain.coupon.CouponUsed;
 import com.loopers.domain.inventory.ProductInventoryUsed;
@@ -18,13 +19,12 @@ import com.loopers.domain.member.UserId;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
-import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Request.CreateOrderRequest;
-import com.loopers.adapter.webapi.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-@Component
+@ApplicationValidService
 @RequiredArgsConstructor
 public class OrderFacade {
     private final OrderRegister orderRegister;

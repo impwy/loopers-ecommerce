@@ -19,7 +19,7 @@ import com.loopers.shared.error.CoreException;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
-class OrderRegisterIntegrationTest {
+class OrderRegTest {
 
     @Autowired
     private OrderRegister orderRegister;

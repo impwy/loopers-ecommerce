@@ -3,8 +3,8 @@ package com.loopers.application.inventory.provided;
 import java.util.List;
 import java.util.Map;
 
-import com.loopers.domain.inventory.CreateInventorySpec;
 import com.loopers.application.inventory.DecreaseInventoryRequest;
+import com.loopers.domain.inventory.CreateInventorySpec;
 import com.loopers.domain.inventory.Inventory;
 
 import jakarta.validation.Valid;

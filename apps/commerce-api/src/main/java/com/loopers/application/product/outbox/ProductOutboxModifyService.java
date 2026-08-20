@@ -2,7 +2,6 @@ package com.loopers.application.product.outbox;
 
 import java.util.Optional;
 
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.application.product.provided.ProductOutboxFinder;
@@ -11,10 +10,11 @@ import com.loopers.application.product.required.ProductEventOutboxRepository;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxStatus;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
+@ApplicationValidService
 @RequiredArgsConstructor
 public class ProductOutboxModifyService implements ProductOutboxRegister {
     private final ProductEventOutboxRepository productEventOutboxRepository;

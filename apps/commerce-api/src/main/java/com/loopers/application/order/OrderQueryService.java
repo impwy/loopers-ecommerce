@@ -2,18 +2,17 @@ package com.loopers.application.order;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.loopers.application.order.provided.OrderFinder;
 import com.loopers.application.order.required.OrderRepository;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.OrderNo;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
+import com.loopers.shared.stereotype.ApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class OrderQueryService implements OrderFinder {
     private final OrderRepository orderRepository;

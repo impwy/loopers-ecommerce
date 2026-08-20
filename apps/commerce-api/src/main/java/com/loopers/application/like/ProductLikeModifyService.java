@@ -1,14 +1,13 @@
 package com.loopers.application.like;
 
-import org.springframework.stereotype.Service;
-
 import com.loopers.application.like.provided.ProductLikeRegister;
 import com.loopers.application.like.required.ProductLikeRepository;
 import com.loopers.domain.like.ProductLike;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationValidService
 @RequiredArgsConstructor
 public class ProductLikeModifyService implements ProductLikeRegister {
 

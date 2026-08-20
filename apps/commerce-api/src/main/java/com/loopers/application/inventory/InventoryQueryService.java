@@ -1,16 +1,15 @@
 package com.loopers.application.inventory;
 
-import org.springframework.stereotype.Service;
-
 import com.loopers.application.inventory.provided.InventoryFinder;
 import com.loopers.application.inventory.required.InventoryRepository;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
+import com.loopers.shared.stereotype.ApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class InventoryQueryService implements InventoryFinder {
     private final InventoryRepository inventoryRepository;

@@ -24,7 +24,7 @@ import com.loopers.shared.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
-class OrderFinderIntegrationTest {
+class OrderFinderTest {
 
     @MockitoSpyBean
     private OrderRepository orderRepository;

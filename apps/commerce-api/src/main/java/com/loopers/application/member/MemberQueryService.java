@@ -1,18 +1,15 @@
 package com.loopers.application.member;
 
-import org.springframework.stereotype.Service;
-
 import com.loopers.application.member.provided.MemberFinder;
 import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberNotFoundException;
 import com.loopers.domain.member.UserId;
+import com.loopers.shared.stereotype.ApplicationService;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-@Service
-@Transactional
+@ApplicationService
 @RequiredArgsConstructor
 public class MemberQueryService implements MemberFinder {
     private final MemberRepository memberRepository;

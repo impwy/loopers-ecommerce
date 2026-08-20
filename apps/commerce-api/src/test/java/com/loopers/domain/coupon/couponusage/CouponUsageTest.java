@@ -1,4 +1,4 @@
-package com.loopers.domain.coupon.membercoupon;
+package com.loopers.domain.coupon.couponusage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

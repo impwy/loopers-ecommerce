@@ -1,16 +1,15 @@
 package com.loopers.application.coupon;
 
-import org.springframework.stereotype.Service;
-
 import com.loopers.application.coupon.provided.CouponFinder;
 import com.loopers.application.coupon.required.CouponRepository;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.couponusage.CouponUsage;
 import com.loopers.domain.member.UserId;
+import com.loopers.shared.stereotype.ApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class CouponQueryService implements CouponFinder {
     private final CouponRepository couponRepository;

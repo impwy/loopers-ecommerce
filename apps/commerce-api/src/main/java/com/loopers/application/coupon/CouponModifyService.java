@@ -2,27 +2,26 @@ package com.loopers.application.coupon;
 
 import java.math.BigDecimal;
 
-import org.springframework.stereotype.Service;
-
 import com.loopers.application.coupon.provided.CouponFinder;
 import com.loopers.application.coupon.provided.CouponRegister;
 import com.loopers.application.coupon.required.CouponRepository;
 import com.loopers.application.coupon.required.MemberCouponRepository;
 import com.loopers.domain.coupon.Coupon;
+import com.loopers.domain.coupon.CouponStatus;
 import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.coupon.discount.Calculator;
 import com.loopers.domain.coupon.discount.DiscountServiceFactory;
-import com.loopers.domain.coupon.CouponStatus;
 import com.loopers.domain.couponusage.CouponUsage;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.UserId;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationValidService
 @RequiredArgsConstructor
 public class CouponModifyService implements CouponRegister {
     private final CouponRepository couponRepository;

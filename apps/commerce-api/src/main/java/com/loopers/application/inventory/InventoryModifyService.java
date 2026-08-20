@@ -8,14 +8,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import com.loopers.application.inventory.provided.InventoryFinder;
 import com.loopers.application.inventory.provided.InventoryRegister;
-import com.loopers.application.product.provided.ProductOutboxRegister;
 import com.loopers.application.inventory.required.InventoryRepository;
+import com.loopers.application.product.provided.ProductOutboxRegister;
 import com.loopers.domain.inventory.CreateInventorySpec;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.inventory.StockAdjustEvent;
@@ -24,13 +22,13 @@ import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
-@Validated
+@ApplicationValidService
 @RequiredArgsConstructor
 public class InventoryModifyService implements InventoryRegister {
     private final InventoryRepository inventoryRepository;
@@ -97,3 +95,4 @@ public class InventoryModifyService implements InventoryRegister {
         });
     }
 }
+

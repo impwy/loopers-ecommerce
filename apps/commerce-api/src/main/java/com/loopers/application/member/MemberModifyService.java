@@ -2,29 +2,26 @@ package com.loopers.application.member;
 
 import java.math.BigDecimal;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
-import org.springframework.validation.annotation.Validated;
 
+import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
 import com.loopers.application.member.provided.MemberFinder;
 import com.loopers.application.member.provided.MemberRegister;
 import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.UserId;
 import com.loopers.domain.member.PointUsageRequest;
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
+import com.loopers.domain.member.UserId;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-@Service
-@Validated
-@Transactional
+@ApplicationValidService
 @RequiredArgsConstructor
 public class MemberModifyService implements MemberRegister {
     private final MemberRepository memberRepository;

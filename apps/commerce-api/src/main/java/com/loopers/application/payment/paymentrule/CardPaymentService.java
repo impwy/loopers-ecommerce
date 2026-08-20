@@ -2,11 +2,11 @@ package com.loopers.application.payment.paymentrule;
 
 import org.springframework.stereotype.Component;
 
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.payment.PaymentGateway;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
 
 import lombok.RequiredArgsConstructor;
 

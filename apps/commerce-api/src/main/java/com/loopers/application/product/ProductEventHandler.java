@@ -9,15 +9,15 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.loopers.adapter.integration.messaging.ProductEventProducer;
 import com.loopers.application.product.provided.ProductOutboxFinder;
 import com.loopers.application.product.provided.ProductOutboxRegister;
 import com.loopers.domain.product.LikeDecrease;
 import com.loopers.domain.product.LikeIncrease;
-import com.loopers.domain.product.outbox.ProductEventOutbox;
-import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxStatus;
 import com.loopers.domain.product.ProductPayload;
 import com.loopers.domain.product.ProductPayload.ProductEventType;
-import com.loopers.adapter.integration.messaging.ProductEventProducer;
+import com.loopers.domain.product.outbox.ProductEventOutbox;
+import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxStatus;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

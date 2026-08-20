@@ -2,15 +2,14 @@ package com.loopers.application.payment;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.loopers.application.payment.provided.PaymentFinder;
 import com.loopers.application.payment.required.PaymentRepository;
 import com.loopers.domain.payment.Payments;
+import com.loopers.shared.stereotype.ApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
+@ApplicationService
 @RequiredArgsConstructor
 public class PaymentQueryService implements PaymentFinder {
     private final PaymentRepository paymentRepository;

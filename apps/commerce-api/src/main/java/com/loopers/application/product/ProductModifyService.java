@@ -1,17 +1,16 @@
 package com.loopers.application.product;
 
-import org.springframework.stereotype.Service;
-
+import com.loopers.adapter.integration.inmemory.InMemoryRepository;
 import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.application.product.provided.ProductRegister;
-import com.loopers.adapter.integration.inmemory.InMemoryRepository;
 import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.product.CreateProductSpec;
 import com.loopers.domain.product.Product;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationValidService
 @RequiredArgsConstructor
 public class ProductModifyService implements ProductRegister {
     private final ProductRepository productRepository;

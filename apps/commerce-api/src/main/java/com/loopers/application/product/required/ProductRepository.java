@@ -6,16 +6,11 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
-import org.springframework.data.repository.query.Param;
 
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
-
-import jakarta.persistence.LockModeType;
 
 @NoRepositoryBean
 public interface ProductRepository extends Repository<Product, Long>, ProductQueryRepository {

@@ -24,6 +24,6 @@ public class OrderV1ApiController implements OrderV1ApiSpec {
     @PostMapping
     public ApiResponse<List<OrderV1Dto.Response.OrderInfo>> order(UserId userId, @RequestBody OrderV1Dto.Request.CreateOrderWithCouponRequest request) {
         OrderInfos orderInfos = orderFacade.order(userId, request);
-        return ApiResponse.success(orderInfos.getOrderInfos());
+        return ApiResponse.success(orderInfos.orderInfos());
     }
 }

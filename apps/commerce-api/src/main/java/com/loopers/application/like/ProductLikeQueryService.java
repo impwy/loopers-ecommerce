@@ -2,17 +2,16 @@ package com.loopers.application.like;
 
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-
 import com.loopers.application.like.provided.ProductLikeFinder;
 import com.loopers.application.like.required.ProductLikeRepository;
 import com.loopers.domain.like.ProductLike;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
+import com.loopers.shared.stereotype.ApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class ProductLikeQueryService implements ProductLikeFinder {
     private final ProductLikeRepository productLikeRepository;

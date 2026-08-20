@@ -2,8 +2,9 @@ package com.loopers.application.payment;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionResponse;
 import com.loopers.application.order.provided.OrderFinder;
 import com.loopers.application.payment.provided.PaymentFinder;
 import com.loopers.application.payment.provided.PaymentRegister;
@@ -13,13 +14,11 @@ import com.loopers.domain.order.Order;
 import com.loopers.domain.payment.CreatePaymentSpec;
 import com.loopers.domain.payment.PaymentGateway;
 import com.loopers.domain.payment.Payments;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionResponse;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
+@ApplicationValidService
 @RequiredArgsConstructor
 public class PaymentModifyService implements PaymentRegister {
     private final PaymentRepository paymentRepository;
