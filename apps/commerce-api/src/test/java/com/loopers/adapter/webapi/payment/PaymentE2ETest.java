@@ -18,7 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.client.EntityExchangeResult;
 
-import com.loopers.adapter.integration.feign.PgFeignClient;
+import com.loopers.adapter.client.PgFeignClient;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto;
 import com.loopers.application.order.required.OrderRepository;
@@ -85,7 +85,7 @@ class PaymentE2ETest extends BaseApiTest {
 
         EntityExchangeResult<Void> paymentResult = restTestClient.post()
                 .uri("/api/v1/payments/pay")
-                .header("X-USER-ID", member.getUserId().userId())
+                .header("X-USER-ID", member.getUserId().value())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .exchange()
@@ -103,7 +103,7 @@ class PaymentE2ETest extends BaseApiTest {
                 new PaymentV1Dto.TransactionResponse(transactionKey, PaymentStatus.SUCCESS, null);
         EntityExchangeResult<Void> callbackResult = restTestClient.post()
                 .uri("/api/v1/payments/pg-callback")
-                .header("X-USER-ID", member.getUserId().userId())
+                .header("X-USER-ID", member.getUserId().value())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(callback)
                 .exchange()

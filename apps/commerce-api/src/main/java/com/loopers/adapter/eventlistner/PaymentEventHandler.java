@@ -1,4 +1,4 @@
-package com.loopers.adapter.integration.event;
+package com.loopers.adapter.eventlistner;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;

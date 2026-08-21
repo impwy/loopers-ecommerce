@@ -1,4 +1,4 @@
-package com.loopers.adapter.integration.jpa.product;
+package com.loopers.adapter.jpa.product;
 
 import java.util.List;
 import java.util.Optional;

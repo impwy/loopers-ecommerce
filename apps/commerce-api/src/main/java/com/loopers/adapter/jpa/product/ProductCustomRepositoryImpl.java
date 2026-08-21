@@ -1,4 +1,4 @@
-package com.loopers.adapter.integration.jpa.product;
+package com.loopers.adapter.jpa.product;
 
 import static com.loopers.domain.brand.QBrand.brand;
 import static com.loopers.domain.like.QProductLike.productLike;

@@ -24,7 +24,7 @@ class MemberTest {
 
         assertAll(
                 () -> assertThat(member.getId()).isNotNull(),
-                () -> assertThat(member.getUserId().userId()).isEqualTo(request.memberId()),
+                () -> assertThat(member.getUserId().value()).isEqualTo(request.memberId()),
                 () -> assertThat(member.getPasswordHash()).isEqualTo(request.password()),
                 () -> assertThat(member.getGender()).isEqualTo(request.gender()),
                 () -> assertThat(member.getEmail().email()).isEqualTo(request.email()),
@@ -38,7 +38,7 @@ class MemberTest {
     void throwIllegalArgumentException_whenMemberId_notMatch(String memberId) {
         assertThatThrownBy(() -> Member.create(new CreateMemberSpec(memberId, "secret", Gender.MALE,
                                                                     "pwy6817@loopers.app", LocalDate.of(2025, 7, 13))))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("이메일이 xx@yy.zz 형식에 맞지 않으면, User 객체 생성에 실패한다.")

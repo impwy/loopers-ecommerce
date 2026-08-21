@@ -32,7 +32,7 @@ class MemberFinderTest extends BaseApplicationServiceTest {
         assertAll(
                 () -> assertThat(result).isNotNull(),
                 () -> assertThat(result.getId()).isEqualTo(member.getId()),
-                () -> assertThat(result.getUserId().userId()).isEqualTo(member.getUserId().userId()),
+                () -> assertThat(result.getUserId().value()).isEqualTo(member.getUserId().value()),
                 () -> assertThat(result.getEmail().email()).isEqualTo(member.getEmail().email()),
                 () -> assertThat(result.getBirthday()).isEqualTo(member.getBirthday())
         );

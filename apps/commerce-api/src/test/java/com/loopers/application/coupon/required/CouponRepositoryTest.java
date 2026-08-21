@@ -50,7 +50,7 @@ class CouponRepositoryTest extends BaseRepositoryTest {
         flushAndClear();
 
         CouponUsage found = couponRepository.findByUserIdAndCouponId(
-                new UserId(member.getUserId().userId()), coupon.getId()
+                new UserId(member.getUserId().value()), coupon.getId()
         ).orElseThrow();
 
         assertThat(found.getId()).isNotNull();

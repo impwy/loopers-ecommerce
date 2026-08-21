@@ -86,7 +86,7 @@ class MemberV1ApiE2ETest extends BaseApiTest {
 
             EntityExchangeResult<ApiResponse<MemberV1Dto.MemberInfoResponse>> result = restTestClient.get()
                                                                                                               .uri(MEMBER_GET)
-                                                                                                              .header("X-USER-ID", member.getUserId().userId())
+                                                                                                              .header("X-USER-ID", member.getUserId().value())
                                                                                                               .exchange()
                                                                                                               .expectStatus().isOk()
                                                                                                               .expectBody(responseType)
@@ -97,7 +97,7 @@ class MemberV1ApiE2ETest extends BaseApiTest {
 
             assertAll(
                     () -> assertThat(response.data().id()).isEqualTo(member.getId()),
-                    () -> assertThat(response.data().memberId()).isEqualTo(member.getUserId().userId()),
+                    () -> assertThat(response.data().memberId()).isEqualTo(member.getUserId().value()),
                     () -> assertThat(response.data().email()).isEqualTo(member.getEmail().email())
             );
         }
@@ -138,7 +138,7 @@ class MemberV1ApiE2ETest extends BaseApiTest {
 
             EntityExchangeResult<ApiResponse<MemberV1Dto.MemberWithPointResponse>> result = restTestClient.get()
                                                                                                                    .uri(POINT_GET)
-                                                                                                                   .header("X-USER-ID", member.getUserId().userId())
+                                                                                                                   .header("X-USER-ID", member.getUserId().value())
                                                                                                                    .exchange()
                                                                                                                    .expectStatus().isOk()
                                                                                                                    .expectBody(responseType)
@@ -160,7 +160,7 @@ class MemberV1ApiE2ETest extends BaseApiTest {
 
             EntityExchangeResult<ApiResponse<MemberV1Dto.MemberWithPointResponse>> result = restTestClient.post()
                                                                                                                    .uri(POINT_CHARGE)
-                                                                                                                   .header("X-USER-ID", member.getUserId().userId())
+                                                                                                                   .header("X-USER-ID", member.getUserId().value())
                                                                                                                    .contentType(MediaType.APPLICATION_JSON)
                                                                                                                    .body(amount)
                                                                                                                    .exchange()

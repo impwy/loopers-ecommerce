@@ -1,4 +1,4 @@
-package com.loopers.adapter.integration.inmemory;
+package com.loopers.adapter.inmemory;
 
 import java.time.Duration;
 import java.util.Collections;

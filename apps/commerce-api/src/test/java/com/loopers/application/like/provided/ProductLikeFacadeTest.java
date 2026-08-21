@@ -60,7 +60,7 @@ class ProductLikeFacadeTest extends BaseApplicationServiceTest {
         assertAll(
                 () -> assertThat(productLike.getMember().getPoint().compareTo(member.getPoint())).isZero(),
                 () -> assertThat(productLike.getProduct().getPrice().compareTo(product.getPrice())).isZero(),
-                () -> assertThat(productLike.getMember().getUserId().userId()).isEqualTo(member.getUserId().userId()),
+                () -> assertThat(productLike.getMember().getUserId().value()).isEqualTo(member.getUserId().value()),
                 () -> assertThat(productLike.getProduct().getName()).isEqualTo(product.getName())
         );
     }

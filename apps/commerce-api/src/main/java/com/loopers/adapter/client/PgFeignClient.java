@@ -1,4 +1,4 @@
-package com.loopers.adapter.integration.feign;
+package com.loopers.adapter.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

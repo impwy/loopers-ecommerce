@@ -32,7 +32,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${project.properties["springDocOpenApiVersion"]}")
 
     // querydsl
-    kapt("com.querydsl:querydsl-apt::jakarta")
+    kapt("io.github.openfeign.querydsl:querydsl-apt:${project.properties["queryDslVersion"]}:jakarta")
 
     // test-fixtures
     testImplementation(testFixtures(project(":modules:jpa")))

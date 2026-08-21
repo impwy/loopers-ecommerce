@@ -53,7 +53,7 @@ class OrderE2ETest extends BaseApiTest {
 
         EntityExchangeResult<ApiResponse<List<OrderV1Dto.OrderInfo>>> result = restTestClient.post()
                 .uri("/api/v1/orders")
-                .header("X-USER-ID", member.getUserId().userId())
+                .header("X-USER-ID", member.getUserId().value())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .exchange()

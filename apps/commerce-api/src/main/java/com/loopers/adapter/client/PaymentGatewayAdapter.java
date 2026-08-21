@@ -1,4 +1,4 @@
-package com.loopers.adapter.integration.feign;
+package com.loopers.adapter.client;
 
 import org.springframework.stereotype.Component;
 
@@ -26,7 +26,7 @@ public class PaymentGatewayAdapter implements PaymentGateway {
     @Override
     public void requestPayment(UserId userId, PgPaymentRequest pgPaymentRequest) {
         try {
-            pgFeignClient.requestPayment(userId.userId(), pgPaymentRequest);
+            pgFeignClient.requestPayment(userId.value(), pgPaymentRequest);
         } catch (FeignException e) {
             if (e.status() >= 400 && e.status() < 500) {
                 throw new CoreException(ErrorType.BAD_REQUEST, e.contentUTF8());
@@ -39,7 +39,7 @@ public class PaymentGatewayAdapter implements PaymentGateway {
     @Override
     public PaymentDetailResult getPaymentDetailResponse(UserId userId, String transactionKey) {
         ApiResponse<TransactionDetailResponse> paymentStatusResponse =
-                pgFeignClient.getPaymentStatus(userId.userId(), transactionKey);
+                pgFeignClient.getPaymentStatus(userId.value(), transactionKey);
         TransactionDetailResponse response = paymentStatusResponse.data();
         return new PaymentDetailResult(response.transactionKey(), response.orderId(), response.cardType(),
                                        response.cardNo(), response.amount(), response.status(), response.reason());

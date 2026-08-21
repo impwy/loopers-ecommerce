@@ -17,7 +17,7 @@ class CouponUsageTest {
         Coupon coupon = CouponFixture.createCoupon();
         CouponUsage couponUsage = CouponUsage.create(member, coupon);
 
-        assertThat(couponUsage.getMember().getUserId().userId()).isEqualTo(member.getUserId().userId());
+        assertThat(couponUsage.getMember().getUserId().value()).isEqualTo(member.getUserId().value());
         assertThat(couponUsage.getCoupon().getCode()).isEqualTo(coupon.getCode());
     }
 }

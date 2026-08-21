@@ -38,7 +38,7 @@ class MemberRegisterTest extends BaseApplicationServiceTest {
         Member member = memberRegister.register(request);
 
         assertThat(member.getId()).isNotNull();
-        assertThat(member.getUserId().userId()).isEqualTo(request.memberId());
+        assertThat(member.getUserId().value()).isEqualTo(request.memberId());
     }
 
     @DisplayName("회원 가입시 User 저장이 수행된다. ( spy 검증 )")

@@ -31,7 +31,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
     @Test
     void findByMemberId() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        UserId userId = new UserId(member.getUserId().userId());
+        UserId userId = new UserId(member.getUserId().value());
         flushAndClear();
 
         Member found = memberRepository.findByUserId(userId).orElseThrow();
@@ -42,7 +42,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
     @Test
     void findWithPoint() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        UserId userId = new UserId(member.getUserId().userId());
+        UserId userId = new UserId(member.getUserId().value());
         flushAndClear();
 
         Member found = memberRepository.findWithPoint(userId).orElseThrow();
@@ -53,7 +53,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
     @Test
     void findByMemberIdWithPessimisticLock() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        UserId userId = new UserId(member.getUserId().userId());
+        UserId userId = new UserId(member.getUserId().value());
         flushAndClear();
 
         Member found = memberRepository.findByUserIdWithPessimisticLock(userId).orElseThrow();
