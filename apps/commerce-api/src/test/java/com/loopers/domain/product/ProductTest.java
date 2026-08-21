@@ -15,11 +15,12 @@ class ProductTest {
     @DisplayName("상품을 만든다")
     @Test
     void createProduct() {
-        Product product = ProductFixture.createProduct(BrandFixture.createBrand());
+        CreateProductSpec spec = ProductFixture.createProductSpec(BrandFixture.createBrand());
+        Product product = spec.toEntity();
 
-        assertThat(product.getName()).isEqualTo("상품");
-        assertThat(product.getDescription()).isEqualTo("상품입니다.");
-        assertThat(product.getPrice().compareTo(BigDecimal.valueOf(500))).isZero();
+        assertThat(product.getName()).isEqualTo(spec.name());
+        assertThat(product.getDescription()).isEqualTo(spec.description());
+        assertThat(product.getPrice()).isEqualByComparingTo(spec.price());
     }
 
     @DisplayName("좋아요 수는 0 미만으로 감소할 수 없다")

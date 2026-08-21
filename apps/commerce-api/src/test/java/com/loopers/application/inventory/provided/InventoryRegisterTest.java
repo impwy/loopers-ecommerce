@@ -10,42 +10,31 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.loopers.application.brand.required.BrandRepository;
-import com.loopers.application.inventory.required.InventoryRepository;
-import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
-import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.inventory.CreateInventorySpec;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.inventory.InventoryStatus;
 import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductFixture;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
+import com.loopers.support.BaseApplicationServiceTest;
 import com.loopers.support.stereotype.ApplicationValidServiceTest;
 
-import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 
 @ApplicationValidServiceTest
 @RequiredArgsConstructor
-public class InventoryRegisterTest {
+public class InventoryRegisterTest extends BaseApplicationServiceTest {
     final InventoryRegister inventoryRegister;
-    final InventoryRepository inventoryRepository;
-    final ProductRepository productRepository;
-    final BrandRepository brandRepository;
-    final EntityManager entityManager;
 
     Product product;
     Brand brand;
 
     @BeforeEach
     void setUp() {
-        brand = brandRepository.save(BrandFixture.createBrand());
-        product = productRepository.save(ProductFixture.createProduct(brand));
-        entityManager.flush();
-        entityManager.clear();
+        brand = prepareBrand();
+        product = prepareProduct(brand);
     }
 
     @DisplayName("음수로 재고 생성 요청 시 실패")
@@ -71,10 +60,7 @@ public class InventoryRegisterTest {
     @DisplayName("재고가 0일 때 재고 감소 실패 테스트")
     @Test
     void create_inventory_fail_when_inventory_zero_test() {
-        Inventory inventory = Inventory.create(product.getId(), 0L);
-        inventoryRepository.save(inventory);
-        entityManager.flush();
-        entityManager.clear();
+        prepareInventory(product, 0L);
 
         CoreException coreException = assertThrows(CoreException.class, () -> inventoryRegister.decrease(product.getId(), 1L));
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
@@ -85,11 +71,7 @@ public class InventoryRegisterTest {
     @ValueSource(longs = { 0, -1, -2 })
     void decrease_inventory_fail_when_quantity_is_wrong_test(long quantity) {
         Long productId = product.getId();
-        Inventory inventory = Inventory.create(productId, 100L);
-
-        inventoryRepository.save(inventory);
-        entityManager.flush();
-        entityManager.clear();
+        prepareInventory(productId, 100L);
 
         CoreException coreException = assertThrows(CoreException.class, () -> inventoryRegister.decrease(productId, quantity));
         assertThat(coreException.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
@@ -99,11 +81,7 @@ public class InventoryRegisterTest {
     @Test
     void decrease_inventory_test() {
         Long productId = product.getId();
-        Inventory inventory = Inventory.create(productId, 100L);
-
-        inventoryRepository.save(inventory);
-        entityManager.flush();
-        entityManager.clear();
+        prepareInventory(productId, 100L);
 
         Inventory expected = inventoryRegister.decrease(productId, 1L);
 
@@ -116,11 +94,7 @@ public class InventoryRegisterTest {
     @Test
     void decrease_inventory_status_soldout_test() {
         Long productId = product.getId();
-        Inventory inventory = Inventory.create(productId, 10L);
-
-        inventoryRepository.save(inventory);
-        entityManager.flush();
-        entityManager.clear();
+        prepareInventory(productId, 10L);
 
         Inventory expected = inventoryRegister.decrease(productId, 10L);
 

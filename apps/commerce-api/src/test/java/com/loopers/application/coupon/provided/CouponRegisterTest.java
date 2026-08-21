@@ -3,7 +3,6 @@ package com.loopers.application.coupon.provided;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,22 +14,15 @@ import com.loopers.domain.coupon.DiscountPolicy;
 import com.loopers.application.coupon.CreateCouponRequest;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
+import com.loopers.support.BaseApplicationServiceTest;
 import com.loopers.support.stereotype.ApplicationValidServiceTest;
-import com.loopers.utils.DatabaseCleanUp;
 
 import lombok.RequiredArgsConstructor;
 
 @ApplicationValidServiceTest
 @RequiredArgsConstructor
-class CouponRegisterTest {
+class CouponRegisterTest extends BaseApplicationServiceTest {
     final CouponRegister couponRegister;
-
-    final DatabaseCleanUp databaseCleanUp;
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
-    }
 
     @DisplayName("code가 null일 때 쿠폰생성 실패")
     @Test
@@ -68,7 +60,7 @@ class CouponRegisterTest {
         CreateCouponSpec couponSpec = CouponFixture.createCouponSpec();
         Coupon coupon = couponRegister.create(couponSpec);
 
-        assertThat(coupon.getCouponType()).isEqualTo(couponSpec.couponType());
+        assertThat(coupon.getType()).isEqualTo(couponSpec.couponType());
         assertThat(coupon.getCode()).isEqualTo(couponSpec.code());
     }
 }

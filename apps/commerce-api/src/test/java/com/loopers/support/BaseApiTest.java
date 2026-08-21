@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.client.EntityExchangeResult;
 import org.springframework.test.web.servlet.client.RestTestClient;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.member.dto.MemberV1Dto;
@@ -32,6 +31,7 @@ import com.loopers.domain.coupon.CouponFixture;
 import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.couponusage.CouponUsage;
 import com.loopers.domain.inventory.Inventory;
+import com.loopers.domain.inventory.InventoryFixture;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.member.UserId;
@@ -56,8 +56,6 @@ public class BaseApiTest {
     protected InventoryRepository inventoryRepository;
     @Autowired
     protected CouponRepository couponRepository;
-    @Autowired
-    private PlatformTransactionManager transactionManager;
     @Autowired
     private DatabaseCleanUp databaseCleanUp;
 
@@ -105,7 +103,7 @@ public class BaseApiTest {
     }
 
     protected Brand prepareBrand(String name, String description, LocalDate since) {
-        return prepareBrand(Brand.create(name, description, since));
+        return prepareBrand(BrandFixture.createBrand(name, description, since));
     }
 
     private Brand prepareBrand(Brand brand) {
@@ -122,7 +120,7 @@ public class BaseApiTest {
                                      BigDecimal price, ZonedDateTime latestAt) {
         Long brandId = brand.getId();
         Brand managedBrand = brandRepository.findById(brandId).orElseThrow();
-        return productRepository.save(Product.create(name, description, price, managedBrand, latestAt));
+        return productRepository.save(ProductFixture.createProduct(name, description, price, managedBrand, latestAt));
     }
 
     protected Inventory prepareInventory(Product product, Long quantity) {
@@ -130,11 +128,11 @@ public class BaseApiTest {
     }
 
     protected Inventory prepareInventory(Long productId, Long quantity) {
-        return inventoryRepository.save(Inventory.create(productId, quantity));
+        return inventoryRepository.save(InventoryFixture.createInventory(productId, quantity));
     }
 
     protected Coupon prepareCoupon() {
-        return prepareCoupon(CouponFixture.createCouponSpec());
+        return couponRepository.save(CouponFixture.createCoupon());
     }
 
     protected Coupon prepareCoupon(CreateCouponSpec spec) {

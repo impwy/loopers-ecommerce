@@ -4,26 +4,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
-
 import org.junit.jupiter.api.Test;
 
+import com.loopers.domain.inventory.InventoryFixture;
 import com.loopers.domain.inventory.Inventory;
+import com.loopers.support.BaseRepositoryTest;
 import com.loopers.support.stereotype.ApplicationJpaServiceTest;
 
 import lombok.RequiredArgsConstructor;
 
 @ApplicationJpaServiceTest
 @RequiredArgsConstructor
-class InventoryRepositoryTest {
+class InventoryRepositoryTest extends BaseRepositoryTest {
     final InventoryRepository inventoryRepository;
-    final EntityManager entityManager;
 
     @Test
     void saveAndFindById() {
-        Inventory inventory = inventoryRepository.save(Inventory.create(1L, 10L));
-        entityManager.flush();
-        entityManager.clear();
+        Inventory inventory = inventoryRepository.save(InventoryFixture.createInventory(1L, 10L));
+        flushAndClear();
 
         Inventory found = inventoryRepository.findById(inventory.getId()).orElseThrow();
 
@@ -34,9 +32,8 @@ class InventoryRepositoryTest {
 
     @Test
     void findByProductId() {
-        Inventory inventory = inventoryRepository.save(Inventory.create(2L, 20L));
-        entityManager.flush();
-        entityManager.clear();
+        Inventory inventory = inventoryRepository.save(InventoryFixture.createInventory(2L, 20L));
+        flushAndClear();
 
         Inventory found = inventoryRepository.findByProductId(2L).orElseThrow();
 
@@ -45,10 +42,9 @@ class InventoryRepositoryTest {
 
     @Test
     void findAllByProductIdIn() {
-        inventoryRepository.save(Inventory.create(3L, 30L));
-        inventoryRepository.save(Inventory.create(4L, 40L));
-        entityManager.flush();
-        entityManager.clear();
+        inventoryRepository.save(InventoryFixture.createInventory(3L, 30L));
+        inventoryRepository.save(InventoryFixture.createInventory(4L, 40L));
+        flushAndClear();
 
         List<Inventory> found = inventoryRepository.findAllByProductIdIn(List.of(3L, 4L));
 
@@ -57,9 +53,8 @@ class InventoryRepositoryTest {
 
     @Test
     void findAllByProductIdInWithPessimisticLock() {
-        inventoryRepository.save(Inventory.create(5L, 50L));
-        entityManager.flush();
-        entityManager.clear();
+        inventoryRepository.save(InventoryFixture.createInventory(5L, 50L));
+        flushAndClear();
 
         List<Inventory> found = inventoryRepository.findAllByProductIdInWithPessimisticLock(List.of(5L));
 

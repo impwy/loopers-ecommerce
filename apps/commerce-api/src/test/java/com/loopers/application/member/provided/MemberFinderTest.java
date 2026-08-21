@@ -6,39 +6,26 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.member.UserId;
 import com.loopers.domain.member.MemberNotFoundException;
+import com.loopers.support.BaseApplicationServiceTest;
 import com.loopers.support.stereotype.ApplicationServiceTest;
-import com.loopers.utils.DatabaseCleanUp;
 
 import lombok.RequiredArgsConstructor;
 
 @ApplicationServiceTest
 @RequiredArgsConstructor
-class MemberFinderTest {
+class MemberFinderTest extends BaseApplicationServiceTest {
     final MemberFinder memberFinder;
-    final DatabaseCleanUp databaseCleanUp;
-
-    @MockitoSpyBean
-    MemberRepository memberRepository;
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
-    }
 
     @DisplayName("해당 ID 의 회원이 존재할 경우, 회원 정보가 반환된다.")
     @Test
     void find_member_info() {
-        Member member = memberRepository.save(MemberFixture.createMember());
+        Member member = prepareMember();
 
         Member result = memberFinder.findWithPoint(member.getUserId());
 
@@ -62,7 +49,7 @@ class MemberFinderTest {
     @DisplayName("해당 ID 의 회원이 존재할 경우, 보유 포인트가 반환된다.")
     @Test
     void returnPoint_whenMemberIdIsExist() {
-        Member member = memberRepository.save(MemberFixture.createMember());
+        Member member = prepareMember();
 
         member = memberFinder.findWithPoint(member.getUserId());
 

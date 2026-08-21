@@ -4,39 +4,22 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.member.required.MemberRepository;
-import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
+import com.loopers.support.BaseApplicationServiceTest;
 import com.loopers.shared.error.CoreException;
-import com.loopers.utils.DatabaseCleanUp;
+import com.loopers.support.stereotype.ApplicationServiceTest;
 
-@SpringBootTest
-class OrderRegTest {
+@ApplicationServiceTest
+class OrderRegTest extends BaseApplicationServiceTest {
 
     @Autowired
     private OrderRegister orderRegister;
 
-    @MockitoSpyBean
-    private MemberRepository memberRepository;
-
-    @MockitoSpyBean
-    private ProductRepository productRepository;
-
-    @Autowired
-    DatabaseCleanUp databaseCleanUp;
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
-    }
 
     @DisplayName("존재하지 않는 유저 주문 시 실패")
     @Test

@@ -7,21 +7,20 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 
+import com.loopers.domain.payment.PaymentFixture;
 import com.loopers.domain.payment.CardType;
-import com.loopers.domain.payment.CreatePaymentSpec;
 import com.loopers.domain.payment.PaymentType;
 import com.loopers.domain.payment.Payments;
+import com.loopers.support.BaseRepositoryTest;
 import com.loopers.support.stereotype.ApplicationJpaServiceTest;
 
 import lombok.RequiredArgsConstructor;
 
 @ApplicationJpaServiceTest
 @RequiredArgsConstructor
-class PaymentRepositoryTest {
+class PaymentRepositoryTest extends BaseRepositoryTest {
     final PaymentRepository paymentRepository;
-    final TestEntityManager entityManager;
 
     @Test
     void saveAndFindByOrderId() {
@@ -54,19 +53,7 @@ class PaymentRepositoryTest {
     }
 
     private Payments createPayment(String orderId, String transactionKey) {
-        return Payments.create(new CreatePaymentSpec(
-                orderId,
-                1L,
-                transactionKey,
-                CardType.SAMSUNG,
-                "1234-1234-1234-1234",
-                BigDecimal.TEN,
-                PaymentType.CARD
-        ));
-    }
-
-    private void flushAndClear() {
-        entityManager.flush();
-        entityManager.clear();
+        return PaymentFixture.createPayment(orderId, 1L, transactionKey, CardType.SAMSUNG,
+                                            "1234-1234-1234-1234", BigDecimal.TEN, PaymentType.CARD);
     }
 }

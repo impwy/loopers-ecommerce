@@ -4,28 +4,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
-
 import org.junit.jupiter.api.Test;
 
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.OrderFixture;
 import com.loopers.domain.order.OrderNo;
+import com.loopers.support.BaseRepositoryTest;
 import com.loopers.support.stereotype.ApplicationJpaServiceTest;
 
 import lombok.RequiredArgsConstructor;
 
 @ApplicationJpaServiceTest
 @RequiredArgsConstructor
-class OrderRepositoryTest {
+class OrderRepositoryTest extends BaseRepositoryTest {
     final OrderRepository orderRepository;
-    final EntityManager entityManager;
 
     @Test
     void saveAndFindById() {
         Order order = orderRepository.save(createOrderWithItem());
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         Order found = orderRepository.findById(order.getId()).orElseThrow();
 
@@ -36,8 +33,7 @@ class OrderRepositoryTest {
     @Test
     void findByMemberId() {
         Order order = orderRepository.save(createOrderWithItem());
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         Order found = orderRepository.findByMemberId(1L).orElseThrow();
 
@@ -47,8 +43,7 @@ class OrderRepositoryTest {
     @Test
     void findWithOrderItem() {
         Order order = orderRepository.save(createOrderWithItem());
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         List<Order> found = orderRepository.findWithOrderItem(1L);
 
@@ -59,8 +54,7 @@ class OrderRepositoryTest {
     void findByOrderNo() {
         Order order = orderRepository.save(createOrderWithItem());
         String orderNo = order.getOrderNo().value();
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         Order found = orderRepository.findByOrderNo(new OrderNo(orderNo)).orElseThrow();
 
@@ -71,8 +65,7 @@ class OrderRepositoryTest {
     void findByOrderNoWithItems() {
         Order order = orderRepository.save(createOrderWithItem());
         String orderNo = order.getOrderNo().value();
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         Order found = orderRepository.findByOrderNoWithItems(new OrderNo(orderNo)).orElseThrow();
 
@@ -82,7 +75,7 @@ class OrderRepositoryTest {
 
     private Order createOrderWithItem() {
         return OrderFixture.createOrder().createOrderItems(List.of(
-                new com.loopers.domain.order.orderitem.CreateOrderItemSpec(1L, 2L, null)
+                OrderFixture.createOrderItemSpec(1L, 2L, null)
         ));
     }
 }

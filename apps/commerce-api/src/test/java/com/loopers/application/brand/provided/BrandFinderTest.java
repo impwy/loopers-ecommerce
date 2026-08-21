@@ -3,39 +3,28 @@ package com.loopers.application.brand.provided;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.time.LocalDate;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.brand.required.BrandRepository;
+import com.loopers.application.brand.BrandCreateRequest;
 import com.loopers.domain.brand.Brand;
+import com.loopers.domain.brand.BrandFixture;
+import com.loopers.support.BaseApplicationServiceTest;
 import com.loopers.support.stereotype.ApplicationServiceTest;
-import com.loopers.utils.DatabaseCleanUp;
 
 import lombok.RequiredArgsConstructor;
 
 @ApplicationServiceTest
 @RequiredArgsConstructor
-class BrandFinderTest {
-    @MockitoSpyBean
-    private BrandRepository brandRepository;
-
+class BrandFinderTest extends BaseApplicationServiceTest {
     final BrandFinder brandFinder;
-
-    final DatabaseCleanUp databaseCleanUp;
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
-    }
 
     @DisplayName("브랜드 조회 통합테스트")
     @Test
     void find_brand() {
-        Brand brand = brandRepository.save(Brand.create("브랜드", "브랜드입니다.", LocalDate.of(1999, 1, 1)));
+        BrandCreateRequest request = BrandFixture.createBrandCreateRequest("브랜드", "브랜드입니다.",
+                                                                           java.time.LocalDate.of(1999, 1, 1));
+        Brand brand = prepareBrand(request);
 
         Brand expected = brandFinder.find(brand.getId());
 

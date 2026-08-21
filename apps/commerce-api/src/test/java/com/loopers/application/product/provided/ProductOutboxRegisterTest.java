@@ -3,42 +3,26 @@ package com.loopers.application.product.provided;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.time.ZonedDateTime;
-import java.util.UUID;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.loopers.domain.product.ProductPayload.ProductEventType;
+import com.loopers.domain.product.ProductEventOutboxFixture;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
+import com.loopers.support.BaseApplicationServiceTest;
 import com.loopers.support.stereotype.ApplicationValidServiceTest;
-import com.loopers.utils.DatabaseCleanUp;
 
 import lombok.RequiredArgsConstructor;
 
 @ApplicationValidServiceTest
-@ExtendWith(MockitoExtension.class)
 @RequiredArgsConstructor
-public class ProductOutboxRegisterTest {
+public class ProductOutboxRegisterTest extends BaseApplicationServiceTest {
     final ProductOutboxRegister productOutboxRegister;
-
-    final DatabaseCleanUp databaseCleanUp;
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
-    }
 
     @DisplayName("상품 이벤트 outbox 생성 통합 테스트")
     @Test
     void create_product_event_outbox_test() {
-        UUID uuid = UUID.randomUUID();
-        String uuidString = uuid.toString();
-        CreateProductOutbox createProductOutbox = new CreateProductOutbox(1L, uuidString, ProductEventType.PRODUCT_LIKE_INCREMENT, 0L, ZonedDateTime.now());
+        CreateProductOutbox createProductOutbox = ProductEventOutboxFixture.createProductOutbox();
 
         ProductEventOutbox expected = productOutboxRegister.register(createProductOutbox);
 

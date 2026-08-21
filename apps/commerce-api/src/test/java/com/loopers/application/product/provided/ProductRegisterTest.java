@@ -3,58 +3,35 @@ package com.loopers.application.product.provided;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.brand.required.BrandRepository;
-import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
-import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.product.CreateProductSpec;
 import com.loopers.domain.product.Product;
+import com.loopers.domain.product.ProductFixture;
+import com.loopers.support.BaseApplicationServiceTest;
 import com.loopers.support.stereotype.ApplicationValidServiceTest;
-import com.loopers.utils.DatabaseCleanUp;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 @ApplicationValidServiceTest
 @RequiredArgsConstructor
-public class ProductRegisterTest {
+public class ProductRegisterTest extends BaseApplicationServiceTest {
     final ProductRegister productRegister;
-
-    final DatabaseCleanUp databaseCleanUp;
-
-    final BrandRepository brandRepository;
-
-    final EntityManager entityManager;
 
     Brand brand;
 
     @BeforeEach
     void setUp() {
-        brand = brandRepository.save(BrandFixture.createBrand());
-        entityManager.flush();
-        entityManager.clear();
-    }
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
+        brand = prepareBrand();
     }
 
     @DisplayName("상품 생성 통합 테스트")
     @Test
     void createProductTest() {
-        CreateProductSpec createProductSpec = new CreateProductSpec("상품", "상품입니다.", BigDecimal.valueOf(500), brand, ZonedDateTime.now());
+        CreateProductSpec createProductSpec = ProductFixture.createProductSpec(brand);
         Product expected = productRegister.register(createProductSpec);
 
         assertAll(

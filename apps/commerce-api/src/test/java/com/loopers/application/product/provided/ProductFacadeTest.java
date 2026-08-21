@@ -10,75 +10,54 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import org.springframework.data.domain.Page;
 
-import com.loopers.application.brand.required.BrandRepository;
-import com.loopers.application.like.required.ProductLikeRepository;
-import com.loopers.application.member.required.MemberRepository;
 import com.loopers.application.product.ProductFacade;
-import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
-import com.loopers.domain.brand.BrandFixture;
-import com.loopers.domain.like.ProductLike;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductFixture;
 import com.loopers.domain.product.ProductInfo;
 import com.loopers.domain.product.ProductInfoWithRank;
-import com.loopers.utils.DatabaseCleanUp;
 import com.loopers.utils.RedisCleanUp;
+import com.loopers.support.BaseApplicationServiceTest;
+import com.loopers.support.stereotype.ApplicationServiceTest;
+import com.loopers.testcontainers.RedisTestContainersConfig;
 
-@SpringBootTest
-class ProductFacadeTest {
-    @MockitoSpyBean
-    private MemberRepository memberRepository;
-
-    @MockitoSpyBean
-    private BrandRepository brandRepository;
-
-    @MockitoSpyBean
-    private ProductLikeRepository productLikeRepository;
-
-    @MockitoSpyBean
-    private ProductRepository productRepository;
-
+@ApplicationServiceTest
+@Import(RedisTestContainersConfig.class)
+class ProductFacadeTest extends BaseApplicationServiceTest {
     @Autowired
     private ProductFacade productFacade;
 
     @Autowired
-    private DatabaseCleanUp databaseCleanUp;
+    private ProductRegister productRegister;
 
     @Autowired
     private RedisCleanUp redisCleanUp;
 
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
-        redisCleanUp.truncateAll();
-    }
-
     Product product;
     Brand brand;
 
+    @AfterEach
+    void cleanUpRedis() {
+        redisCleanUp.truncateAll();
+    }
+
     @BeforeEach
     void setUp() {
-        brand = brandRepository.save(BrandFixture.createBrand());
-
-        Product product = ProductFixture.createProduct(brand);
-        product.increaseLikeCount();
-        this.product = productRepository.save(product);
+        brand = prepareBrand();
+        product = prepareProduct(brand);
+        product = productRegister.increaseLike(product.getId());
     }
 
     @DisplayName("상품 정보는 브랜드 정보, 좋아요 수를 포함한다.")
     @Test
     void productInfo_has_brandInfo_and_like_count() {
-        Member member = memberRepository.save(MemberFixture.createMember());
-        productLikeRepository.save(ProductLike.create(member, product));
+        Member member = prepareMember();
+        prepareProductLike(member, product);
 
         ProductInfoWithRank productInfoWithRank = productFacade.findProductInfo(product.getId());
         ProductInfo productInfo = productInfoWithRank.productInfo();

@@ -5,55 +5,36 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.member.required.MemberRepository;
-import com.loopers.application.order.required.OrderRepository;
-import com.loopers.application.payment.required.PaymentRepository;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.order.Order;
-import com.loopers.domain.order.OrderFixture;
 import com.loopers.domain.payment.CardType;
 import com.loopers.domain.payment.PaymentType;
 import com.loopers.domain.payment.Payments;
 import com.loopers.application.payment.PaymentRequest;
-import com.loopers.utils.DatabaseCleanUp;
+import com.loopers.domain.payment.PaymentFixture;
+import com.loopers.support.BaseApplicationServiceTest;
+import com.loopers.support.stereotype.ApplicationServiceTest;
 
-@SpringBootTest
-class PaymentRegisterTest {
-
-    @MockitoSpyBean
-    private PaymentRepository paymentRepository;
-
-    @MockitoSpyBean
-    private MemberRepository memberRepository;
-
-    @MockitoSpyBean
-    private OrderRepository orderRepository;
+@ApplicationServiceTest
+class PaymentRegisterTest extends BaseApplicationServiceTest {
 
     @Autowired
     private PaymentRegister paymentRegister;
 
-    @Autowired
-    private DatabaseCleanUp databaseCleanUp;
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
-    }
-
     @DisplayName("결제 생성 통합 테스트")
     @Test
     void create_payment_test() {
-        Order order = orderRepository.save(OrderFixture.createOrder());
-        Member member = memberRepository.save(MemberFixture.createMember());
-        PaymentRequest paymentRequest = new PaymentRequest(order.getId(), "1111-2222-3333-4444", CardType.SAMSUNG, BigDecimal.TEN, PaymentType.CARD);
+        Member member = prepareMember();
+        Order order = prepareOrder(member.getId());
+        PaymentRequest paymentRequest = PaymentFixture.createPaymentRequest(order.getId(),
+                                                                            "1111-2222-3333-4444",
+                                                                            CardType.SAMSUNG,
+                                                                            BigDecimal.TEN,
+                                                                            PaymentType.CARD);
 
         Payments payment = paymentRegister.createPayment(member.getId(), paymentRequest);
 

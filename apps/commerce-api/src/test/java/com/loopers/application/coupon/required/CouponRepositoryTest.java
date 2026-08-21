@@ -2,33 +2,27 @@ package com.loopers.application.coupon.required;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import jakarta.persistence.EntityManager;
-
 import org.junit.jupiter.api.Test;
 
-import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CouponFixture;
 import com.loopers.domain.couponusage.CouponUsage;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.member.UserId;
+import com.loopers.support.BaseRepositoryTest;
 import com.loopers.support.stereotype.ApplicationJpaServiceTest;
 
 import lombok.RequiredArgsConstructor;
 
 @ApplicationJpaServiceTest
 @RequiredArgsConstructor
-class CouponRepositoryTest {
+class CouponRepositoryTest extends BaseRepositoryTest {
     final CouponRepository couponRepository;
-    final MemberRepository memberRepository;
-    final EntityManager entityManager;
 
     @Test
     void saveAndFindById() {
         Coupon coupon = couponRepository.save(CouponFixture.createCoupon());
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         Coupon found = couponRepository.findById(coupon.getId()).orElseThrow();
 
@@ -39,8 +33,7 @@ class CouponRepositoryTest {
     @Test
     void findWithPessimisticLock() {
         Coupon coupon = couponRepository.save(CouponFixture.createCoupon());
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         Coupon found = couponRepository.findWithPessimisticLock(coupon.getId()).orElseThrow();
 
@@ -49,13 +42,12 @@ class CouponRepositoryTest {
 
     @Test
     void findByMemberIdAndCouponId() {
-        Member member = memberRepository.save(MemberFixture.createMember());
+        Member member = prepareMember();
         Coupon coupon = CouponFixture.createCoupon();
         CouponUsage couponUsage = CouponUsage.create(member, coupon);
         coupon.addMemberCoupon(couponUsage);
         coupon = couponRepository.save(coupon);
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         CouponUsage found = couponRepository.findByUserIdAndCouponId(
                 new UserId(member.getUserId().userId()), coupon.getId()

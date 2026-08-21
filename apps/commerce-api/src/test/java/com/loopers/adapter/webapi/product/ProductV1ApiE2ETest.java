@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.web.servlet.client.EntityExchangeResult;
 
@@ -24,9 +25,11 @@ import com.loopers.domain.product.ProductInfo;
 import com.loopers.domain.product.ProductInfoWithRank;
 import com.loopers.support.BaseApiTest;
 import com.loopers.support.stereotype.WebApiAdapterTest;
+import com.loopers.testcontainers.RedisTestContainersConfig;
 import com.loopers.utils.RedisCleanUp;
 
 @WebApiAdapterTest
+@Import(RedisTestContainersConfig.class)
 class ProductV1ApiE2ETest extends BaseApiTest {
     private static final String ENDPOINT_GET = "/api/v1/products";
 

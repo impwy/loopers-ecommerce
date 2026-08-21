@@ -16,6 +16,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * 정규화된 상품 좋아요 테스트
+ */
 @Entity
 @Getter
 @ToString(exclude = {"member", "product"})

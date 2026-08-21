@@ -2,44 +2,33 @@ package com.loopers.application.product.required;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import com.loopers.application.brand.required.BrandRepository;
-import com.loopers.application.like.required.ProductLikeRepository;
-import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.like.ProductLike;
-import com.loopers.domain.member.CreateMemberSpec;
-import com.loopers.domain.member.Gender;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductFixture;
 import com.loopers.domain.product.ProductInfo;
+import com.loopers.support.BaseRepositoryTest;
 import com.loopers.support.stereotype.ApplicationJpaServiceTest;
 
 import lombok.RequiredArgsConstructor;
 
 @ApplicationJpaServiceTest
 @RequiredArgsConstructor
-class ProductRepositoryTest {
+class ProductRepositoryTest extends BaseRepositoryTest {
     private final ProductRepository productRepository;
-    private final BrandRepository brandRepository;
-    private final MemberRepository memberRepository;
-    private final ProductLikeRepository productLikeRepository;
-    private final TestEntityManager entityManager;
 
     @Test
     void saveAndFindById() {
@@ -55,10 +44,11 @@ class ProductRepositoryTest {
     @Test
     void findAllBySort() {
         Brand brand = saveBrand("정렬 브랜드");
-        Product older = productRepository.save(Product.create("오래된 상품", "설명", BigDecimal.TEN, brand,
-                                                              ZonedDateTime.now().minusDays(1)));
-        Product newer = productRepository.save(Product.create("최신 상품", "설명", BigDecimal.TEN, brand,
-                                                              ZonedDateTime.now()));
+        ZonedDateTime baseTime = ZonedDateTime.of(2025, 7, 13, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+        Product older = productRepository.save(ProductFixture.createProduct("오래된 상품", "설명", BigDecimal.TEN,
+                                                                            brand, baseTime.minusDays(1)));
+        Product newer = productRepository.save(ProductFixture.createProduct("최신 상품", "설명", BigDecimal.TEN,
+                                                                            brand, baseTime));
         flushAndClear();
 
         List<Product> products = productRepository.findAll(Sort.by(Sort.Direction.DESC, "latestAt"));
@@ -145,11 +135,11 @@ class ProductRepositoryTest {
         Brand brand = saveBrand("좋아요 브랜드");
         Product popular = productRepository.save(ProductFixture.createProduct(brand));
         Product ordinary = productRepository.save(ProductFixture.createProduct(brand));
-        Member firstMember = memberRepository.save(MemberFixture.createMember());
-        Member secondMember = memberRepository.save(createMember("pwy6818", "pwy6818@loopers.app"));
-        productLikeRepository.save(ProductLike.create(firstMember, popular));
-        productLikeRepository.save(ProductLike.create(firstMember, ordinary));
-        productLikeRepository.save(ProductLike.create(secondMember, popular));
+        Member firstMember = prepareMember();
+        Member secondMember = prepareMember("pwy6818");
+        prepareProductLike(firstMember, popular);
+        prepareProductLike(firstMember, ordinary);
+        prepareProductLike(secondMember, popular);
         flushAndClear();
 
         Page<ProductInfo> page =
@@ -226,16 +216,6 @@ class ProductRepositoryTest {
     }
 
     private Brand saveBrand(String name) {
-        return brandRepository.save(Brand.create(name, "브랜드 설명", LocalDate.of(2001, 1, 1)));
-    }
-
-    private Member createMember(String memberId, String email) {
-        return Member.create(new CreateMemberSpec(memberId, "secret", Gender.MALE, email,
-                                                   LocalDate.of(2025, 7, 13)));
-    }
-
-    private void flushAndClear() {
-        entityManager.flush();
-        entityManager.clear();
+        return prepareBrand(name);
     }
 }

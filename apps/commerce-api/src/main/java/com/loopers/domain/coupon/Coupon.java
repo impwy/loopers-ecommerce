@@ -1,7 +1,9 @@
 package com.loopers.domain.coupon;
 
 import static java.util.Objects.requireNonNull;
+import static org.springframework.util.Assert.state;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import com.loopers.domain.BaseEntity;
 import com.loopers.domain.couponusage.CouponUsage;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -30,26 +33,28 @@ public class Coupon extends BaseEntity {
     private DiscountPolicy discountPolicy;
 
     @Enumerated(EnumType.STRING)
-    private CouponType couponType;
+    private CouponType type;
+
+    @Enumerated(EnumType.STRING)
+    private CouponStatus status;
+
+    @Column(name = "expired_date")
+    private LocalDate expiredDate;
 
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CouponUsage> couponUsages = new ArrayList<>();
 
-    private Coupon(String code, Long quantity, DiscountPolicy discountPolicy, CouponType couponType) {
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("쿠폰 수량은 0개 이상이여야 합니다." + quantity);
-        }
-        this.code = requireNonNull(code);
-        this.quantity = requireNonNull(quantity);
-        this.discountPolicy = requireNonNull(discountPolicy);
-        this.couponType = requireNonNull(couponType);
-    }
-
     public static Coupon create(CreateCouponSpec createCouponSpec) {
-        return new Coupon(createCouponSpec.code(),
-                          createCouponSpec.quantity(),
-                          createCouponSpec.discountPolicy(),
-                          createCouponSpec.couponType());
+        state(createCouponSpec.quantity() > 0, "쿠폰 수량은 0개 이상이여야 합니다.");
+
+        Coupon coupon = new Coupon();
+        coupon.code = requireNonNull(createCouponSpec.code());
+        coupon.quantity = requireNonNull(createCouponSpec.quantity());
+        coupon.discountPolicy = requireNonNull(createCouponSpec.discountPolicy());
+        coupon.type = requireNonNull(createCouponSpec.couponType());
+        coupon.status = CouponStatus.CREATED;
+
+        return coupon;
     }
 
     public Coupon addMemberCoupon(CouponUsage couponUsage) {

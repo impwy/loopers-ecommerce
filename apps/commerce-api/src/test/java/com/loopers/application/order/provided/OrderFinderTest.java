@@ -6,42 +6,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.coupon.provided.CouponRegister;
-import com.loopers.application.order.required.OrderRepository;
 import com.loopers.domain.coupon.Coupon;
-import com.loopers.domain.coupon.CouponFixture;
-import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
+import com.loopers.domain.order.OrderFixture;
+import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
-import com.loopers.utils.DatabaseCleanUp;
+import com.loopers.support.BaseApplicationServiceTest;
+import com.loopers.support.stereotype.ApplicationServiceTest;
 
-@SpringBootTest
-class OrderFinderTest {
-
-    @MockitoSpyBean
-    private OrderRepository orderRepository;
+@ApplicationServiceTest
+class OrderFinderTest extends BaseApplicationServiceTest {
 
     @Autowired
     private OrderFinder orderFinder;
-
-    @Autowired
-    private CouponRegister couponRegister;
-
-    @Autowired
-    private DatabaseCleanUp databaseCleanUp;
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
-    }
 
     @DisplayName("존재하지 않는 주문 번호 조회 시 NOT_FOUND 반환")
     @Test
@@ -54,7 +36,7 @@ class OrderFinderTest {
     @DisplayName("주문 ID로 주문 조회 성공")
     @Test
     void find_order_by_order_id() {
-        Order order = orderRepository.save(Order.create(CreateOrderSpec.of(1L)));
+        Order order = prepareOrder(1L);
 
         Order expected = orderFinder.find(order.getId());
 
@@ -75,7 +57,7 @@ class OrderFinderTest {
     @DisplayName("유저 아이디로 주문 조회 성공")
     @Test
     void find_order_by_memberId() {
-        Order order = orderRepository.save(Order.create(CreateOrderSpec.of(1L)));
+        Order order = prepareOrder(1L);
 
         Order expected = orderFinder.findByMemberId(order.getMemberId());
 
@@ -88,19 +70,15 @@ class OrderFinderTest {
     @DisplayName("주문 조회 시 주문 아이템도 조회")
     @Test
     void find_order_with_order_item() {
-        Coupon coupon = couponRegister.create(CouponFixture.createCouponSpec());
+        Coupon coupon = prepareCoupon();
         Long couponId = coupon.getId();
-        Order firstOrder = Order.create(CreateOrderSpec.of(1L));
-        firstOrder.addOrderItem(1L, 10L, couponId);
-        firstOrder.addOrderItem(2L, 20L, couponId);
-        firstOrder.addOrderItem(3L, 30L, couponId);
-        orderRepository.save(firstOrder);
-
-        Order secondOrder = Order.create(CreateOrderSpec.of(1L));
-        secondOrder.addOrderItem(1L, 10L, couponId);
-        secondOrder.addOrderItem(2L, 20L, couponId);
-        secondOrder.addOrderItem(3L, 30L, couponId);
-        orderRepository.save(secondOrder);
+        List<CreateOrderItemSpec> itemSpecs = List.of(
+                OrderFixture.createOrderItemSpec(1L, 10L, couponId),
+                OrderFixture.createOrderItemSpec(2L, 20L, couponId),
+                OrderFixture.createOrderItemSpec(3L, 30L, couponId)
+        );
+        prepareOrder(1L, itemSpecs);
+        prepareOrder(1L, itemSpecs);
 
         List<Order> orders = orderFinder.findWithOrderItem(1L);
 

@@ -2,28 +2,25 @@ package com.loopers.application.member.required;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import jakarta.persistence.EntityManager;
-
 import org.junit.jupiter.api.Test;
 
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.member.UserId;
+import com.loopers.support.BaseRepositoryTest;
 import com.loopers.support.stereotype.ApplicationJpaServiceTest;
 
 import lombok.RequiredArgsConstructor;
 
 @ApplicationJpaServiceTest
 @RequiredArgsConstructor
-class MemberRepositoryTest {
+class MemberRepositoryTest extends BaseRepositoryTest {
     final MemberRepository memberRepository;
-    final EntityManager entityManager;
 
     @Test
     void saveAndFindById() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         Member found = memberRepository.findById(member.getId()).orElseThrow();
 
@@ -35,8 +32,7 @@ class MemberRepositoryTest {
     void findByMemberId() {
         Member member = memberRepository.save(MemberFixture.createMember());
         UserId userId = new UserId(member.getUserId().userId());
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         Member found = memberRepository.findByUserId(userId).orElseThrow();
 
@@ -47,8 +43,7 @@ class MemberRepositoryTest {
     void findWithPoint() {
         Member member = memberRepository.save(MemberFixture.createMember());
         UserId userId = new UserId(member.getUserId().userId());
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         Member found = memberRepository.findWithPoint(userId).orElseThrow();
 
@@ -59,8 +54,7 @@ class MemberRepositoryTest {
     void findByMemberIdWithPessimisticLock() {
         Member member = memberRepository.save(MemberFixture.createMember());
         UserId userId = new UserId(member.getUserId().userId());
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         Member found = memberRepository.findByUserIdWithPessimisticLock(userId).orElseThrow();
 

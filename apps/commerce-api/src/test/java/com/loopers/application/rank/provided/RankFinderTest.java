@@ -44,7 +44,7 @@ class RankFinderTest extends BaseApplicationServiceTest {
     @BeforeEach
     void setUp() {
         brand = prepareBrand();
-        product = prepareProduct();
+        product = prepareProduct(brand);
     }
 
     @DisplayName("일간 랭킹은 요청 날짜의 Redis 키를 조회하고 문자열 productId 를 변환한다")

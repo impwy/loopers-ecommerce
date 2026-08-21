@@ -26,15 +26,15 @@ import com.loopers.application.payment.PaymentRequest;
 import com.loopers.application.payment.required.PaymentRepository;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CouponType;
-import com.loopers.domain.coupon.CreateCouponSpec;
+import com.loopers.domain.coupon.CouponFixture;
 import com.loopers.domain.coupon.DiscountPolicy;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
+import com.loopers.domain.order.OrderFixture;
 import com.loopers.domain.order.OrderStatus;
-import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
 import com.loopers.domain.payment.CardType;
+import com.loopers.domain.payment.PaymentFixture;
 import com.loopers.domain.payment.PaymentStatus;
 import com.loopers.domain.payment.PaymentType;
 import com.loopers.domain.payment.Payments;
@@ -65,10 +65,10 @@ class PaymentE2ETest extends BaseApiTest {
         product = prepareProduct(brand, "Test Product", "Product Description",
                                  BigDecimal.valueOf(10000), ZonedDateTime.parse("2025-01-01T00:00:00Z"));
         prepareInventory(product, 100L);
-        coupon = prepareCoupon(CreateCouponSpec.create("AMOUNT_1000", 100L,
+        coupon = prepareCoupon(CouponFixture.createCouponSpec("AMOUNT_1000", 100L,
                                                        DiscountPolicy.AMOUNT, CouponType.ORDER), member);
-        Order newOrder = Order.create(CreateOrderSpec.of(member.getId()));
-        newOrder.createOrderItems(List.of(CreateOrderItemSpec.of(product.getId(), 2L, coupon.getId())));
+        Order newOrder = OrderFixture.createOrder(member.getId());
+        newOrder.createOrderItems(List.of(OrderFixture.createOrderItemSpec(product.getId(), 2L, coupon.getId())));
         order = orderRepository.save(newOrder);
     }
 
@@ -76,8 +76,9 @@ class PaymentE2ETest extends BaseApiTest {
     @DisplayName("결제 E2E 테스트")
     void paymentE2ETest() {
         String transactionKey = "test_transaction_key";
-        PaymentRequest request = new PaymentRequest(order.getId(), "1234-1234-1234-1234", CardType.SAMSUNG,
-                                                    BigDecimal.valueOf(19000), PaymentType.CARD);
+        PaymentRequest request = PaymentFixture.createPaymentRequest(order.getId(), "1234-1234-1234-1234",
+                                                                      CardType.SAMSUNG, BigDecimal.valueOf(19000),
+                                                                      PaymentType.CARD);
 
         doReturn(ApiResponse.success(new PaymentV1Dto.TransactionResponse(transactionKey,
                 PaymentStatus.PENDING, null))).when(pgFeignClient).requestPayment(anyString(), any());

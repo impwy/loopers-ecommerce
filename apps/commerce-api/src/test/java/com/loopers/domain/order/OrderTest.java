@@ -23,8 +23,7 @@ class OrderTest {
     @DisplayName("주문 생성 성공")
     @Test
     void create_order_test() {
-        CreateOrderSpec createOrderSpec
-                = CreateOrderSpec.of(1L);
+        CreateOrderSpec createOrderSpec = OrderFixture.createOrderSpec(1L);
 
         Order order = create(createOrderSpec);
 

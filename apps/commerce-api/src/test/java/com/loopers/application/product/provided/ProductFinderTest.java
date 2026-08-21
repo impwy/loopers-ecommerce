@@ -3,67 +3,43 @@ package com.loopers.application.product.provided;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.time.LocalDate;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.application.brand.required.BrandRepository;
-import com.loopers.application.member.required.MemberRepository;
-import com.loopers.application.like.required.ProductLikeRepository;
-import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
-import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductFixture;
-import com.loopers.utils.DatabaseCleanUp;
 import com.loopers.domain.product.ProductInfo;
+import com.loopers.support.BaseApplicationServiceTest;
+import com.loopers.support.stereotype.ApplicationServiceTest;
 
-@SpringBootTest
-class ProductFinderTest {
-
-    @MockitoSpyBean
-    private ProductRepository productRepository;
-
-    @MockitoSpyBean
-    private BrandRepository brandRepository;
-
-    @MockitoSpyBean
-    private MemberRepository memberRepository;
-
-    @MockitoSpyBean
-    private ProductLikeRepository productLikeRepository;
+@ApplicationServiceTest
+class ProductFinderTest extends BaseApplicationServiceTest {
     @Autowired
     private ProductFinder productFinder;
 
-    @Autowired
-    DatabaseCleanUp databaseCleanUp;
+    private static final ZonedDateTime BASE_TIME =
+            ZonedDateTime.of(2025, 7, 13, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
     Product product;
     Brand brand;
 
     @BeforeEach
     void setUp() {
-        brand = brandRepository.save(BrandFixture.createBrand());
-        product = productRepository.save(ProductFixture.createProduct(brand));
+        brand = prepareBrand();
+        product = prepareProduct(brand, "기본 상품", "기본 상품입니다.",
+                                  BigDecimal.valueOf(500), BASE_TIME);
 
-    }
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
     }
 
     @DisplayName("상품을 조회한다.")
@@ -93,12 +69,12 @@ class ProductFinderTest {
     @DisplayName("상품 조회 시 정렬 조건 추가: latest")
     @Test
     void sorted_product_by_latest() {
-        Product firstProduct = productRepository.save(Product.create("상품1", "상품2입니다.", BigDecimal.valueOf(500),
-                                                                     brand, ZonedDateTime.now().plusSeconds(1L)));
-        Product secondProduct = productRepository.save(Product.create("상품2", "상품3입니다.", BigDecimal.valueOf(500),
-                                                                      brand, ZonedDateTime.now().plusSeconds(2L)));
-        Product thirdProduct = productRepository.save(Product.create("상품3", "상품4입니다.", BigDecimal.valueOf(500),
-                                                                     brand, ZonedDateTime.now().plusSeconds(3L)));
+        Product firstProduct = prepareProduct(brand, "상품1", "상품2입니다.", BigDecimal.valueOf(500),
+                                              BASE_TIME.plusSeconds(1L));
+        Product secondProduct = prepareProduct(brand, "상품2", "상품3입니다.", BigDecimal.valueOf(500),
+                                               BASE_TIME.plusSeconds(2L));
+        Product thirdProduct = prepareProduct(brand, "상품3", "상품4입니다.", BigDecimal.valueOf(500),
+                                              BASE_TIME.plusSeconds(3L));
 
         Sort latestAtSort = Sort.by(Direction.DESC, "latestAt");
         List<Product> products = productFinder.findByConditions(latestAtSort);
@@ -114,12 +90,9 @@ class ProductFinderTest {
     @DisplayName("상품 조회 시 정렬 조건 추가: price")
     @Test
     void sorted_product_by_price() {
-        Product firstProduct = productRepository.save(Product.create("상품1", "상품2입니다.", BigDecimal.valueOf(600),
-                                                                     brand, ZonedDateTime.now()));
-        Product secondProduct = productRepository.save(Product.create("상품2", "상품3입니다.", BigDecimal.valueOf(700),
-                                                                      brand, ZonedDateTime.now()));
-        Product thirdProduct = productRepository.save(Product.create("상품3", "상품4입니다.", BigDecimal.valueOf(800),
-                                                                     brand, ZonedDateTime.now()));
+        Product firstProduct = prepareProduct(brand, "상품1", "상품2입니다.", BigDecimal.valueOf(600), BASE_TIME);
+        Product secondProduct = prepareProduct(brand, "상품2", "상품3입니다.", BigDecimal.valueOf(700), BASE_TIME);
+        Product thirdProduct = prepareProduct(brand, "상품3", "상품4입니다.", BigDecimal.valueOf(800), BASE_TIME);
 
         Sort priceSort = Sort.by(Direction.ASC, "price");
         List<Product> products = productFinder.findByConditions(priceSort);
@@ -135,10 +108,8 @@ class ProductFinderTest {
     @DisplayName("브랜드 필터 상품 조회 시 전체 개수는 필터 조건을 반영한다")
     @Test
     void find_with_like_count_total_count_applies_brand_filter() {
-        Brand otherBrand = brandRepository.save(
-                Brand.create("다른 브랜드", "다른 브랜드입니다.", LocalDate.of(2001, 1, 1)));
-        productRepository.save(Product.create("다른 브랜드 상품", "다른 브랜드 상품입니다.", BigDecimal.valueOf(700),
-                                              otherBrand, ZonedDateTime.now()));
+        Brand otherBrand = prepareBrand("다른 브랜드");
+        prepareProduct(otherBrand, "다른 브랜드 상품", "다른 브랜드 상품입니다.", BigDecimal.valueOf(700), BASE_TIME);
 
         Page<ProductInfo> products =
                 productFinder.findWithLikeCount("latestAt", List.of(brand.getId()), PageRequest.of(0, 10));

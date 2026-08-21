@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,7 @@ import com.loopers.adapter.webapi.ApiResponse.Metadata.Result;
 import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.BrandDetailResponse;
 import com.loopers.application.brand.provided.ProductPage;
 import com.loopers.domain.brand.Brand;
+import com.loopers.domain.brand.BrandFixture;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.product.Product;
 import com.loopers.support.BaseApiTest;
@@ -25,6 +27,8 @@ import com.loopers.support.stereotype.WebApiAdapterTest;
 
 @WebApiAdapterTest
 class BrandV1ApiE2ETest extends BaseApiTest {
+    private static final ZonedDateTime BASE_TIME =
+            ZonedDateTime.of(2025, 7, 13, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
     @DisplayName("Get /api/v1/brands")
     @Nested
     class Get {
@@ -62,7 +66,7 @@ class BrandV1ApiE2ETest extends BaseApiTest {
         void find_brandInfo_when_given_brandId() {
             Member member = prepareMember();
             Brand brand = brandRepository.save(
-                    Brand.create("브랜드", "브랜드입니다.", LocalDate.of(1999, 1, 1)));
+                    BrandFixture.createBrand("브랜드", "브랜드입니다.", LocalDate.of(1999, 1, 1)));
             Product product = prepareProduct(brand);
 
             String endpoint = endpointGet(brand.getId());
@@ -104,9 +108,9 @@ class BrandV1ApiE2ETest extends BaseApiTest {
             Brand brand = prepareBrand("페이지 브랜드", "페이지 브랜드입니다.");
             Product firstProduct = prepareProduct(brand, "상품1", "상품1입니다.",
                                                   BigDecimal.valueOf(1000),
-                                                  ZonedDateTime.now());
+                                                  BASE_TIME);
             prepareProduct(brand, "상품2", "상품2입니다.",
-                           BigDecimal.valueOf(2000), ZonedDateTime.now().minusMinutes(1));
+                           BigDecimal.valueOf(2000), BASE_TIME.minusMinutes(1));
 
             ParameterizedTypeReference<ApiResponse<BrandDetailResponse>> responseType =
                     new ParameterizedTypeReference<>() {};

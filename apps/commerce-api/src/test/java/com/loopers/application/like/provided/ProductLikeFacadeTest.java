@@ -4,71 +4,41 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.loopers.application.like.ProductLikeFacade;
-import com.loopers.application.brand.required.BrandRepository;
-import com.loopers.application.member.required.MemberRepository;
-import com.loopers.application.like.required.ProductLikeRepository;
-import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
-import com.loopers.domain.brand.BrandFixture;
-
 import com.loopers.domain.like.ProductLike;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberFixture;
 import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductFixture;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
-import com.loopers.utils.DatabaseCleanUp;
+import com.loopers.support.BaseApplicationServiceTest;
+import com.loopers.support.stereotype.ApplicationServiceTest;
 
-@SpringBootTest
-class ProductLikeFacadeTest {
+@ApplicationServiceTest
+class ProductLikeFacadeTest extends BaseApplicationServiceTest {
 
     @Autowired
     private ProductLikeFacade productLikeFacade;
-
-    @MockitoSpyBean
-    private ProductLikeRepository productLikeRepository;
-
-    @MockitoSpyBean
-    private MemberRepository memberRepository;
-
-    @MockitoSpyBean
-    private ProductRepository productRepository;
-
-    @MockitoSpyBean
-    private BrandRepository brandRepository;
-
-    @Autowired
-    private DatabaseCleanUp databaseCleanUp;
 
     Product product;
 
     @BeforeEach
     void setUp() {
-        Brand brand = brandRepository.save(BrandFixture.createBrand());
-        product = productRepository.save(ProductFixture.createProduct(brand));
-    }
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanUp.truncateAllTables();
+        Brand brand = prepareBrand();
+        product = prepareProduct(brand);
     }
 
     @DisplayName("상품 좋아요 멱등성 테스트")
     @Test
     void double_create_fail_productlike_test() {
-        Member member = memberRepository.save(MemberFixture.createMember());
+        Member member = prepareMember();
 
         // first create like
         productLikeFacade.create(member.getId(), product.getId());
@@ -83,7 +53,7 @@ class ProductLikeFacadeTest {
     @Test
     @Transactional
     void create_productlike_test() {
-        Member member = memberRepository.save(MemberFixture.createMember());
+        Member member = prepareMember();
 
         ProductLike productLike = productLikeFacade.create(member.getId(), product.getId());
 
@@ -98,9 +68,9 @@ class ProductLikeFacadeTest {
     @DisplayName("상품 좋아요 취소 테스트")
     @Test
     void cancel_productlike_test() {
-        Member member = memberRepository.save(MemberFixture.createMember());
+        Member member = prepareMember();
 
-        productLikeRepository.save(ProductLike.create(member, product));
+        prepareProductLike(member, product);
 
         ProductLike productLike = productLikeFacade.delete(member.getId(), product.getId());
 
@@ -110,9 +80,9 @@ class ProductLikeFacadeTest {
     @DisplayName("상품 좋아요 취소 후 생성 테스트")
     @Test
     void canceled_productlike_then_create_test() {
-        Member member = memberRepository.save(MemberFixture.createMember());
+        Member member = prepareMember();
 
-        ProductLike savedProductLike = productLikeRepository.save(ProductLike.create(member, product));
+        ProductLike savedProductLike = prepareProductLike(member, product);
 
         ProductLike productLike = productLikeFacade.delete(member.getId(), product.getId());
         assertThat(productLike.getDeletedAt()).isNotNull();

@@ -14,7 +14,7 @@ class BrandTest {
     @Test
     void createBrand() {
         LocalDate since = LocalDate.of(1999, 1, 1);
-        Brand brand = Brand.create("브랜드", "브랜드입니다.", since);
+        Brand brand = BrandFixture.createBrand("브랜드", "브랜드입니다.", since);
 
         assertThat(brand.getName()).isEqualTo("브랜드");
         assertThat(brand.getDescription()).isEqualTo("브랜드입니다.");
