@@ -2,9 +2,9 @@ package com.loopers.adapter.webapi.payment;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.TransactionResponse;
+import com.loopers.application.payment.PaymentRequest;
 import com.loopers.domain.member.UserId;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

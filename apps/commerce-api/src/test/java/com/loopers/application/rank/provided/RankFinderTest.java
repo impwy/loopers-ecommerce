@@ -18,9 +18,10 @@ import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import com.loopers.shared.InMemoryRepository;
-import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
-import com.loopers.adapter.webapi.rank.dto.RankingCriteria;
+import com.loopers.application.inmemory.required.InMemoryRepository;
+import com.loopers.application.rank.RankingCriteria;
+import com.loopers.domain.product.ProductInfo;
+import org.springframework.data.domain.Page;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.rank.PeriodType;
@@ -55,13 +56,13 @@ class RankFinderTest extends BaseApplicationServiceTest {
         when(inMemoryRepository.zReverRange("ranking:all:20260510", 0L, 99L))
                 .thenReturn(typedTuples(product.getId().toString()));
 
-        ProductInfoPageResponse response = rankFinder.getDailyRanking(date, pageable);
+        Page<ProductInfo> response = rankFinder.getDailyRanking(date, pageable);
 
         assertAll(
-                () -> assertThat(response.content()).hasSize(1),
-                () -> assertThat(response.content().get(0).productId()).isEqualTo(product.getId()),
-                () -> assertThat(response.content().get(0).brandId()).isEqualTo(brand.getId()),
-                () -> assertThat(response.totalElements()).isEqualTo(1),
+                () -> assertThat(response.getContent()).hasSize(1),
+                () -> assertThat(response.getContent().get(0).productId()).isEqualTo(product.getId()),
+                () -> assertThat(response.getContent().get(0).brandId()).isEqualTo(brand.getId()),
+                () -> assertThat(response.getTotalElements()).isEqualTo(1),
                 () -> verify(inMemoryRepository).zReverRange("ranking:all:20260510", 0L, 99L)
         );
     }
@@ -74,11 +75,11 @@ class RankFinderTest extends BaseApplicationServiceTest {
         when(inMemoryRepository.zReverRange("ranking:weekly:2025-12-29_2026-01-04", 0L, 99L))
                 .thenReturn(Set.of());
 
-        ProductInfoPageResponse response = rankFinder.getWeeklyRanking(date, pageable);
+        Page<ProductInfo> response = rankFinder.getWeeklyRanking(date, pageable);
 
         assertAll(
-                () -> assertThat(response.content()).isEmpty(),
-                () -> assertThat(response.totalElements()).isZero(),
+                () -> assertThat(response.getContent()).isEmpty(),
+                () -> assertThat(response.getTotalElements()).isZero(),
                 () -> verify(inMemoryRepository).zReverRange("ranking:weekly:2025-12-29_2026-01-04", 0L, 99L)
         );
     }
@@ -92,12 +93,12 @@ class RankFinderTest extends BaseApplicationServiceTest {
         when(inMemoryRepository.zReverRange("ranking:monthly:2026_5", 0L, 99L))
                 .thenReturn(typedTuples(product.getId()));
 
-        ProductInfoPageResponse response = rankFinder.getMonthlyRanking(date, pageable);
+        Page<ProductInfo> response = rankFinder.getMonthlyRanking(date, pageable);
 
         assertAll(
-                () -> assertThat(response.content()).hasSize(1),
-                () -> assertThat(response.content().get(0).productId()).isEqualTo(product.getId()),
-                () -> assertThat(response.totalElements()).isEqualTo(1),
+                () -> assertThat(response.getContent()).hasSize(1),
+                () -> assertThat(response.getContent().get(0).productId()).isEqualTo(product.getId()),
+                () -> assertThat(response.getTotalElements()).isEqualTo(1),
                 () -> verify(inMemoryRepository).zReverRange("ranking:monthly:2026_5", 0L, 99L)
         );
     }
@@ -114,13 +115,13 @@ class RankFinderTest extends BaseApplicationServiceTest {
         when(inMemoryRepository.zReverRange("ranking:all:20260510", 0L, 99L))
                 .thenReturn(typedTuples(firstProduct.getId(), secondProduct.getId(), thirdProduct.getId()));
 
-        ProductInfoPageResponse response = rankFinder.findProductRanking(criteria);
+        Page<ProductInfo> response = rankFinder.findProductRanking(criteria);
 
         assertAll(
-                () -> assertThat(response.pageNumber()).isEqualTo(1),
-                () -> assertThat(response.pageSize()).isEqualTo(2),
-                () -> assertThat(response.totalElements()).isEqualTo(3),
-                () -> assertThat(response.content()).hasSize(1),
+                () -> assertThat(response.getNumber()).isEqualTo(1),
+                () -> assertThat(response.getSize()).isEqualTo(2),
+                () -> assertThat(response.getTotalElements()).isEqualTo(3),
+                () -> assertThat(response.getContent()).hasSize(1),
                 () -> verify(inMemoryRepository).zReverRange("ranking:all:20260510", 0L, 99L)
         );
     }

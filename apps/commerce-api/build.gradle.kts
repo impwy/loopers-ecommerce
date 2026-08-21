@@ -37,6 +37,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:testcontainers")
+    testImplementation("com.tngtech.archunit:archunit-junit5:1.4.1")
     testImplementation("org.projectlombok:lombok")
     testAnnotationProcessor ("org.projectlombok:lombok")
 }

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.member.dto.MemberV1Dto;
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Response.MemberInfoResponse;
+import com.loopers.adapter.webapi.member.dto.MemberV1Dto.MemberInfoResponse;
+import com.loopers.application.member.MemberRegisterRequest;
 import com.loopers.application.member.provided.MemberFinder;
 import com.loopers.application.member.provided.MemberRegister;
 import com.loopers.domain.member.Member;
@@ -29,30 +29,30 @@ public class MemberV1ApiController implements MemberV1ApiSpec {
 
     @PostMapping
     @Override
-    public ApiResponse<MemberV1Dto.Response.MemberRegisterResponse> register(@RequestBody @Valid MemberRegisterRequest registerRequest) {
+    public ApiResponse<MemberV1Dto.MemberRegisterResponse> register(@RequestBody @Valid MemberRegisterRequest registerRequest) {
         Member member = memberRegister.register(registerRequest);
 
-        MemberV1Dto.Response.MemberRegisterResponse memberRegisterResponse = MemberV1Dto.Response.MemberRegisterResponse.of(member);
+        MemberV1Dto.MemberRegisterResponse memberRegisterResponse = MemberV1Dto.MemberRegisterResponse.of(member);
         return ApiResponse.success(memberRegisterResponse);
     }
 
     @GetMapping("/me")
     @Override
-    public ApiResponse<MemberV1Dto.Response.MemberInfoResponse> find(UserId userId) {
+    public ApiResponse<MemberV1Dto.MemberInfoResponse> find(UserId userId) {
         return ApiResponse.success(MemberInfoResponse.of(memberFinder.findByUserId(userId)));
     }
 
     @GetMapping("/points")
     @Override
-    public ApiResponse<MemberV1Dto.Response.MemberWithPointResponse> findPoints(UserId userId) {
-        return ApiResponse.success(MemberV1Dto.Response.MemberWithPointResponse.of(memberFinder.findWithPoint(userId)));
+    public ApiResponse<MemberV1Dto.MemberWithPointResponse> findPoints(UserId userId) {
+        return ApiResponse.success(MemberV1Dto.MemberWithPointResponse.of(memberFinder.findWithPoint(userId)));
     }
 
     @PostMapping("/points/charge")
     @Override
-    public ApiResponse<MemberV1Dto.Response.MemberWithPointResponse> chargePoints(UserId userId,
+    public ApiResponse<MemberV1Dto.MemberWithPointResponse> chargePoints(UserId userId,
                                                                                   @RequestBody BigDecimal chargePoint) {
         Member member = memberRegister.chargePoint(userId, chargePoint);
-        return ApiResponse.success(MemberV1Dto.Response.MemberWithPointResponse.of(member));
+        return ApiResponse.success(MemberV1Dto.MemberWithPointResponse.of(member));
     }
 }

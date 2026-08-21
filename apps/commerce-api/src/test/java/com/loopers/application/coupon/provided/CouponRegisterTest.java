@@ -12,7 +12,7 @@ import com.loopers.domain.coupon.CouponFixture;
 import com.loopers.domain.coupon.CouponType;
 import com.loopers.domain.coupon.CreateCouponSpec;
 import com.loopers.domain.coupon.DiscountPolicy;
-import com.loopers.adapter.webapi.coupon.dto.CouponV1Dto.Request.CreateCouponRequest;
+import com.loopers.application.coupon.CreateCouponRequest;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
 import com.loopers.support.stereotype.ApplicationValidServiceTest;

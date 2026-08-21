@@ -1,6 +1,6 @@
 package com.loopers.domain.coupon;
 
-import com.loopers.adapter.webapi.coupon.dto.CouponV1Dto.Request.CreateCouponRequest;
+import com.loopers.application.coupon.CreateCouponRequest;
 
 public class CouponFixture {
     public static Coupon createCoupon() {

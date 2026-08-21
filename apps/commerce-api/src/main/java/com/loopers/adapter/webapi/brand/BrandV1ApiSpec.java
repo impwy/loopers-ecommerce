@@ -1,12 +1,11 @@
 package com.loopers.adapter.webapi.brand;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.BrandCreateResponse;
 import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.BrandDetailResponse;
-import com.loopers.domain.brand.BrandCreateRequest;
+import com.loopers.application.brand.BrandCreateRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;

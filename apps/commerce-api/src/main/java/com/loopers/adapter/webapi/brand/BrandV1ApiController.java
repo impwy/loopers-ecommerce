@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.BrandCreateResponse;
 import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.BrandDetailResponse;
+import com.loopers.application.brand.BrandCreateRequest;
+import com.loopers.application.brand.BrandDetail;
 import com.loopers.application.brand.provided.BrandFinder;
 import com.loopers.application.brand.provided.BrandRegister;
 import com.loopers.domain.brand.Brand;
-import com.loopers.domain.brand.BrandCreateRequest;
 import com.loopers.shared.stereotype.WebApiAdapter;
 
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,8 @@ public class BrandV1ApiController implements BrandV1ApiSpec {
     @Override
     @GetMapping("/{brandId}")
     public ApiResponse<BrandDetailResponse> find(@PathVariable Long brandId, Pageable pageable) {
-        BrandDetailResponse brandDetailResponse = brandFinder.findDetail(brandId, pageable);
-        return ApiResponse.success(brandDetailResponse);
+        BrandDetail brandDetail = brandFinder.findDetail(brandId, pageable);
+        return ApiResponse.success(BrandDetailResponse.from(brandDetail));
     }
 
     @Override

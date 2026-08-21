@@ -2,7 +2,7 @@ package com.loopers.domain.member;
 
 import static com.loopers.domain.member.Gender.MALE;
 
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
+import com.loopers.application.member.MemberRegisterRequest;
 
 public class MemberFixture {
     public static Member createMember() {

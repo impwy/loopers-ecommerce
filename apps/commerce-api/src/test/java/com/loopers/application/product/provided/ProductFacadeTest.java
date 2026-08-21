@@ -14,7 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import org.springframework.data.domain.Page;
+
 import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.application.like.required.ProductLikeRepository;
 import com.loopers.application.member.required.MemberRepository;
@@ -93,11 +94,11 @@ class ProductFacadeTest {
     @DisplayName("상품 정보는 브랜드 정보, 비정규화 좋아요 수를 포함한다.")
     @Test
     void productInfo_has_brandInfo_and_like_count_denormalization() {
-        ProductInfoPageResponse productInfoPageResponse
+        Page<ProductInfo> productInfoPageResponse
                 = productFacade.findProductsInfoDenormalizationWithRedis("LIKE_COUNT_DESC",
                                                                          List.of(brand.getId()),
                                                                          PageRequest.of(0, 10));
-        List<ProductInfo> content = productInfoPageResponse.content();
+        List<ProductInfo> content = productInfoPageResponse.getContent();
 
         assertAll(
                 () -> assertThat(content.get(0).productName()).isEqualTo(product.getName()),

@@ -1,4 +1,4 @@
-package com.loopers.shared;
+package com.loopers.application.inmemory.required;
 
 import java.time.Duration;
 import java.util.List;

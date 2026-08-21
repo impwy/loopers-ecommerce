@@ -2,11 +2,9 @@ package com.loopers.application.payment;
 
 import org.springframework.stereotype.Component;
 
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
+import com.loopers.application.payment.required.PaymentGateway;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.order.Order;
-import com.loopers.application.payment.required.PaymentGateway;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,8 +16,7 @@ public class CardPaymentService implements PaymentService {
 
     @Override
     public void requestPayment(Order order, Member member, PaymentRequest payment) {
-        PaymentRequest paymentRequest = payment;
-        PgPaymentRequest pgPaymentRequest = PgPaymentRequest.of(order.getOrderNo().value(), paymentRequest, callbackUrl);
+        PgPaymentRequest pgPaymentRequest = PgPaymentRequest.of(order.getOrderNo().value(), payment, callbackUrl);
 
         paymentGateway.requestPayment(member.getUserId(), pgPaymentRequest);
     }

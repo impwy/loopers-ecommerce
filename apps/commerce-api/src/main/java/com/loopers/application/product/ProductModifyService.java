@@ -1,6 +1,6 @@
 package com.loopers.application.product;
 
-import com.loopers.shared.InMemoryRepository;
+import com.loopers.application.inmemory.required.InMemoryRepository;
 import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.application.product.provided.ProductRegister;
 import com.loopers.application.product.required.ProductRepository;

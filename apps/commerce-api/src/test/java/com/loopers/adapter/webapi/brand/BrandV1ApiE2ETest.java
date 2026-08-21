@@ -3,7 +3,9 @@ package com.loopers.adapter.webapi.brand;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -59,8 +61,8 @@ class BrandV1ApiE2ETest extends BaseApiTest {
         @Test
         void find_brandInfo_when_given_brandId() {
             Member member = prepareMember();
-            Brand brand = inNewTransaction(() -> brandRepository.save(
-                    Brand.create("브랜드", "브랜드입니다.", LocalDate.of(1999, 1, 1))));
+            Brand brand = brandRepository.save(
+                    Brand.create("브랜드", "브랜드입니다.", LocalDate.of(1999, 1, 1)));
             Product product = prepareProduct(brand);
 
             String endpoint = endpointGet(brand.getId());
@@ -101,10 +103,10 @@ class BrandV1ApiE2ETest extends BaseApiTest {
             Member member = prepareMember();
             Brand brand = prepareBrand("페이지 브랜드", "페이지 브랜드입니다.");
             Product firstProduct = prepareProduct(brand, "상품1", "상품1입니다.",
-                                                   java.math.BigDecimal.valueOf(1000),
-                                                   java.time.ZonedDateTime.now());
+                                                  BigDecimal.valueOf(1000),
+                                                  ZonedDateTime.now());
             prepareProduct(brand, "상품2", "상품2입니다.",
-                           java.math.BigDecimal.valueOf(2000), java.time.ZonedDateTime.now().minusMinutes(1));
+                           BigDecimal.valueOf(2000), ZonedDateTime.now().minusMinutes(1));
 
             ParameterizedTypeReference<ApiResponse<BrandDetailResponse>> responseType =
                     new ParameterizedTypeReference<>() {};

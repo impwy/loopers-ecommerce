@@ -3,7 +3,7 @@ package com.loopers.adapter.webapi.rank;
 import java.time.LocalDate;
 
 import com.loopers.adapter.webapi.ApiResponse;
-import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.adapter.webapi.product.dto.ProductV1Dto.ProductInfoPageResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

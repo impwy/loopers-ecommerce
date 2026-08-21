@@ -22,6 +22,7 @@ import com.loopers.adapter.integration.feign.PgFeignClient;
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto;
 import com.loopers.application.order.required.OrderRepository;
+import com.loopers.application.payment.PaymentRequest;
 import com.loopers.application.payment.required.PaymentRepository;
 import com.loopers.domain.coupon.Coupon;
 import com.loopers.domain.coupon.CouponType;
@@ -62,25 +63,23 @@ class PaymentE2ETest extends BaseApiTest {
         member = prepareMember();
         var brand = prepareBrand("Test Brand", "Brand Description");
         product = prepareProduct(brand, "Test Product", "Product Description",
-                BigDecimal.valueOf(10000), ZonedDateTime.parse("2025-01-01T00:00:00Z"));
+                                 BigDecimal.valueOf(10000), ZonedDateTime.parse("2025-01-01T00:00:00Z"));
         prepareInventory(product, 100L);
         coupon = prepareCoupon(CreateCouponSpec.create("AMOUNT_1000", 100L,
-                DiscountPolicy.AMOUNT, CouponType.ORDER), member);
-        order = inNewTransaction(() -> {
-            Order newOrder = Order.create(CreateOrderSpec.of(member.getId()));
-            newOrder.createOrderItems(List.of(CreateOrderItemSpec.of(product.getId(), 2L, coupon.getId())));
-            return orderRepository.save(newOrder);
-        });
+                                                       DiscountPolicy.AMOUNT, CouponType.ORDER), member);
+        Order newOrder = Order.create(CreateOrderSpec.of(member.getId()));
+        newOrder.createOrderItems(List.of(CreateOrderItemSpec.of(product.getId(), 2L, coupon.getId())));
+        order = orderRepository.save(newOrder);
     }
 
     @Test
     @DisplayName("결제 E2E 테스트")
     void paymentE2ETest() {
         String transactionKey = "test_transaction_key";
-        PaymentV1Dto.Request.PaymentRequest request = new PaymentV1Dto.Request.PaymentRequest(order.getId(),
-                "1234-1234-1234-1234", CardType.SAMSUNG, BigDecimal.valueOf(19000), PaymentType.CARD);
+        PaymentRequest request = new PaymentRequest(order.getId(), "1234-1234-1234-1234", CardType.SAMSUNG,
+                                                    BigDecimal.valueOf(19000), PaymentType.CARD);
 
-        doReturn(ApiResponse.success(new PaymentV1Dto.Response.TransactionResponse(transactionKey,
+        doReturn(ApiResponse.success(new PaymentV1Dto.TransactionResponse(transactionKey,
                 PaymentStatus.PENDING, null))).when(pgFeignClient).requestPayment(anyString(), any());
 
         EntityExchangeResult<Void> paymentResult = restTestClient.post()
@@ -94,13 +93,13 @@ class PaymentE2ETest extends BaseApiTest {
                 .returnResult();
         assertThat(paymentResult).isNotNull();
 
-        PaymentV1Dto.Response.TransactionDetailResponse transactionDetail =
-                new PaymentV1Dto.Response.TransactionDetailResponse(transactionKey, order.getOrderNo().value(),
+        PaymentV1Dto.TransactionDetailResponse transactionDetail =
+                new PaymentV1Dto.TransactionDetailResponse(transactionKey, order.getOrderNo().value(),
                         CardType.SAMSUNG, "1234-1234-1234-1234", BigDecimal.valueOf(19000), PaymentStatus.SUCCESS, null);
         doReturn(ApiResponse.success(transactionDetail)).when(pgFeignClient).getPaymentStatus(anyString(), anyString());
 
-        PaymentV1Dto.Response.TransactionResponse callback =
-                new PaymentV1Dto.Response.TransactionResponse(transactionKey, PaymentStatus.SUCCESS, null);
+        PaymentV1Dto.TransactionResponse callback =
+                new PaymentV1Dto.TransactionResponse(transactionKey, PaymentStatus.SUCCESS, null);
         EntityExchangeResult<Void> callbackResult = restTestClient.post()
                 .uri("/api/v1/payments/pg-callback")
                 .header("X-USER-ID", member.getUserId().userId())
@@ -112,20 +111,21 @@ class PaymentE2ETest extends BaseApiTest {
                 .returnResult();
         assertThat(callbackResult).isNotNull();
 
-        await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> inNewTransaction(() -> {
-            Order finishedOrder = orderRepository.findById(order.getId()).orElseThrow();
-            assertThat(finishedOrder.getOrderStatus()).isEqualTo(OrderStatus.PAYMENT_COMPLETED);
+        await().atMost(3, TimeUnit.SECONDS).untilAsserted(
+                () -> {
+                    Order finishedOrder = orderRepository.findById(order.getId()).orElseThrow();
+                    assertThat(finishedOrder.getOrderStatus()).isEqualTo(OrderStatus.PAYMENT_COMPLETED);
 
-            List<Payments> payments = paymentRepository.findAllByOrderId(order.getOrderNo().value());
-            assertThat(payments).hasSize(1);
-            assertThat(payments.get(0).getPaymentStatus()).isEqualTo(PaymentStatus.SUCCESS);
+                    List<Payments> payments = paymentRepository.findAllByOrderId(order.getOrderNo().value());
+                    assertThat(payments).hasSize(1);
+                    assertThat(payments.get(0).getPaymentStatus()).isEqualTo(PaymentStatus.SUCCESS);
 
-            Inventory inventory = inventoryRepository.findByProductId(product.getId()).orElseThrow();
-            assertThat(inventory.getQuantity()).isEqualTo(100L);
+                    Inventory inventory = inventoryRepository.findByProductId(product.getId()).orElseThrow();
+                    assertThat(inventory.getQuantity()).isEqualTo(100L);
 
-            Coupon updatedCoupon = couponRepository.findById(coupon.getId()).orElseThrow();
-            assertThat(updatedCoupon.getQuantity()).isEqualTo(100L);
-            return null;
-        }));
+                    Coupon updatedCoupon = couponRepository.findById(coupon.getId()).orElseThrow();
+                    assertThat(updatedCoupon.getQuantity()).isEqualTo(100L);
+                }
+        );
     }
 }

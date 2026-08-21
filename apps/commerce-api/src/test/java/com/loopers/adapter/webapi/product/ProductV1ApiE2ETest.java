@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.web.servlet.client.EntityExchangeResult;
 
 import com.loopers.adapter.webapi.ApiResponse;
-import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.adapter.webapi.product.dto.ProductV1Dto.ProductInfoPageResponse;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.product.Product;
@@ -32,6 +33,7 @@ class ProductV1ApiE2ETest extends BaseApiTest {
     @Autowired
     private RedisCleanUp redisCleanUp;
 
+    @AfterEach
     protected void cleanRedis() {
         redisCleanUp.truncateAll();
     }

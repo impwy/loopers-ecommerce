@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.client.EntityExchangeResult;
 
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.member.dto.MemberV1Dto;
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Response.MemberRegisterResponse;
+import com.loopers.adapter.webapi.member.dto.MemberV1Dto.MemberRegisterResponse;
+import com.loopers.application.member.MemberRegisterRequest;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.MemberFixture;
 import com.loopers.support.BaseApiTest;
@@ -81,17 +81,17 @@ class MemberV1ApiE2ETest extends BaseApiTest {
         @Test
         void get_memberInfo() {
             Member member = prepareMember();
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberInfoResponse>> responseType =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberInfoResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
 
-            EntityExchangeResult<ApiResponse<MemberV1Dto.Response.MemberInfoResponse>> result = restTestClient.get()
+            EntityExchangeResult<ApiResponse<MemberV1Dto.MemberInfoResponse>> result = restTestClient.get()
                                                                                                               .uri(MEMBER_GET)
                                                                                                               .header("X-USER-ID", member.getUserId().userId())
                                                                                                               .exchange()
                                                                                                               .expectStatus().isOk()
                                                                                                               .expectBody(responseType)
                                                                                                               .returnResult();
-            ApiResponse<MemberV1Dto.Response.MemberInfoResponse> response = result.getResponseBody();
+            ApiResponse<MemberV1Dto.MemberInfoResponse> response = result.getResponseBody();
             assertThat(response).isNotNull();
             assertThat(response.data()).isNotNull();
 
@@ -133,17 +133,17 @@ class MemberV1ApiE2ETest extends BaseApiTest {
         @Test
         void returnPoint_whenGetPointSuccess() {
             Member member = prepareMember();
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberWithPointResponse>> responseType =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberWithPointResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
 
-            EntityExchangeResult<ApiResponse<MemberV1Dto.Response.MemberWithPointResponse>> result = restTestClient.get()
+            EntityExchangeResult<ApiResponse<MemberV1Dto.MemberWithPointResponse>> result = restTestClient.get()
                                                                                                                    .uri(POINT_GET)
                                                                                                                    .header("X-USER-ID", member.getUserId().userId())
                                                                                                                    .exchange()
                                                                                                                    .expectStatus().isOk()
                                                                                                                    .expectBody(responseType)
                                                                                                                    .returnResult();
-            ApiResponse<MemberV1Dto.Response.MemberWithPointResponse> response = result.getResponseBody();
+            ApiResponse<MemberV1Dto.MemberWithPointResponse> response = result.getResponseBody();
             assertThat(response).isNotNull();
             assertThat(response.data()).isNotNull();
 
@@ -155,10 +155,10 @@ class MemberV1ApiE2ETest extends BaseApiTest {
         void returnAmountWhenUserChargePoint() {
             Member member = prepareMember();
             String amount = "1000.00";
-            ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberWithPointResponse>> responseType =
+            ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberWithPointResponse>> responseType =
                     new ParameterizedTypeReference<>() {};
 
-            EntityExchangeResult<ApiResponse<MemberV1Dto.Response.MemberWithPointResponse>> result = restTestClient.post()
+            EntityExchangeResult<ApiResponse<MemberV1Dto.MemberWithPointResponse>> result = restTestClient.post()
                                                                                                                    .uri(POINT_CHARGE)
                                                                                                                    .header("X-USER-ID", member.getUserId().userId())
                                                                                                                    .contentType(MediaType.APPLICATION_JSON)
@@ -167,7 +167,7 @@ class MemberV1ApiE2ETest extends BaseApiTest {
                                                                                                                    .expectStatus().isOk()
                                                                                                                    .expectBody(responseType)
                                                                                                                    .returnResult();
-            ApiResponse<MemberV1Dto.Response.MemberWithPointResponse> response = result.getResponseBody();
+            ApiResponse<MemberV1Dto.MemberWithPointResponse> response = result.getResponseBody();
             assertThat(response).isNotNull();
             assertThat(response.data()).isNotNull();
 

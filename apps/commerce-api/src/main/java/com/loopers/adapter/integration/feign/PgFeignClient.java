@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.loopers.adapter.webapi.ApiResponse;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionResponse;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.TransactionDetailResponse;
+import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.TransactionResponse;
+import com.loopers.application.payment.PgPaymentRequest;
 
 @FeignClient(name = "pg-client", url = "http://localhost:8082")
 public interface PgFeignClient {

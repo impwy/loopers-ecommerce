@@ -27,7 +27,7 @@ import com.loopers.CommerceApiApplication;
 import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.application.coupon.provided.CouponRegister;
 import com.loopers.application.coupon.required.CouponRepository;
-import com.loopers.application.inventory.DecreaseInventoryRequest;
+import com.loopers.domain.inventory.DecreaseInventoryRequest;
 import com.loopers.application.inventory.provided.InventoryRegister;
 import com.loopers.application.inventory.required.InventoryRepository;
 import com.loopers.application.member.provided.MemberFinder;

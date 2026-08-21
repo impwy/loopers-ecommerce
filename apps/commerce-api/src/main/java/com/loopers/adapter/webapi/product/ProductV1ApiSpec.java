@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
-import com.loopers.domain.product.ProductInfoWithRank;
 import com.loopers.adapter.webapi.ApiResponse;
-import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.adapter.webapi.product.dto.ProductV1Dto.ProductInfoPageResponse;
+import com.loopers.domain.product.ProductInfoWithRank;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

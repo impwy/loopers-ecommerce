@@ -2,7 +2,7 @@ package com.loopers.application.member.provided;
 
 import java.math.BigDecimal;
 
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
+import com.loopers.application.member.MemberRegisterRequest;
 import com.loopers.domain.member.Member;
 import com.loopers.domain.member.UserId;
 

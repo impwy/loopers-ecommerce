@@ -18,15 +18,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.loopers.shared.CachedPage;
-import com.loopers.shared.InMemoryRepository;
-import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.application.inmemory.required.InMemoryRepository;
 import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
 import com.loopers.domain.product.ProductInfo;
 import com.loopers.domain.product.ProductInfoWithRank;
+import com.loopers.shared.CachedPage;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
 import com.loopers.shared.stereotype.ApplicationService;
@@ -142,12 +141,12 @@ public class ProductQueryService implements ProductFinder {
     }
 
     @Override
-    public ProductInfoPageResponse findProductInfoWithRank(String date, Pageable pageable) {
+    public Page<ProductInfo> findProductInfoWithRank(String date, Pageable pageable) {
         String redisKey = PRODUCT_RANKING_KEY.apply(date);
         Set<TypedTuple<Object>> typedTuples = inMemoryRepository.zReverRange(redisKey, 0L, 100L);
         List<Long> productIds = typedTuples.stream().map(TypedTuple::getValue).map(Long.class::cast).toList();
 
-        return ProductInfoPageResponse.from(findProductInfosByIds(productIds, pageable));
+        return findProductInfosByIds(productIds, pageable);
     }
 
     @Override

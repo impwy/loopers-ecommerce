@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
 import com.loopers.application.member.provided.MemberFinder;
 import com.loopers.application.member.provided.MemberRegister;
 import com.loopers.application.member.required.MemberRepository;

@@ -2,6 +2,8 @@ package com.loopers.domain.brand;
 
 import java.time.LocalDate;
 
+import com.loopers.application.brand.BrandCreateRequest;
+
 public class BrandFixture {
     public static Brand createBrand() {
         return createBrand(LocalDate.of(2000, 1, 1));

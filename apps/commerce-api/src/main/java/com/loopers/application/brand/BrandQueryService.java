@@ -5,12 +5,10 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.loopers.adapter.webapi.brand.dto.BrandV1Dto.BrandDetailResponse;
 import com.loopers.application.brand.provided.BrandFinder;
 import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.domain.brand.Brand;
-import com.loopers.domain.brand.BrandProfile;
 import com.loopers.domain.product.ProductInfo;
 import com.loopers.shared.error.CoreException;
 import com.loopers.shared.error.ErrorType;
@@ -32,9 +30,9 @@ public class BrandQueryService implements BrandFinder {
     }
 
     @Override
-    public BrandDetailResponse findDetail(Long brandId, Pageable pageable) {
+    public BrandDetail findDetail(Long brandId, Pageable pageable) {
         Brand brand = find(brandId);
         Page<ProductInfo> products = productFinder.findWithLikeCount("latestAt", List.of(brandId), pageable);
-        return BrandDetailResponse.of(brand, products);
+        return BrandDetail.of(brand, products);
     }
 }

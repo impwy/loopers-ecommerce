@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 import com.loopers.application.product.ProductTotalAmountRequest;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.product.Product;
@@ -41,5 +40,5 @@ public interface ProductFinder {
 
     Product findProductPessimisticLock(Long productId);
 
-    ProductInfoPageResponse findProductInfoWithRank(String date, Pageable pageable);
+    Page<ProductInfo> findProductInfoWithRank(String date, Pageable pageable);
 }

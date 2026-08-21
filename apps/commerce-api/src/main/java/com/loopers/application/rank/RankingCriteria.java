@@ -1,4 +1,4 @@
-package com.loopers.adapter.webapi.rank.dto;
+package com.loopers.application.rank;
 
 import java.time.LocalDate;
 

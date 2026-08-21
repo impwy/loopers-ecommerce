@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.function.Supplier;
 
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +16,13 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.client.EntityExchangeResult;
 import org.springframework.test.web.servlet.client.RestTestClient;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.member.dto.MemberV1Dto;
-import com.loopers.adapter.webapi.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
 import com.loopers.application.brand.required.BrandRepository;
 import com.loopers.application.coupon.required.CouponRepository;
 import com.loopers.application.inventory.required.InventoryRepository;
+import com.loopers.application.member.MemberRegisterRequest;
 import com.loopers.application.member.required.MemberRepository;
 import com.loopers.application.product.required.ProductRepository;
 import com.loopers.domain.brand.Brand;
@@ -63,15 +61,24 @@ public class BaseApiTest {
     @Autowired
     private DatabaseCleanUp databaseCleanUp;
 
+    @AfterEach
+    void cleanUpAfterEach() {
+        if (TestTransaction.isActive()) {
+            TestTransaction.flagForRollback();
+            TestTransaction.end();
+        }
+        databaseCleanUp.truncateAllTables();
+    }
+
     /**
      * Creates a member through the public HTTP API and reloads it in a new transaction.
      */
     protected Member prepareMember() {
         MemberRegisterRequest request = MemberFixture.createMemberRegisterRequest();
-        ParameterizedTypeReference<ApiResponse<MemberV1Dto.Response.MemberRegisterResponse>> responseType =
+        ParameterizedTypeReference<ApiResponse<MemberV1Dto.MemberRegisterResponse>> responseType =
                 new ParameterizedTypeReference<>() {};
 
-        EntityExchangeResult<ApiResponse<MemberV1Dto.Response.MemberRegisterResponse>> result =
+        EntityExchangeResult<ApiResponse<MemberV1Dto.MemberRegisterResponse>> result =
                 restTestClient.post()
                               .uri(MEMBER_ENDPOINT)
                               .contentType(MediaType.APPLICATION_JSON)
@@ -81,12 +88,12 @@ public class BaseApiTest {
                               .expectBody(responseType)
                               .returnResult();
 
-        ApiResponse<MemberV1Dto.Response.MemberRegisterResponse> response = result.getResponseBody();
+        ApiResponse<MemberV1Dto.MemberRegisterResponse> response = result.getResponseBody();
         assertThat(response).as("회원 가입 응답 본문").isNotNull();
         assertThat(response.data()).as("회원 가입 응답 데이터").isNotNull();
 
         String memberId = response.data().userId();
-        return inNewTransaction(() -> memberRepository.findByUserId(new UserId(memberId)).orElseThrow());
+        return memberRepository.findByUserId(new UserId(memberId)).orElseThrow();
     }
 
     protected Brand prepareBrand() {
@@ -102,24 +109,20 @@ public class BaseApiTest {
     }
 
     private Brand prepareBrand(Brand brand) {
-        return inNewTransaction(() -> brandRepository.save(brand));
+        return brandRepository.save(brand);
     }
 
     protected Product prepareProduct(Brand brand) {
         Long brandId = brand.getId();
-        return inNewTransaction(() -> {
-            Brand managedBrand = brandRepository.findById(brandId).orElseThrow();
-            return productRepository.save(ProductFixture.createProduct(managedBrand));
-        });
+        Brand managedBrand = brandRepository.findById(brandId).orElseThrow();
+        return productRepository.save(ProductFixture.createProduct(managedBrand));
     }
 
     protected Product prepareProduct(Brand brand, String name, String description,
                                      BigDecimal price, ZonedDateTime latestAt) {
         Long brandId = brand.getId();
-        return inNewTransaction(() -> {
-            Brand managedBrand = brandRepository.findById(brandId).orElseThrow();
-            return productRepository.save(Product.create(name, description, price, managedBrand, latestAt));
-        });
+        Brand managedBrand = brandRepository.findById(brandId).orElseThrow();
+        return productRepository.save(Product.create(name, description, price, managedBrand, latestAt));
     }
 
     protected Inventory prepareInventory(Product product, Long quantity) {
@@ -127,7 +130,7 @@ public class BaseApiTest {
     }
 
     protected Inventory prepareInventory(Long productId, Long quantity) {
-        return inNewTransaction(() -> inventoryRepository.save(Inventory.create(productId, quantity)));
+        return inventoryRepository.save(Inventory.create(productId, quantity));
     }
 
     protected Coupon prepareCoupon() {
@@ -135,34 +138,14 @@ public class BaseApiTest {
     }
 
     protected Coupon prepareCoupon(CreateCouponSpec spec) {
-        return inNewTransaction(() -> couponRepository.save(Coupon.create(spec)));
+        return couponRepository.save(Coupon.create(spec));
     }
 
     protected Coupon prepareCoupon(CreateCouponSpec spec, Member member) {
         Long memberId = member.getId();
-        return inNewTransaction(() -> {
-            Member managedMember = memberRepository.findById(memberId).orElseThrow();
-            Coupon coupon = couponRepository.save(Coupon.create(spec));
-            coupon.addMemberCoupon(CouponUsage.create(managedMember, coupon));
-            return couponRepository.save(coupon);
-        });
-    }
-
-    /**
-     * Runs fixture preparation or a read in a committed, independent transaction.
-     */
-    protected <T> T inNewTransaction(Supplier<T> action) {
-        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-        transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
-        return transactionTemplate.execute(status -> action.get());
-    }
-
-    @AfterEach
-    void cleanUpAfterEach() {
-        if (TestTransaction.isActive()) {
-            TestTransaction.flagForRollback();
-            TestTransaction.end();
-        }
-        databaseCleanUp.truncateAllTables();
+        Member managedMember = memberRepository.findById(memberId).orElseThrow();
+        Coupon coupon = couponRepository.save(Coupon.create(spec));
+        coupon.addMemberCoupon(CouponUsage.create(managedMember, coupon));
+        return couponRepository.save(coupon);
     }
 }

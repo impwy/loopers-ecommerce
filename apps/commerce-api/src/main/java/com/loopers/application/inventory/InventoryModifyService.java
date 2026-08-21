@@ -15,6 +15,7 @@ import com.loopers.application.inventory.provided.InventoryRegister;
 import com.loopers.application.inventory.required.InventoryRepository;
 import com.loopers.application.product.provided.ProductOutboxRegister;
 import com.loopers.domain.inventory.CreateInventorySpec;
+import com.loopers.domain.inventory.DecreaseInventoryRequest;
 import com.loopers.domain.inventory.Inventory;
 import com.loopers.domain.inventory.StockAdjustEvent;
 import com.loopers.domain.product.ProductPayload.ProductEventType;

@@ -5,15 +5,16 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.loopers.adapter.webapi.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
 import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.application.product.provided.ProductOutboxRegister;
 import com.loopers.application.product.provided.ProductRegister;
 import com.loopers.domain.product.LikeDecrease;
 import com.loopers.domain.product.LikeIncrease;
+import com.loopers.domain.product.ProductInfo;
 import com.loopers.domain.product.ProductInfoWithRank;
 import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
@@ -37,20 +38,18 @@ public class ProductFacade {
     }
 
     @Transactional
-    public ProductInfoPageResponse findProductsInfo(String sort, List<Long> brandIds, Pageable pageable) {
-        return ProductInfoPageResponse.from(productFinder.findWithLikeCount(sort, brandIds, pageable));
+    public Page<ProductInfo> findProductsInfo(String sort, List<Long> brandIds, Pageable pageable) {
+        return productFinder.findWithLikeCount(sort, brandIds, pageable);
     }
 
     @Transactional
-    public ProductInfoPageResponse findProductsInfoDenormalization(String sort, List<Long> brandIds, Pageable pageable) {
-        return ProductInfoPageResponse.from(
-                productFinder.findByBrandAndLikeCountDenormalization(sort, brandIds, pageable));
+    public Page<ProductInfo> findProductsInfoDenormalization(String sort, List<Long> brandIds, Pageable pageable) {
+        return productFinder.findByBrandAndLikeCountDenormalization(sort, brandIds, pageable);
     }
 
     @Transactional
-    public ProductInfoPageResponse findProductsInfoDenormalizationWithRedis(String sort, List<Long> brandIds, Pageable pageable) {
-        return ProductInfoPageResponse.from(
-                productFinder.findByBrandAndLikeCountDenormalizationWithRedis(sort, brandIds, pageable));
+    public Page<ProductInfo> findProductsInfoDenormalizationWithRedis(String sort, List<Long> brandIds, Pageable pageable) {
+        return productFinder.findByBrandAndLikeCountDenormalizationWithRedis(sort, brandIds, pageable);
     }
 
     @Transactional

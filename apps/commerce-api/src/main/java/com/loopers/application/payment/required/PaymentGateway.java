@@ -1,11 +1,11 @@
 package com.loopers.application.payment.required;
 
+import com.loopers.application.payment.PaymentDetailResult;
+import com.loopers.application.payment.PgPaymentRequest;
 import com.loopers.domain.member.UserId;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PgPaymentRequest;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
 
 public interface PaymentGateway {
     void requestPayment(UserId userId, PgPaymentRequest pgPaymentRequest);
 
-    TransactionDetailResponse getPaymentDetailResponse(UserId userId, String transactionKey);
+    PaymentDetailResult getPaymentDetailResponse(UserId userId, String transactionKey);
 }

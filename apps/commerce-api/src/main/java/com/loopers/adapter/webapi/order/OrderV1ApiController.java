@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.order.dto.OrderV1Dto;
+import com.loopers.application.order.CreateOrderWithCouponRequest;
 import com.loopers.application.order.OrderFacade;
 import com.loopers.application.order.OrderInfos;
 import com.loopers.domain.member.UserId;
@@ -24,8 +25,11 @@ public class OrderV1ApiController implements OrderV1ApiSpec {
 
     @Override
     @PostMapping
-    public ApiResponse<List<OrderV1Dto.Response.OrderInfo>> order(UserId userId, @RequestBody OrderV1Dto.Request.CreateOrderWithCouponRequest request) {
+    public ApiResponse<List<OrderV1Dto.OrderInfo>> order(UserId userId, @RequestBody CreateOrderWithCouponRequest request) {
         OrderInfos orderInfos = orderFacade.order(userId, request);
-        return ApiResponse.success(orderInfos.orderInfos());
+        List<OrderV1Dto.OrderInfo> response = orderInfos.orderInfos().stream()
+                                                                  .map(OrderV1Dto.OrderInfo::from)
+                                                                  .toList();
+        return ApiResponse.success(response);
     }
 }

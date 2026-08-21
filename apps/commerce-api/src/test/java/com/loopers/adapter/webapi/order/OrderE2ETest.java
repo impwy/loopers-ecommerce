@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.client.EntityExchangeResult;
 
 import com.loopers.adapter.webapi.ApiResponse;
 import com.loopers.adapter.webapi.order.dto.OrderV1Dto;
+import com.loopers.application.order.CreateOrderRequest;
+import com.loopers.application.order.CreateOrderWithCouponRequest;
 import com.loopers.application.order.required.OrderRepository;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.coupon.Coupon;
@@ -47,31 +49,29 @@ class OrderE2ETest extends BaseApiTest {
         Coupon coupon = prepareCoupon(CreateCouponSpec.create("AMOUNT_1000", 100L,
                 DiscountPolicy.AMOUNT, CouponType.ORDER));
 
-        OrderV1Dto.Request.CreateOrderRequest orderRequest =
-                new OrderV1Dto.Request.CreateOrderRequest(product.getId(), 2L);
-        OrderV1Dto.Request.CreateOrderWithCouponRequest request =
-                new OrderV1Dto.Request.CreateOrderWithCouponRequest(List.of(orderRequest), coupon.getId());
+        CreateOrderRequest orderRequest = new CreateOrderRequest(product.getId(), 2L);
+        CreateOrderWithCouponRequest request = new CreateOrderWithCouponRequest(List.of(orderRequest), coupon.getId());
 
-        EntityExchangeResult<ApiResponse<List<OrderV1Dto.Response.OrderInfo>>> result = restTestClient.post()
+        EntityExchangeResult<ApiResponse<List<OrderV1Dto.OrderInfo>>> result = restTestClient.post()
                 .uri("/api/v1/orders")
                 .header("X-USER-ID", member.getUserId().userId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(new ParameterizedTypeReference<ApiResponse<List<OrderV1Dto.Response.OrderInfo>>>() {})
+                .expectBody(new ParameterizedTypeReference<ApiResponse<List<OrderV1Dto.OrderInfo>>>() {})
                 .returnResult();
-        ApiResponse<List<OrderV1Dto.Response.OrderInfo>> response = result.getResponseBody();
+        ApiResponse<List<OrderV1Dto.OrderInfo>> response = result.getResponseBody();
         assertThat(response).isNotNull();
         assertThat(response.data()).isNotNull();
         assertThat(response.meta().result()).isEqualTo(ApiResponse.Metadata.Result.SUCCESS);
 
-        OrderV1Dto.Response.OrderInfo orderInfo = response.data().getFirst();
+        OrderV1Dto.OrderInfo orderInfo = response.data().getFirst();
         assertThat(orderInfo.productName()).isEqualTo(product.getName());
         assertThat(orderInfo.totalQuantity()).isEqualTo(2L);
         assertThat(orderInfo.totalPrice()).isEqualByComparingTo(BigDecimal.valueOf(20000));
 
-        inNewTransaction(() -> {
+
             Order order = orderRepository.findByOrderNoWithItems(new OrderNo(orderInfo.orderNo())).orElseThrow();
             assertThat(order.getMemberId()).isEqualTo(member.getId());
             assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.PENDING);
@@ -80,7 +80,5 @@ class OrderE2ETest extends BaseApiTest {
             assertThat(order.getOrderItems().get(0).getQuantity()).isEqualTo(2L);
             assertThat(order.getOrderItems().get(0).getCouponId()).isEqualTo(coupon.getId());
             assertThat(inventoryRepository.findByProductId(product.getId()).orElseThrow().getQuantity()).isEqualTo(98L);
-            return null;
-        });
     }
 }

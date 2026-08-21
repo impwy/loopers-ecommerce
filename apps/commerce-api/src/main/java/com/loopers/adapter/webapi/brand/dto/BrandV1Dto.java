@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.data.domain.Page;
 
+import com.loopers.application.brand.BrandDetail;
 import com.loopers.application.brand.provided.ProductPage;
 import com.loopers.domain.brand.Brand;
 import com.loopers.domain.brand.BrandProfile;
@@ -15,9 +16,12 @@ public class BrandV1Dto {
      */
     public record BrandDetailResponse(String name, String description, LocalDate since, ProductPage productPage) {
         public static BrandDetailResponse of(Brand brand, Page<ProductInfo> productPage) {
-            return new BrandDetailResponse(brand.getName(), brand.getDescription(),
-                                           brand.getBrandProfile().getSince(),
-                                           ProductPage.from(productPage));
+            return from(BrandDetail.of(brand, productPage));
+        }
+
+        public static BrandDetailResponse from(BrandDetail brandDetail) {
+            return new BrandDetailResponse(brandDetail.name(), brandDetail.description(),
+                                           brandDetail.since(), brandDetail.productPage());
         }
     }
 

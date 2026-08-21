@@ -22,7 +22,7 @@ import com.loopers.domain.order.OrderFixture;
 import com.loopers.domain.payment.CardType;
 import com.loopers.domain.payment.PaymentType;
 import com.loopers.domain.payment.Payments;
-import com.loopers.adapter.webapi.payment.dto.PaymentV1Dto.Request.PaymentRequest;
+import com.loopers.application.payment.PaymentRequest;
 import com.loopers.utils.DatabaseCleanUp;
 
 @SpringBootTest
