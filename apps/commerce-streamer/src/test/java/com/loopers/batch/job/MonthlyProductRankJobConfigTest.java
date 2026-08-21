@@ -9,12 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.batch.core.Job;
+import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.SimpleJob;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.batch.item.database.JpaPagingItemReader;
+import org.springframework.batch.infrastructure.item.database.JpaItemWriter;
+import org.springframework.batch.infrastructure.item.database.JpaPagingItemReader;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import jakarta.persistence.EntityManagerFactory;
 
 import com.loopers.batch.application.ProductRankProcessor;
 import com.loopers.batch.domain.MvProductRankMonthly;
@@ -29,6 +31,9 @@ class MonthlyProductRankJobConfigTest {
 
     @Mock
     private PlatformTransactionManager transactionManager;
+
+    @Mock
+    private EntityManagerFactory entityManagerFactory;
 
     @Mock
     private ProductRankDailyReader reader;
@@ -48,7 +53,7 @@ class MonthlyProductRankJobConfigTest {
         MonthlyProductRankJobConfig config = new MonthlyProductRankJobConfig(jobRepository, transactionManager,
                                                                              reader, processor, writer,
                                                                              monthlyInMemoryTaskLet);
-        when(reader.getPagingItemReader(any(), any())).thenReturn(new JpaPagingItemReader<MvProductRankDaily>());
+        when(reader.getPagingItemReader(any(), any())).thenReturn(new JpaPagingItemReader<>(entityManagerFactory));
         when(processor.processMonthly(any(), any())).thenReturn(item -> null);
         when(writer.writeMonthly()).thenReturn(mockJpaItemWriter());
 

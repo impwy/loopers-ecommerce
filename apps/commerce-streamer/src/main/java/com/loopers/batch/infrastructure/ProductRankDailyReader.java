@@ -3,8 +3,8 @@ package com.loopers.batch.infrastructure;
 import java.time.LocalDate;
 import java.util.Map;
 
-import org.springframework.batch.item.database.JpaPagingItemReader;
-import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
+import org.springframework.batch.infrastructure.item.database.JpaPagingItemReader;
+import org.springframework.batch.infrastructure.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.stereotype.Component;
 
 import com.loopers.domain.ranking.MvProductRankDaily;

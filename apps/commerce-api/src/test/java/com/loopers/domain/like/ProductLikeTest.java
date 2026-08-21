@@ -50,7 +50,7 @@ class ProductLikeTest {
         ReflectionTestUtils.setField(member, "id", 1L);
         ReflectionTestUtils.setField(product, "id", 1L);
 
-        ProductLike productLike = ProductLike.create(member, product);
+        ProductLike productLike = ProductLikeFixture.createProductLike(member, product);
 
         assertAll(
                 () -> assertThat(productLike.getMember().getId()).isEqualTo(member.getId()),
@@ -69,7 +69,7 @@ class ProductLikeTest {
         ReflectionTestUtils.setField(member, "id", 1L);
         ReflectionTestUtils.setField(product, "id", 1L);
 
-        ProductLike productLike = ProductLike.create(member, product);
+        ProductLike productLike = ProductLikeFixture.createProductLike(member, product);
 
         productLike.delete();
 
@@ -83,7 +83,7 @@ class ProductLikeTest {
         ReflectionTestUtils.setField(member, "id", 1L);
         ReflectionTestUtils.setField(product, "id", 1L);
 
-        ProductLike productLike = ProductLike.create(member, product);
+        ProductLike productLike = ProductLikeFixture.createProductLike(member, product);
 
         // 삭제
         productLike.delete();
@@ -93,7 +93,7 @@ class ProductLikeTest {
         productLike.restore();
         assertAll(
                 () -> assertThat(productLike.getDeletedAt()).isNull(),
-                () -> assertThat(productLike.getMember().getMemberId().memberId()).isEqualTo(member.getMemberId().memberId()),
+                () -> assertThat(productLike.getMember().getUserId().value()).isEqualTo(member.getUserId().value()),
                 () -> assertThat(productLike.getProduct().getName()).isEqualTo(product.getName())
         );
     }

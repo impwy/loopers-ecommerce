@@ -28,7 +28,7 @@ class PointChargeTest {
     void failWhenChargePointNotInvalid(int chargePoint) {
         Member member = MemberFixture.createMember();
 
-        assertThatThrownBy(() -> member.getPoint().charge(BigDecimal.valueOf(chargePoint)))
+        assertThatThrownBy(() -> member.charge(BigDecimal.valueOf(chargePoint)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

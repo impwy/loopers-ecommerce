@@ -2,19 +2,19 @@ package com.loopers.application.product;
 
 import java.util.Optional;
 
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.loopers.application.provided.ProductOutboxFinder;
-import com.loopers.application.provided.ProductOutboxRegister;
-import com.loopers.application.required.ProductEventOutboxRepository;
+import com.loopers.application.product.provided.ProductOutboxFinder;
+import com.loopers.application.product.provided.ProductOutboxRegister;
+import com.loopers.application.product.required.ProductEventOutboxRepository;
 import com.loopers.domain.product.outbox.CreateProductOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxStatus;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
+@ApplicationValidService
 @RequiredArgsConstructor
 public class ProductOutboxModifyService implements ProductOutboxRegister {
     private final ProductEventOutboxRepository productEventOutboxRepository;

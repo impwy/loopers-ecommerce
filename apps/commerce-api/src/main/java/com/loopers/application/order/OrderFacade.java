@@ -4,27 +4,25 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 
-import com.loopers.application.inventory.DecreaseInventoryRequest;
+import com.loopers.application.member.provided.MemberFinder;
+import com.loopers.application.order.provided.OrderRegister;
 import com.loopers.application.product.ProductTotalAmountRequest;
-import com.loopers.application.provided.MemberFinder;
-import com.loopers.application.provided.OrderRegister;
-import com.loopers.application.provided.ProductFinder;
+import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.domain.coupon.CouponUsed;
+import com.loopers.domain.inventory.DecreaseInventoryRequest;
 import com.loopers.domain.inventory.ProductInventoryUsed;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.member.UserId;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderWithCouponRequest;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-@Component
+@ApplicationValidService
 @RequiredArgsConstructor
 public class OrderFacade {
     private final OrderRegister orderRegister;
@@ -33,8 +31,8 @@ public class OrderFacade {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public OrderInfos order(MemberId memberId, CreateOrderWithCouponRequest createOrderWithCouponRequest) {
-        Member member = memberFinder.findByMemberId(memberId);
+    public OrderInfos order(UserId userId, CreateOrderWithCouponRequest createOrderWithCouponRequest) {
+        Member member = memberFinder.findWithPoint(userId);
         Long couponId = createOrderWithCouponRequest.couponId();
 
         List<CreateOrderRequest> orderRequests = createOrderWithCouponRequest.createOrderRequests();
@@ -57,7 +55,7 @@ public class OrderFacade {
         eventPublisher.publishEvent(new ProductInventoryUsed(decreaseInventoryRequests));
 
         // 쿠폰 생성 및 감소
-        eventPublisher.publishEvent(new CouponUsed(couponId, member.getMemberId()));
+        eventPublisher.publishEvent(new CouponUsed(couponId, member.getUserId()));
 
         // 총 금액
         List<ProductTotalAmountRequest> productTotalAmountRequests

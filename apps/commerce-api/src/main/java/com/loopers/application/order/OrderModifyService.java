@@ -2,20 +2,19 @@ package com.loopers.application.order;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
-import com.loopers.application.provided.OrderFinder;
-import com.loopers.application.provided.OrderRegister;
-import com.loopers.application.required.OrderRepository;
+import com.loopers.application.order.provided.OrderFinder;
+import com.loopers.application.order.provided.OrderRegister;
+import com.loopers.application.order.required.OrderRepository;
 import com.loopers.domain.order.CreateOrderSpec;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.order.orderitem.CreateOrderItemSpec;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationValidService
 @RequiredArgsConstructor
 public class OrderModifyService implements OrderRegister {
     private final OrderRepository orderRepository;

@@ -8,22 +8,20 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
-import org.springframework.stereotype.Component;
 
-import com.loopers.application.provided.RankFinder;
-import com.loopers.application.required.InMemoryRepository;
-import com.loopers.application.required.ProductRepository;
-import com.loopers.domain.product.Product;
-import com.loopers.domain.product.ProductBrandDomainService;
+import com.loopers.application.inmemory.required.InMemoryRepository;
+import com.loopers.application.product.provided.ProductFinder;
+import com.loopers.application.rank.provided.RankFinder;
 import com.loopers.domain.product.ProductInfo;
-import com.loopers.interfaces.api.product.dto.ProductV1Dto.Response.ProductInfoPageResponse;
+import com.loopers.domain.rank.PeriodType;
+import com.loopers.shared.stereotype.ApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
+@ApplicationService
 @RequiredArgsConstructor
 public class RankQueryService implements RankFinder {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -31,11 +29,10 @@ public class RankQueryService implements RankFinder {
             date -> "ranking:all:" + date.format(formatter);
 
     private final InMemoryRepository inMemoryRepository;
-    private final ProductRepository productRepository;
-    private final ProductBrandDomainService productBrandDomainService;
+    private final ProductFinder productFinder;
 
     @Override
-    public ProductInfoPageResponse getDailyRanking(LocalDate date, Pageable pageable) {
+    public Page<ProductInfo> getDailyRanking(LocalDate date, Pageable pageable) {
         String key = DAILY_RANKING_KEY.apply(date);
         Set<TypedTuple<Object>> typedTuples = inMemoryRepository.zReverRange(key, 0L, 99L);
         List<Long> productIds = parseProductIds(typedTuples);
@@ -43,7 +40,7 @@ public class RankQueryService implements RankFinder {
     }
 
     @Override
-    public ProductInfoPageResponse getWeeklyRanking(LocalDate date, Pageable pageable) {
+    public Page<ProductInfo> getWeeklyRanking(LocalDate date, Pageable pageable) {
         LocalDate startDate = date.with(DayOfWeek.MONDAY);
         LocalDate endDate = date.with(DayOfWeek.SUNDAY);
         String key = "ranking:weekly:" + startDate + "_" + endDate;
@@ -54,7 +51,7 @@ public class RankQueryService implements RankFinder {
     }
 
     @Override
-    public ProductInfoPageResponse getMonthlyRanking(LocalDate date, Pageable pageable) {
+    public Page<ProductInfo> getMonthlyRanking(LocalDate date, Pageable pageable) {
         LocalDate startDate = date.withDayOfMonth(1);
         String key = "ranking:monthly:" + startDate.getYear() + "_" + startDate.getMonthValue();
 
@@ -63,16 +60,23 @@ public class RankQueryService implements RankFinder {
         return findRankedProducts(productIds, pageable);
     }
 
-    private ProductInfoPageResponse findRankedProducts(List<Long> productIds, Pageable pageable) {
-        Page<Product> products = productRepository.findAllByIdIn(productIds, pageable);
-        List<ProductInfo> list = products.stream()
-                                         .map(product -> productBrandDomainService.findProductWithBrand(product,
-                                                                                                        product.getBrand(),
-                                                                                                        product.getLikeCount()))
-                                         .toList();
+    @Override
+    public Page<ProductInfo> findProductRanking(RankingCriteria rankingCriteria) {
+        PeriodType period = rankingCriteria.period();
+        LocalDate date = rankingCriteria.date();
+        Integer page = rankingCriteria.page();
+        Integer size = rankingCriteria.size();
+        Pageable pageable = PageRequest.of(page, size);
+        switch (period) {
+            case DAILY -> {return getDailyRanking(date, pageable);}
+            case WEEKLY -> {return getWeeklyRanking(date, pageable);}
+            case MONTHLY -> {return getMonthlyRanking(date, pageable);}
+            default -> {return getDefaultRank(pageable);}
+        }
+    }
 
-        PageImpl<ProductInfo> page = new PageImpl<>(list, pageable, products.getTotalElements());
-        return ProductInfoPageResponse.from(page);
+    private Page<ProductInfo> findRankedProducts(List<Long> productIds, Pageable pageable) {
+        return productFinder.findProductInfosByIds(productIds, pageable);
     }
 
     private List<Long> parseProductIds(Set<TypedTuple<Object>> typedTuples) {
@@ -93,15 +97,7 @@ public class RankQueryService implements RankFinder {
     }
 
     @Override
-    public ProductInfoPageResponse getDefaultRank(Pageable pageable) {
-        Page<Product> products = productRepository.findAllOrderByLikeCountDesc(pageable);
-        List<ProductInfo> list = products.stream()
-                                         .map(product -> productBrandDomainService.findProductWithBrand(product,
-                                                                                                        product.getBrand(),
-                                                                                                        product.getLikeCount()))
-                                         .toList();
-
-        PageImpl<ProductInfo> page = new PageImpl<>(list, pageable, products.getTotalElements());
-        return ProductInfoPageResponse.from(page);
+    public Page<ProductInfo> getDefaultRank(Pageable pageable) {
+        return productFinder.findProductInfosByLikeCountDesc(pageable);
     }
 }

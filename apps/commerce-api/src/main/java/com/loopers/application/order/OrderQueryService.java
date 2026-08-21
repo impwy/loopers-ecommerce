@@ -2,24 +2,24 @@ package com.loopers.application.order;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
-import com.loopers.application.provided.OrderFinder;
-import com.loopers.application.required.OrderRepository;
+import com.loopers.application.order.provided.OrderFinder;
+import com.loopers.application.order.required.OrderRepository;
 import com.loopers.domain.order.Order;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.domain.order.OrderNo;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
+import com.loopers.shared.stereotype.ApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class OrderQueryService implements OrderFinder {
     private final OrderRepository orderRepository;
 
     @Override
     public Order find(Long orderId) {
-        return orderRepository.find(orderId)
+        return orderRepository.findById(orderId)
                               .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND,
                                                                    "주문을 찾을 수 없습니다. orderId:" + orderId));
     }
@@ -28,7 +28,7 @@ public class OrderQueryService implements OrderFinder {
     public Order findByMemberId(Long memberId) {
         return orderRepository.findByMemberId(memberId)
                               .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND,
-                                                                   "주문을 찾을 수 없습니다. memberId:" + memberId));
+                                                                   "주문을 찾을 수 없습니다. userId:" + memberId));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class OrderQueryService implements OrderFinder {
 
     @Override
     public Order findByOrderNo(String orderNo) {
-        return orderRepository.findByOrderNo(orderNo)
+        return orderRepository.findByOrderNo(new OrderNo(orderNo))
                 .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND,
                                                      "주문을 찾을 수 없습니다. orderNo:" + orderNo));
     }

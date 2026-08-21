@@ -1,37 +1,40 @@
 package com.loopers.application.member;
 
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
-import com.loopers.application.provided.MemberFinder;
-import com.loopers.application.required.MemberRepository;
+import com.loopers.application.member.provided.MemberFinder;
+import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberId;
 import com.loopers.domain.member.MemberNotFoundException;
+import com.loopers.domain.member.UserId;
+import com.loopers.shared.stereotype.ApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class MemberQueryService implements MemberFinder {
     private final MemberRepository memberRepository;
 
     @Override
     public Member find(Long memberId) {
-        return memberRepository.find(memberId)
+        return memberRepository.findById(memberId)
                                .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다: " + memberId));
     }
 
     @Override
-    public Member findByMemberId(MemberId memberId) {
-        return memberRepository.findWithPoint(memberId)
-                               .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다: " + memberId));
+    public Member findByUserId(UserId userId) {
+        return memberRepository.findByUserId(userId)
+                               .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다: " + userId));
     }
 
     @Override
-    public Member findByMemberIdWithPessimisticLock(MemberId memberId) {
-        return memberRepository.findByMemberIdWithPessimisticLock(memberId)
-                               .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다: " + memberId));
+    public Member findWithPoint(UserId userId) {
+        return memberRepository.findWithPoint(userId)
+                               .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다: " + userId));
+    }
+
+    @Override
+    public Member findByMemberIdWithPessimisticLock(UserId userId) {
+        return memberRepository.findByUserIdWithPessimisticLock(userId)
+                               .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다: " + userId));
     }
 }

@@ -12,20 +12,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import com.loopers.application.member.MemberRegisterRequest;
+
 class MemberTest {
 
     @DisplayName("회원을 생성한다.")
     @Test
     void createMemberTest() {
-        var member = Member.create(new CreateMemberSpec("pwy6817", "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.parse("2025-07-13")));
+        MemberRegisterRequest request = MemberFixture.createMemberRegisterRequest();
+        var member = Member.create(request.toMemberCreate());
 
         assertAll(
                 () -> assertThat(member.getId()).isNotNull(),
-                () -> assertThat(member.getMemberId().memberId()).isEqualTo("pwy6817"),
-                () -> assertThat(member.getPasswordHash()).isEqualTo("secret"),
-                () -> assertThat(member.getGender()).isEqualTo(Gender.MALE),
-                () -> assertThat(member.getEmail().email()).isEqualTo("pwy6817@loopers.app"),
-                () -> assertThat(member.getBirthday()).isEqualTo("2025-07-13")
+                () -> assertThat(member.getUserId().value()).isEqualTo(request.memberId()),
+                () -> assertThat(member.getPasswordHash()).isEqualTo(request.password()),
+                () -> assertThat(member.getGender()).isEqualTo(request.gender()),
+                () -> assertThat(member.getEmail().email()).isEqualTo(request.email()),
+                () -> assertThat(member.getBirthday()).isEqualTo(LocalDate.parse(request.birthday()))
         );
     }
 
@@ -33,15 +36,17 @@ class MemberTest {
     @ParameterizedTest
     @ValueSource(strings = { "invalid_id", "abcdefghij", "abc12345678", "0123456789" })
     void throwIllegalArgumentException_whenMemberId_notMatch(String memberId) {
-        assertThatThrownBy(() -> Member.create(new CreateMemberSpec(memberId, "secret", Gender.MALE, "pwy6817@loopers.app", LocalDate.now())))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> Member.create(new CreateMemberSpec(memberId, "secret", Gender.MALE,
+                                                                    "pwy6817@loopers.app", LocalDate.of(2025, 7, 13))))
+            .isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("이메일이 xx@yy.zz 형식에 맞지 않으면, User 객체 생성에 실패한다.")
     @ParameterizedTest
     @ValueSource(strings = { "invalid_email", "abc@abc", "abc.abc" })
     void throwIllegalArgumentException_whenEmail_notMatch(String email) {
-        assertThatThrownBy(() -> Member.create(new CreateMemberSpec("pwy6817", "secret", Gender.MALE, email, LocalDate.now())))
+        assertThatThrownBy(() -> Member.create(new CreateMemberSpec("pwy6817", "secret", Gender.MALE, email,
+                                                                    LocalDate.of(2025, 7, 13))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

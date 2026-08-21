@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.member.point.Point;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
@@ -25,11 +24,11 @@ import lombok.ToString;
 @Entity
 @Table(name = "member")
 @Getter
-@ToString
+@ToString(callSuper = true, exclude = "point")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
     @Embedded
-    private MemberId memberId;
+    private UserId userId;
 
     private String passwordHash;
 
@@ -41,12 +40,12 @@ public class Member extends BaseEntity {
 
     private LocalDate birthday;
 
-    @JoinColumn(name = "point_id")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "point_id")
     private Point point;
 
-    private Member(MemberId memberId, String passwordHash, Gender gender, Email email, LocalDate birthday, Point point) {
-        this.memberId = memberId;
+    private Member(UserId userId, String passwordHash, Gender gender, Email email, LocalDate birthday, Point point) {
+        this.userId = userId;
         this.passwordHash = passwordHash;
         this.gender = gender;
         this.email = email;
@@ -56,7 +55,7 @@ public class Member extends BaseEntity {
 
     public static Member create(CreateMemberSpec createMemberSpec) {
         return new Member(
-                new MemberId(createMemberSpec.memberId()),
+                new UserId(createMemberSpec.memberId()),
                 requireNonNull(createMemberSpec.password()),
                 requireNonNull(createMemberSpec.gender()),
                 new Email(createMemberSpec.email()),
@@ -71,6 +70,10 @@ public class Member extends BaseEntity {
 
     public BigDecimal usePoint(BigDecimal amount) {
         return this.point.usePoint(amount);
+    }
+
+    public BigDecimal getPoint() {
+        return this.point.getAmount();
     }
 }
 

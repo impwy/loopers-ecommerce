@@ -39,9 +39,8 @@ class PaymentsTest {
     @DisplayName("결제 정보 생성 테스트")
     @Test
     void success_create_payment_test() {
-        CreatePaymentSpec createPaymentSpec = new CreatePaymentSpec("orderId", 1L, "transactionKey",
-                                                                    CardType.SAMSUNG, "1234-1234-1234-1234", BigDecimal.TEN,
-                                                                    PaymentType.CARD);
+        CreatePaymentSpec createPaymentSpec = PaymentFixture.createPaymentSpec(
+                "orderId", 1L, CardType.SAMSUNG, "1234-1234-1234-1234", BigDecimal.TEN, PaymentType.CARD);
 
         Payments expected = Payments.create(createPaymentSpec);
 

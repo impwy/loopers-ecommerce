@@ -2,24 +2,20 @@ package com.loopers.application.payment;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
-import com.loopers.application.provided.OrderFinder;
-import com.loopers.application.provided.PaymentFinder;
-import com.loopers.application.provided.PaymentRegister;
-import com.loopers.application.required.PaymentRepository;
-import com.loopers.domain.member.MemberId;
+import com.loopers.application.order.provided.OrderFinder;
+import com.loopers.application.payment.provided.PaymentFinder;
+import com.loopers.application.payment.provided.PaymentRegister;
+import com.loopers.application.payment.required.PaymentGateway;
+import com.loopers.application.payment.required.PaymentRepository;
+import com.loopers.domain.member.UserId;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.payment.CreatePaymentSpec;
-import com.loopers.domain.payment.PaymentGateway;
 import com.loopers.domain.payment.Payments;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Request.PaymentRequest;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionDetailResponse;
-import com.loopers.interfaces.api.payment.dto.PaymentV1Dto.Response.TransactionResponse;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
+@ApplicationValidService
 @RequiredArgsConstructor
 public class PaymentModifyService implements PaymentRegister {
     private final PaymentRepository paymentRepository;
@@ -30,14 +26,16 @@ public class PaymentModifyService implements PaymentRegister {
     @Override
     public Payments createPayment(Long memberId, PaymentRequest paymentRequest) {
         Order order = orderFinder.find(paymentRequest.orderId());
-        CreatePaymentSpec createPaymentSpec = CreatePaymentSpec.of(order.getOrderNo().value(), memberId, paymentRequest);
+        CreatePaymentSpec createPaymentSpec = CreatePaymentSpec.of(order.getOrderNo().value(), memberId,
+                                                                  paymentRequest.cardType(), paymentRequest.cardNo(),
+                                                                  paymentRequest.totalAmount(), paymentRequest.paymentType());
         Payments payments = Payments.create(createPaymentSpec);
         return paymentRepository.save(payments);
     }
 
     @Override
-    public TransactionDetailResponse getPaymentDetailResponse(MemberId memberId, TransactionResponse transactionResponse) {
-        return paymentGateway.getPaymentDetailResponse(memberId, transactionResponse.transactionKey());
+    public PaymentDetailResult getPaymentDetailResponse(UserId userId, PaymentCallbackRequest callbackRequest) {
+        return paymentGateway.getPaymentDetailResponse(userId, callbackRequest.transactionKey());
     }
 
     @Override

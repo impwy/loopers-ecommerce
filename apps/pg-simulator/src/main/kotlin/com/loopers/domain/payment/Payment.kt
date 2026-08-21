@@ -47,19 +47,19 @@ class Payment(
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     var status: TransactionStatus = TransactionStatus.PENDING
-        private set
+        protected set
 
     @Column(name = "reason", nullable = true)
     var reason: String? = null
-        private set
+        protected set
 
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
-        private set
+        protected set
 
     @Column(name = "updated_at", nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
-        private set
+        protected set
 
     fun approve() {
         if (status != TransactionStatus.PENDING) {

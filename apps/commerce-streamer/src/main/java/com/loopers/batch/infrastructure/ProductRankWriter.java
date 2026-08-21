@@ -1,7 +1,7 @@
 package com.loopers.batch.infrastructure;
 
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
+import org.springframework.batch.infrastructure.item.database.JpaItemWriter;
+import org.springframework.batch.infrastructure.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.stereotype.Component;
 
 import com.loopers.batch.domain.MvProductRankMonthly;

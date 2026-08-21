@@ -1,5 +1,5 @@
 plugins {
-    val kotlinVersion = "2.0.20"
+    val kotlinVersion = "2.3.21"
 
     id("org.jetbrains.kotlin.jvm") version(kotlinVersion)
     id("org.jetbrains.kotlin.kapt") version(kotlinVersion)
@@ -9,7 +9,7 @@ plugins {
 
 kotlin {
     compilerOptions {
-        jvmToolchain(21)
+        jvmToolchain(25)
         freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
@@ -27,12 +27,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     // web
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${project.properties["springDocOpenApiVersion"]}")
 
     // querydsl
-    kapt("com.querydsl:querydsl-apt::jakarta")
+    kapt("io.github.openfeign.querydsl:querydsl-apt:${project.properties["queryDslVersion"]}:jakarta")
 
     // test-fixtures
     testImplementation(testFixtures(project(":modules:jpa")))

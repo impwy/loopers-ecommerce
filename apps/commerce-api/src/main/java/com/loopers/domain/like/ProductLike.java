@@ -14,19 +14,24 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+/**
+ * 정규화된 상품 좋아요 테스트
+ */
 @Entity
 @Getter
+@ToString(exclude = {"member", "product"})
 @Table(name = "product_like")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductLike extends BaseEntity {
 
     @JoinColumn(name = "member_id")
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, optional = false)
     private Member member;
 
     @JoinColumn(name = "product_id")
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, optional = false)
     private Product product;
 
     private ProductLike(Member member, Product product) {

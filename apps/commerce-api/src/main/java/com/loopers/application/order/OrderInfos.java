@@ -4,19 +4,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import com.loopers.application.provided.ProductFinder;
+import com.loopers.application.product.provided.ProductFinder;
 import com.loopers.domain.order.Order;
 import com.loopers.domain.product.Product;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Request.CreateOrderRequest;
-import com.loopers.interfaces.api.order.dto.OrderV1Dto.Response.OrderInfo;
 
-import lombok.Getter;
-
-@Getter
-public class OrderInfos {
-    private final List<OrderInfo> orderInfos;
-    private final BigDecimal totalPrice;
-
+public record OrderInfos(List<OrderInfo> orderInfos, BigDecimal totalPrice) {
     public OrderInfos(List<OrderInfo> orderInfos, BigDecimal totalPrice) {
         if (orderInfos == null || orderInfos.isEmpty()) {
             throw new IllegalArgumentException("OrderInfo 목록이 비어있을 수 없습니다.");

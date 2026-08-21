@@ -3,8 +3,6 @@ package com.loopers.domain.inventory;
 import static java.util.Objects.requireNonNull;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

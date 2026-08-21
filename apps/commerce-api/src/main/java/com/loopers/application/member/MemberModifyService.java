@@ -2,29 +2,25 @@ package com.loopers.application.member;
 
 import java.math.BigDecimal;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
-import org.springframework.validation.annotation.Validated;
 
-import com.loopers.application.provided.MemberFinder;
-import com.loopers.application.provided.MemberRegister;
-import com.loopers.application.required.MemberRepository;
+import com.loopers.application.member.provided.MemberFinder;
+import com.loopers.application.member.provided.MemberRegister;
+import com.loopers.application.member.required.MemberRepository;
 import com.loopers.domain.member.CreateMemberSpec;
 import com.loopers.domain.member.DuplicateMemberIdException;
 import com.loopers.domain.member.Member;
-import com.loopers.domain.member.MemberId;
-import com.loopers.domain.member.point.PointUsageRequest;
-import com.loopers.interfaces.api.member.dto.MemberV1Dto.Request.MemberRegisterRequest;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
+import com.loopers.domain.member.PointUsageRequest;
+import com.loopers.domain.member.UserId;
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
+import com.loopers.shared.stereotype.ApplicationValidService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-@Service
-@Validated
-@Transactional
+@ApplicationValidService
 @RequiredArgsConstructor
 public class MemberModifyService implements MemberRegister {
     private final MemberRepository memberRepository;
@@ -42,23 +38,24 @@ public class MemberModifyService implements MemberRegister {
     }
 
     @Override
-    public BigDecimal chargePoint(MemberId memberId, BigDecimal amount) {
-        Member member = memberFinder.findByMemberId(memberId);
-        BigDecimal chargedPoint = member.charge(amount);
-        memberRepository.save(member);
-        return chargedPoint;
+    public Member chargePoint(UserId userId, BigDecimal amount) {
+        Member member = memberFinder.findWithPoint(userId);
+        member.charge(amount);
+        member = memberRepository.save(member);
+
+        return member;
     }
 
     private void checkDuplicateId(MemberRegisterRequest registerRequest) {
-        if (memberRepository.findByMemberId(new MemberId(registerRequest.memberId())).isPresent()) {
+        if (memberRepository.findByUserId(new UserId(registerRequest.memberId())).isPresent()) {
             throw new DuplicateMemberIdException("이미 사용중인 ID 입니다: " + registerRequest.memberId());
         }
     }
 
     @Transactional
     @Override
-    public Member usePoint(MemberId memberId, BigDecimal discountedPrice) {
-        Member member = memberFinder.findByMemberIdWithPessimisticLock(memberId);
+    public Member usePoint(UserId userId, BigDecimal discountedPrice) {
+        Member member = memberFinder.findByMemberIdWithPessimisticLock(userId);
 
         try {
             member.usePoint(discountedPrice);
@@ -70,6 +67,6 @@ public class MemberModifyService implements MemberRegister {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(PointUsageRequest event) {
-        usePoint(event.memberId(), event.totalAmount());
+        usePoint(event.userId(), event.totalAmount());
     }
 }

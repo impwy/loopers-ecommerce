@@ -31,10 +31,11 @@ class CouponTest {
     @DisplayName("쿠폰 생성 테스트")
     @Test
     void createCoupon() {
-        Coupon coupon = Coupon.create(CouponFixture.createCouponSpec());
+        CreateCouponSpec spec = CouponFixture.createCouponSpec();
+        Coupon coupon = Coupon.create(spec);
 
-        assertThat(coupon.getCode()).isEqualTo("coupon");
-        assertThat(coupon.getDiscountPolicy()).isEqualTo(DiscountPolicy.AMOUNT);
-        assertThat(coupon.getCouponType()).isEqualTo(CouponType.MEMBER);
+        assertThat(coupon.getCode()).isEqualTo(spec.code());
+        assertThat(coupon.getDiscountPolicy()).isEqualTo(spec.discountPolicy());
+        assertThat(coupon.getType()).isEqualTo(spec.couponType());
     }
 }

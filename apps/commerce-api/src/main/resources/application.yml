@@ -17,6 +17,9 @@ management:
 spring:
   main:
     web-application-type: servlet
+  http:
+    converters:
+      preferred-json-mapper: jackson2
   application:
     name: commerce-api
   profiles:

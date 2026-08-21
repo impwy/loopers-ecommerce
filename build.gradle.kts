@@ -19,7 +19,7 @@ plugins {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -51,6 +51,7 @@ subprojects {
         // Spring
         implementation("org.springframework.boot:spring-boot-starter")
         // Serialize
+        implementation("org.springframework.boot:spring-boot-jackson2")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
         // Lombok
         implementation("org.projectlombok:lombok")

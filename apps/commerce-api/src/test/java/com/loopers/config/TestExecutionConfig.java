@@ -10,15 +10,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.task.SyncTaskExecutor;
 
-import com.loopers.infrastructure.kafka.ProductEventProducer;
+import com.loopers.application.product.required.ProductEventPublisher;
 
 @Configuration
 public class TestExecutionConfig {
 
     @Bean
     @Primary
-    ProductEventProducer testProductEventProducer() {
-        return mock(ProductEventProducer.class);
+    ProductEventPublisher testProductEventProducer() {
+        return mock(ProductEventPublisher.class);
     }
 
     @Bean(name = TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME)

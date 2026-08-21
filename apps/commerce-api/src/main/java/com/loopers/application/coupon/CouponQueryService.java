@@ -1,23 +1,22 @@
 package com.loopers.application.coupon;
 
-import org.springframework.stereotype.Service;
-
-import com.loopers.application.provided.CouponFinder;
-import com.loopers.application.required.CouponRepository;
+import com.loopers.application.coupon.provided.CouponFinder;
+import com.loopers.application.coupon.required.CouponRepository;
 import com.loopers.domain.coupon.Coupon;
-import com.loopers.domain.coupon.membercoupon.MemberCoupon;
-import com.loopers.domain.member.MemberId;
+import com.loopers.domain.couponusage.CouponUsage;
+import com.loopers.domain.member.UserId;
+import com.loopers.shared.stereotype.ApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class CouponQueryService implements CouponFinder {
     private final CouponRepository couponRepository;
 
     @Override
     public Coupon find(Long couponId) {
-        return couponRepository.find(couponId)
+        return couponRepository.findById(couponId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 쿠폰 번호입니다." + couponId));
     }
 
@@ -28,8 +27,8 @@ public class CouponQueryService implements CouponFinder {
     }
 
     @Override
-    public MemberCoupon findMemberCoupon(MemberId memberId, Long couponId) {
-        return couponRepository.findByMemberIdAndCouponId(memberId, couponId)
+    public CouponUsage findMemberCoupon(UserId userId, Long couponId) {
+        return couponRepository.findByUserIdAndCouponId(userId, couponId)
                                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 쿠폰 입니다." + couponId));
     }
 }

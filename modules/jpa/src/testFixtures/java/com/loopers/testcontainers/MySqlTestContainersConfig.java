@@ -1,10 +1,12 @@
 package com.loopers.testcontainers;
 
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class MySqlTestContainersConfig {
 
     private static final MySQLContainer<?> mySqlContainer;
@@ -21,7 +23,15 @@ public class MySqlTestContainersConfig {
                 "--skip-character-set-client-handshake"
             );
         mySqlContainer.start();
+    }
 
+    @Bean
+    static BeanFactoryPostProcessor mySqlDataSourceProperties() {
+        configureDataSourceProperties();
+        return beanFactory -> { };
+    }
+
+    private static void configureDataSourceProperties() {
         String mySqlJdbcUrl = String.format(
             "jdbc:mysql://%s:%d/%s",
             mySqlContainer.getHost(),
@@ -32,5 +42,11 @@ public class MySqlTestContainersConfig {
         System.setProperty("datasource.mysql-jpa.main.jdbc-url", mySqlJdbcUrl);
         System.setProperty("datasource.mysql-jpa.main.username", mySqlContainer.getUsername());
         System.setProperty("datasource.mysql-jpa.main.password", mySqlContainer.getPassword());
+        System.setProperty("datasource.mysql-jpa.main.driver-class-name", "com.mysql.cj.jdbc.Driver");
+
+        System.setProperty("spring.datasource.url", mySqlJdbcUrl);
+        System.setProperty("spring.datasource.username", mySqlContainer.getUsername());
+        System.setProperty("spring.datasource.password", mySqlContainer.getPassword());
+        System.setProperty("spring.datasource.driver-class-name", "com.mysql.cj.jdbc.Driver");
     }
 }

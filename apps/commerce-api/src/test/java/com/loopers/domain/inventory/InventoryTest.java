@@ -35,7 +35,7 @@ class InventoryTest {
     @DisplayName("재고 생성 성공 테스트")
     @Test
     void create_inventory_test() {
-        Inventory inventory = Inventory.create(1L, 10L);
+        Inventory inventory = InventoryFixture.createInventory(1L, 10L);
 
         assertThat(inventory.getProductId()).isEqualTo(1L);
         assertThat(inventory.getQuantity()).isEqualTo(10L);
@@ -44,7 +44,7 @@ class InventoryTest {
     @DisplayName("재고 감소 실패 테스트")
     @Test
     void decrease_inventory_fail_test() {
-        Inventory inventory = Inventory.create(1L, 10L);
+        Inventory inventory = InventoryFixture.createInventory(1L, 10L);
 
         assertThatThrownBy(() -> inventory.decrease(11L))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -53,7 +53,7 @@ class InventoryTest {
     @DisplayName("재고 품절일 때 감소 실패 테스트")
     @Test
     void decrease_inventory_fail_when_soldout_test() {
-        Inventory inventory = Inventory.create(1L, 10L);
+        Inventory inventory = InventoryFixture.createInventory(1L, 10L);
         inventory.decrease(10L);
 
         assertThatThrownBy(() -> inventory.decrease(1L))
@@ -64,7 +64,7 @@ class InventoryTest {
     @DisplayName("재고 감소 성공 테스트")
     @Test
     void decrease_inventory_test() {
-        Inventory inventory = Inventory.create(1L, 10L);
+        Inventory inventory = InventoryFixture.createInventory(1L, 10L);
         inventory.decrease(10L);
 
         assertThat(inventory.getQuantity()).isEqualTo(0L);

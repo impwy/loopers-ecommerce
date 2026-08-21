@@ -9,14 +9,14 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loopers.application.provided.ProductOutboxFinder;
-import com.loopers.application.provided.ProductOutboxRegister;
+import com.loopers.application.product.provided.ProductOutboxFinder;
+import com.loopers.application.product.provided.ProductOutboxRegister;
+import com.loopers.application.product.required.ProductEventPublisher;
 import com.loopers.domain.inventory.StockAdjustEvent;
 import com.loopers.domain.product.ProductPayload;
 import com.loopers.domain.product.ProductPayload.ProductEventType;
 import com.loopers.domain.product.outbox.ProductEventOutbox;
 import com.loopers.domain.product.outbox.ProductEventOutbox.ProductOutboxStatus;
-import com.loopers.infrastructure.kafka.ProductEventProducer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class InventoryStockAdjustHandler {
     private final ProductOutboxFinder productOutboxFinder;
     private final ProductOutboxRegister productOutboxRegister;
-    private final ProductEventProducer productEventProducer;
+    private final ProductEventPublisher productEventProducer;
     private final ObjectMapper objectMapper;
 
     @Async

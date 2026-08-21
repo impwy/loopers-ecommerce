@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.loopers.shared.error.CoreException;
+import com.loopers.shared.error.ErrorType;
+
 class CoreExceptionTest {
     @DisplayName("ErrorType 기반의 예외 생성 시, 별도의 메시지가 주어지지 않으면 ErrorType의 메시지를 사용한다.")
     @Test
